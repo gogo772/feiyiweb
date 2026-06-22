@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="static/css/chat.css">
+    <link rel="stylesheet" href="static/css/auth.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>华夏非遗 · 首页</title>
+    <script src="static/lib/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="static/lib/d3.v7.min.js"></script>
+    <style>
+        /* ---------- 全局 & 全屏吸附滚动 ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            scroll-snap-type: y mandatory;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Noto Sans CJK SC', Roboto, 'Microsoft YaHei', sans-serif;
+            background-color: #f9f7f3;
+            background-image: url('static/img/img3.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            font-size: 18px;
+            line-height: 1.5;
+            padding-top: 80px;
+        }
+
+        .page-section {
+            scroll-snap-align: start;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 20px 40px;
+        }
+
+        .page-3 {
+            scroll-margin-top: 80px;
+        }
+
+        .page-1 {
+            justify-content: flex-start;
+        }
+
+        .title-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .page-2 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* 顶部导航栏 */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            width: 100%;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 215, 150, 0.3);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: #ffecb3;
+        }
+
+        .logo-img {
+            width: 64px;
+            height: 64px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+            margin-left: -267px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #ffd966;
+        }
+
+        .nav-item.active {
+            color: #ffd966 !important;
+            font-weight: bold;
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+
+        .auth-area {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .login-btn {
+            background: #b22234;
+            padding: 6px 18px;
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #8b1a1a;
+        }
+
+        /* 首屏标题 */
+        .hero-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-title h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+
+        .hero-title p {
+            font-size: 24px;
+        }
+
+        /* 统计卡片 */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            border-radius: 32px;
+            padding: 20px 32px;
+            min-width: 200px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #c9a96e;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffc000;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #e0d6c0;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-container { gap: 20px; }
+            .stat-card { padding: 12px 20px; min-width: 140px; }
+            .stat-number { font-size: 32px; }
+            .stat-label { font-size: 12px; }
+        }
+
+        /* 3D 圆环轮播 */
+        .carousel-section {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            perspective: 1400px;
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+        }
+
+        .carousel-wrapper:active { cursor: grabbing; }
+        .carousel-wrapper.pulse { animation: glowPulse 0.4s ease-out; }
+        @keyframes glowPulse {
+            0% { filter: drop-shadow(0 0 0px rgba(255, 215, 150, 0)); }
+            50% { filter: drop-shadow(0 0 30px rgba(255, 215, 150, 0.9)); }
+            100% { filter: drop-shadow(0 0 0px rgba(255, 215, 150, 0)); }
+        }
+
+        .carousel-card {
+            position: absolute;
+            width: 460px;
+            height: 320px;
+            left: 50%;
+            top: 50%;
+            margin-left: -230px;
+            margin-top: -160px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(201, 169, 110, 0.6);
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.4);
+            will-change: transform;
+            display: flex;
+            flex-direction: column;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .carousel-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            user-select: none;
+            pointer-events: auto;
+        }
+
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 12px;
+            text-align: center;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 2;
+        }
+        .carousel-card.active .card-info { opacity: 1; }
+        .card-info h4 { font-size: 1rem; color: #ffd966; margin-bottom: 4px; font-weight: 600; }
+        .card-info p { font-size: 0.75rem; color: #f0e6d2; line-height: 1.3; }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 20;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-btn:hover { background: #c9a96e; color: #1f1b18; }
+        #prevBtn { left: 10px; }
+        #nextBtn { right: 10px; }
+
+        @media (max-width: 768px) {
+            .carousel-wrapper { height: 400px; }
+            .carousel-card { width: 220px; height: 300px; margin-left: -110px; margin-top: -150px; }
+            .carousel-card img { height: 150px; }
+            .carousel-btn { width: 36px; height: 36px; font-size: 18px; }
+        }
+
+        /* 第三页：推荐卡片滑动轮播 */
+        .performance-slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            cursor: grab;
+            margin: 20px 0;
+            z-index: 5;
+        }
+        .performance-track {
+            display: flex;
+            gap: 25px;
+            width: max-content;
+            transition: transform 0.5s ease;
+        }
+        .rec-card {
+            flex: 0 0 280px;
+            background: rgba(30, 25, 20, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 215, 150, 0.3);
+            cursor: pointer;
+        }
+        .rec-card:hover {
+            transform: translateY(-8px);
+            background: rgba(20, 15, 10, 0.95);
+            border-color: #c9a96e;
+        }
+        .rec-card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .rec-card-content { padding: 16px; }
+        .rec-card-title { font-size: 1.2rem; font-weight: bold; color: #ffefcf; margin-bottom: 8px; }
+        .rec-card-desc { font-size: 0.85rem; color: #ddd; line-height: 1.4; }
+        .rec-card-tag {
+            display: inline-block;
+            background: rgba(201, 169, 110, 0.3);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            margin-top: 12px;
+            color: #ffd966;
+        }
+
+        /* 非遗动态大卡片 */
+        .timeline-container {
+            display: flex;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 24px;
+            gap: 24px;
+            margin: 30px 0 50px;
+            z-index: 5;
+            position: relative;
+        }
+        .timeline-list {
+            flex: 1.5;
+            min-width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(30, 25, 20, 0.6);
+            border-radius: 20px;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 215, 150, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .timeline-item:hover {
+            background: rgba(201, 169, 110, 0.3);
+            border-color: #c9a96e;
+            transform: translateX(5px);
+        }
+        /* 高亮卡片样式 */
+.timeline-item.active {
+    background: rgba(201, 169, 110, 0.5);
+    border-color: #ffd966;
+    box-shadow: 0 0 0 2px rgba(255, 215, 150, 0.3);
+    transform: translateX(5px);
+}
+        .timeline-item .timeline-content {
+            flex: 1;
+            padding-right: 70px;
+        }
+        .hot-badge {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            background: linear-gradient(135deg, #e25822, #ff7b2c);
+            color: #fff4e0;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 10;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 220, 120, 0.6);
+        }
+        .hot-badge i { font-size: 0.7rem; color: #ffd966; }
+        .timeline-item:hover .hot-badge { transform: scale(1.02); background: linear-gradient(135deg, #f05a28, #ff8c42); }
+
+        .timeline-date { font-size: 0.85rem; color: #ffd966; font-weight: 500; min-width: 90px; }
+        .timeline-title { font-size: 1rem; font-weight: 600; color: #ffefcf; }
+        .timeline-place { font-size: 0.75rem; color: #ddd; margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap; }
+        .timeline-place i { color: #c9a96e; width: 16px; }
+        .timeline-image-panel {
+            flex: 1;
+            min-width: 240px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid rgba(255, 215, 150, 0.3);
+        }
+        .panel-image {
+            width: 100%;
+            height: auto;
+            max-height: 360px;
+            object-fit: contain;
+            transition: transform 0.3s ease, opacity 0.25s ease;
+            opacity: 0;
+            transform: scale(0.96);
+        }
+        .panel-image.show { opacity: 1; transform: scale(1); }
+        .panel-placeholder { text-align: center; color: #a09880; font-size: 1rem; padding: 40px; }
+        @media (max-width: 768px) {
+            .timeline-container { flex-direction: column; }
+            .timeline-image-panel { min-height: 200px; }
+            .timeline-date { min-width: 70px; font-size: 0.75rem; }
+        }
+
+        /* 底部样式 */
+        .site-footer {
+            background: #1a1510;
+            color: #c4b89a;
+            padding: 50px 30px 30px;
+            border-top: 3px solid var(--chinese-gold);
+            margin-top: 80px;
+            border-radius: 30px 30px 0 0;
+        }
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .footer-col h4 { color: var(--chinese-gold); letter-spacing: 2px; margin-bottom: 14px; font-size: 1rem; }
+        .footer-col p { font-size: 0.85rem; line-height: 2.5; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 8px; }
+        .footer-col ul li a { color: #a09880; text-decoration: none; font-size: 0.85rem; transition: 0.3s; cursor: pointer; }
+        .footer-col ul li a:hover { color: var(--chinese-gold); }
+        .friend-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .friend-links a {
+            color: #a09880;
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 6px 14px;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .friend-links a:hover { border-color: var(--chinese-gold); color: var(--chinese-gold); background: rgba(201, 169, 110, 0.08); }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid rgba(201, 169, 110, 0.2); font-size: 0.8rem; letter-spacing: 2px; max-width: 1200px; margin: 0 auto; }
+        :root { --chinese-gold: #C9A96E; }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #2c5f2d;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            font-size: 24px;
+        }
+        .back-to-top.show { opacity: 1; visibility: visible; }
+        .back-to-top:hover { background-color: #1e3a1e; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-section { padding: 20px; }
+            .hero-title h1 { font-size: 40px; }
+            .hero-title p { font-size: 18px; }
+            .section-title { font-size: 1.6rem; }
+        }
+
+        /* 加载界面 */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #0a0a0a, #000000);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            pointer-events: none;
+        }
+        #preloader.hide { opacity: 0; visibility: hidden; }
+        .preloader-container { position: relative; width: 260px; height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ring-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+        .ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border-style: solid; border-width: 2px; border-color: rgba(201, 169, 110, 0.6) transparent rgba(201, 169, 110, 0.6) transparent; animation: spin 3s linear infinite; }
+        .ring-1 { width: 200px; height: 200px; border-width: 3px; animation-duration: 4s; }
+        .ring-2 { width: 140px; height: 140px; border-width: 2px; border-color: rgba(255, 215, 150, 0.8) transparent rgba(255, 215, 150, 0.4) transparent; animation-direction: reverse; animation-duration: 3s; }
+        .ring-3 { width: 80px; height: 80px; border-width: 1px; border-color: #ffd966 transparent #c9a96e transparent; animation-duration: 2s; }
+        .core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: radial-gradient(circle, #ffd966, #c9a96e); border-radius: 50%; box-shadow: 0 0 20px rgba(201, 169, 110, 0.8); animation: pulse 1.5s ease-in-out infinite; }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } }
+        .orbits { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        .orbit-dot { position: absolute; width: 8px; height: 8px; background: #ffd966; border-radius: 50%; box-shadow: 0 0 12px #ffaa33; top: 50%; left: 50%; transform-origin: 0 0; animation: orbit 2.5s linear infinite; }
+        .dot1 { transform: translate(-50%, -50%) rotate(0deg) translateX(130px); animation-delay: 0s; }
+        .dot2 { transform: translate(-50%, -50%) rotate(90deg) translateX(130px); animation-delay: 0.3s; }
+        .dot3 { transform: translate(-50%, -50%) rotate(180deg) translateX(130px); animation-delay: 0.6s; }
+        .dot4 { transform: translate(-50%, -50%) rotate(270deg) translateX(130px); animation-delay: 0.9s; }
+        @keyframes orbit { 0% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--r, 0deg)) translateX(130px); } 50% { opacity: 0.4; transform: translate(-50%, -50%) rotate(calc(var(--r, 0deg) + 180deg)) translateX(130px); } 100% { opacity: 1; transform: translate(-50%, -50%) rotate(calc(var(--r, 0deg) + 360deg)) translateX(130px); } }
+        .dot1 { --r: 0deg; } .dot2 { --r: 90deg; } .dot3 { --r: 180deg; } .dot4 { --r: 270deg; }
+        .loading-text { margin-top: 220px; font-size: 28px; font-weight: 600; letter-spacing: 6px; background: linear-gradient(135deg, #ffd966, #c9a96e, #ffaa66); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; }
+        .loading-text span { display: inline-block; animation: bounceLetter 0.6s alternate infinite ease-in-out; animation-delay: calc(0.05s * var(--i, 0)); }
+        @keyframes bounceLetter { from { transform: translateY(0px); } to { transform: translateY(-8px); } }
+        .loading-sub { margin-top: 12px; font-size: 14px; color: #c4b89a; letter-spacing: 2px; opacity: 0.7; animation: fadePulse 1.2s infinite; }
+        @keyframes fadePulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        .carousel-dots { display: flex; justify-content: center; gap: 12px; margin: 20px 0 10px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background-color: rgba(255, 215, 150, 0.4); cursor: pointer; transition: all 0.2s ease; }
+        .dot.active { background-color: #ffd966; transform: scale(1.2); box-shadow: 0 0 6px #ffd966; }
+        .dot:hover { background-color: #ffd966; transform: scale(1.1); }
+        .section-title { font-size: 2rem; margin-bottom: 20px; color: #ffefcf; letter-spacing: 2px; border-left: 5px solid #c9a96e; padding-left: 20px; }
+    </style>
+</head>
+<body>
+<div id="preloader"><div class="preloader-container"><div class="ring-container"><div class="ring ring-1"></div><div class="ring ring-2"></div><div class="ring ring-3"></div><div class="core"></div></div><div class="orbits"><div class="orbit-dot dot1"></div><div class="orbit-dot dot2"></div><div class="orbit-dot dot3"></div><div class="orbit-dot dot4"></div></div><div class="loading-text"><span>薪</span><span>火</span><span>相</span><span>传</span><span>·</span><span>非</span><span>遗</span><span>典</span><span>藏</span></div><div class="loading-sub">唤醒千年文脉...</div></div></div>
+<div class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></div>
+
+<!-- 第一页 -->
+<div class="page-section page-1">
+    <div class="container" style="width:100%">
+        <div class="top-bar"><div class="logo"><img src="static/img/favicon_io/android-chrome-192x192.png" alt="华夏非遗" class="logo-img">华夏非遗 · 薪火相传</div><div class="nav-links"><a href="index.html" class="nav-item" data-page="index">首页</a><a href="performances.html" class="nav-item" data-page="performances">票务演出</a><a href="merchandise.html" class="nav-item" data-page="merchandise">文创周边</a><a href="travel.html" class="nav-item" data-page="travel">去旅游</a><a href="knowledge-graph.html" class="nav-item" data-page="knowledge">非遗图谱✨</a><a href="whereami.html" class="nav-item" data-page="whereami">云旅游✨</a></div><div class="auth-area" id="authArea"></div></div>
+    </div>
+    <div class="title-wrapper"><div class="hero-title"><h1>守护千年文脉</h1><p>---让非遗活在当下，走向世界---</p></div><div class="stats-container"><div class="stat-card"><div class="stat-number" id="statProjects">0</div><div class="stat-label">收录非遗项目</div></div><div class="stat-card"><div class="stat-number" id="statNational">0</div><div class="stat-label">国家级名录</div></div><div class="stat-card"><div class="stat-number" id="statNodes">0</div><div class="stat-label">知识图谱节点</div></div></div></div>
+</div>
+
+<!-- 第二页：3D圆环轮播（支持拖拽旋转） -->
+<div class="page-section page-2"><div class="carousel-section"><div class="carousel-wrapper" id="carouselWrapper"><button class="carousel-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button><button class="carousel-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button></div></div></div>
+
+<!-- 第三页：非遗推荐 + 动态时间轴（带HOT标签） -->
+<div class="page-section page-3">
+    <div class="container" style="width:100%">
+        <div class="section-title"><i class="fas fa-heart"></i> 非遗推荐</div>
+        <div class="performance-slider" id="performanceSlider"><div class="performance-track" id="performanceTrack"></div></div>
+        <div class="carousel-dots" id="carouselDots"></div>
+        <div class="section-title"><i class="fas fa-calendar-alt"></i> 非遗动态</div>
+        <div class="timeline-container"><div class="timeline-list" id="timelineList"></div><div class="timeline-image-panel" id="timelineImagePanel"><div class="panel-placeholder" id="panelPlaceholder"></div><img id="panelImage" class="panel-image" alt="非遗图片" style="display: none;"></div></div>
+        <footer class="site-footer"><div class="footer-grid"><div class="footer-col"><h4>华夏非遗 · 薪火相传</h4><p>弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p></div><div class="footer-col"><h4>快捷导航</h4><ul><li><a href="index.html">首页</a></li><li><a href="performances.html">票务演出</a></li><li><a href="merchandise.html">文创周边</a></li><li><a href="travel.html">去旅游</a></li><li><a href="history.html">浏览记录</a></li><li><a href="knowledge-graph.html">非遗图谱✨</a></li><li><a href="whereami.html">云旅游✨</a></li></ul></div><div class="footer-col"><h4>联系方式</h4><p>📧 ich@culture.cn</p><p>📞 400-668-0808</p><p>📍 安徽新华学院</p></div><div class="footer-col"><h4>友情链接</h4><ul><li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li><li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li><li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li></ul></div></div><div class="friend-links"><span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span><a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a><a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a><a href="https://www.nlc.cn" target="_blank">国家图书馆</a></div><div class="footer-bottom"><p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p></div></footer>
+    </div>
+</div>
+
+<!-- AI聊天等辅助 -->
+<div id="aiChatWindow" class="ai-chat-window"><div class="chat-header"><span><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span><span class="close-chat" id="closeChat">&times;</span></div><div class="chat-body" id="chatBody"><div class="chat-message ai"><div class="message-sender">菲菲</div><div class="message-bubble">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div></div></div><div class="chat-input-area"><input type="text" id="chatInput" placeholder="例如：京剧有什么特点？"><button id="sendChat"><i class="fas fa-paper-plane"></i></button></div></div>
+<div id="historyPreview" style="position: fixed; background: rgba(0,0,0,0.85); border-radius: 20px; width: 280px; padding: 12px; display: none; z-index: 1000; backdrop-filter: blur(8px);"><div style="font-weight:bold; margin-bottom:8px; color:#fff;">最近浏览</div><div id="previewList" style="font-size:14px; color:#ddd;"></div></div>
+
+<script>
+    // ========== 统计动画 ==========
+    const backBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', () => { if (window.scrollY > 300) backBtn.classList.add('show'); else backBtn.classList.remove('show'); });
+    backBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+    function animateNumber(element, target, duration = 2000) { if (!element) return; const startTime = performance.now(); function update(now) { const elapsed = now - startTime; let progress = Math.min(1, elapsed / duration); let current = Math.floor(progress * target); element.innerText = current.toLocaleString(); if (progress < 1) requestAnimationFrame(update); else element.innerText = target.toLocaleString(); } requestAnimationFrame(update); }
+    window.addEventListener('load', () => { animateNumber(document.getElementById('statProjects'), 1560, 1800); animateNumber(document.getElementById('statNational'), 1557, 1800); animateNumber(document.getElementById('statNodes'), 1680, 1800); });
+
+    // ========== 3D 圆环轮播（支持鼠标/触摸拖拽旋转） ==========
+    (function init3DCarousel() {
+        const wrapper = document.getElementById('carouselWrapper');
+        if (!wrapper) return;
+        const hotItems = [
+            { name: "太极拳", img: "static/img/taiji.jpg", desc: "刚柔并济" },
+            { name: "昆曲", img: "static/img/kunqu.jpg", desc: "百戏之祖，水磨腔" },
+            { name: "二十四节气", img: "static/img/24jie.jpg", desc: "时间智慧" },
+            { name: "高甲戏", img: "static/img/gaojiaxi.jpeg", desc: "泉州高甲戏，丑角艺术" }
+        ];
+        let currentAngle = 0, targetAngle = 0, animFrameId = null, autoTimer = null, radius = 520, cards = [];
+        let isDragging = false, dragStartX = 0, dragStartAngle = 0;
+        const cardCount = hotItems.length, angleStep = 360 / cardCount;
+
+        function updateRadius() {
+            const containerWidth = document.querySelector('.carousel-section')?.offsetWidth || 1400;
+            radius = Math.min(containerWidth * 0.45, 600);
+        }
+
+        function updateCardsPosition() {
+            if (!cards.length) return;
+            const radStep = (Math.PI * 2) / cardCount;
+            let maxZ = -Infinity;
+            cards.forEach((card, i) => {
+                const rad = radStep * i + (currentAngle * Math.PI / 180);
+                const x = Math.sin(rad) * radius, z = Math.cos(rad) * radius;
+                card.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${-rad}deg)`;
+                card.style.opacity = 0.5 + (z + radius) / (radius * 2) * 0.5;
+                card.style.zIndex = Math.floor(100 + (z + radius) / 2);
+                card.style.filter = `brightness(${0.7 + (z + radius) / (radius * 2) * 0.4})`;
+                if (z > maxZ) { maxZ = z; card.classList.add('active'); } else card.classList.remove('active');
+            });
+        }
+
+        // 平滑动画 (仅用于自动吸附)
+        function startSmoothAnimation() {
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            function step() {
+                let diff = targetAngle - currentAngle;
+                if (Math.abs(diff) > 180) diff = targetAngle > currentAngle ? targetAngle - (currentAngle + 360) : (targetAngle + 360) - currentAngle;
+                if (Math.abs(diff) < 0.05) {
+                    currentAngle = targetAngle;
+                    updateCardsPosition();
+                    animFrameId = null;
+                    return;
+                }
+                currentAngle += diff * 0.12;
+                currentAngle = ((currentAngle % 360) + 360) % 360;
+                updateCardsPosition();
+                animFrameId = requestAnimationFrame(step);
+            }
+            step();
+        }
+
+        // 直接旋转到指定角度（带吸附效果）
+        function rotateToAngle(angle) {
+            targetAngle = ((angle % 360) + 360) % 360;
+            startSmoothAnimation();
+            resetAutoTimer();
+        }
+
+        function nextSlide() { rotateToAngle(targetAngle - angleStep); }
+        function prevSlide() { rotateToAngle(targetAngle + angleStep); }
+
+        function startAutoSlide() {
+            if (autoTimer) clearInterval(autoTimer);
+            autoTimer = setInterval(() => nextSlide(), 5000);
+        }
+        function stopAutoSlide() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
+        function resetAutoTimer() { stopAutoSlide(); startAutoSlide(); }
+
+        // 拖拽处理
+        function onDragStart(e) {
+            e.preventDefault();
+            stopAutoSlide();
+            isDragging = true;
+            const clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            dragStartX = clientX;
+            dragStartAngle = currentAngle;
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            document.addEventListener('mousemove', onDragMove);
+            document.addEventListener('mouseup', onDragEnd);
+            document.addEventListener('touchmove', onDragMove, { passive: false });
+            document.addEventListener('touchend', onDragEnd);
+            wrapper.style.cursor = 'grabbing';
+        }
+
+        function onDragMove(e) {
+            if (!isDragging) return;
+            const clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const deltaX = clientX - dragStartX;
+            // 灵敏度: 1px → 0.6度，手感顺滑
+            const deltaAngle = deltaX * 0.6;
+            let newAngle = dragStartAngle + deltaAngle;
+            newAngle = ((newAngle % 360) + 360) % 360;
+            currentAngle = newAngle;
+            targetAngle = newAngle;
+            updateCardsPosition();
+        }
+
+        function onDragEnd(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            document.removeEventListener('mousemove', onDragMove);
+            document.removeEventListener('mouseup', onDragEnd);
+            document.removeEventListener('touchmove', onDragMove);
+            document.removeEventListener('touchend', onDragEnd);
+            wrapper.style.cursor = 'grab';
+            // 吸附到最近的卡片
+            const nearest = Math.round(currentAngle / angleStep) * angleStep;
+            targetAngle = nearest;
+            startSmoothAnimation();
+            startAutoSlide();
+        }
+
+        function buildCards() {
+            wrapper.innerHTML = '';
+            cards = [];
+            hotItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'carousel-card';
+                card.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.src='https://picsum.photos/id/100/460/320'"><div class="card-info"><h4>${item.name}</h4><p>${item.desc}</p></div>`;
+                wrapper.appendChild(card);
+                cards.push(card);
+            });
+            updateRadius();
+            updateCardsPosition();
+        }
+
+        function onResize() { updateRadius(); updateCardsPosition(); }
+
+        buildCards();
+        window.addEventListener('resize', onResize);
+        const prev = document.getElementById('prevBtn'), next = document.getElementById('nextBtn');
+        if (prev) prev.addEventListener('click', () => prevSlide());
+        if (next) next.addEventListener('click', () => nextSlide());
+
+        // 绑定拖拽事件
+        wrapper.addEventListener('mousedown', onDragStart);
+        wrapper.addEventListener('touchstart', onDragStart, { passive: false });
+        wrapper.addEventListener('dragstart', (e) => e.preventDefault());
+        wrapper.style.cursor = 'grab';
+
+        startAutoSlide();
+    })();
+
+    // ========== 非遗推荐卡片轮播（完整版） ==========
+    (function initRecommendSlider() {
+        const track = document.getElementById('performanceTrack');
+        const dotsContainer = document.getElementById('carouselDots');
+        if (!track) return;
+        const recommendItems = [
+            { name: "京剧《贵妃醉酒》", img: "static/img/guifeizuijiu.jpg", desc: "梅派经典，雍容华贵", type: "戏曲", link: "product.html?id=0&type=performance" },
+            { name: "昆曲《牡丹亭》", img: "static/img/kunqu1.jpg", desc: "情不知所起，一往而深", type: "戏曲", link: "product.html?id=1&type=performance" },
+            { name: "皮影戏《西游记》", img: "static/img/piying01.jpg", desc: "光影传奇，妙趣横生", type: "传统戏剧", link: "product.html?id=4&type=performance" },
+            { name: "剪纸艺术体验", img: "static/img/jianzhi01.jpg", desc: "指尖生花，传承匠心", type: "传统美术", link: "product.html?id=21&type=merchandise" },
+            { name: "古琴《高山流水》", img: "static/img/guqing.jpg", desc: "千年古韵，弦外之音", type: "传统音乐", link: "product.html?id=14&type=merchandise" },
+            { name: "太极拳养生课", img: "static/img/taiji01.jpg", desc: "刚柔并济，修身养性", type: "传统体育", link: "product.html?id=2&type=travel" },
+            { name: "蜡染围巾", img: "static/img/laran.jpg", desc: "苗族非遗，蓝白之美", type: "文创", link: "product.html?id=10&type=merchandise" }
+        ];
+        const originalLen = recommendItems.length;
+        let autoTimer = null, currentIndex = 0, cardWidth = 0, gap = 25, cloneCount = 3, allCards = [], step = 0, isTransitioning = false;
+
+        function buildTrack() {
+            track.innerHTML = ''; allCards = [];
+            for (let copy = 0; copy < cloneCount; copy++) {
+                recommendItems.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'rec-card';
+                    card.innerHTML = `<img class="rec-card-img" src="${item.img}" alt="${item.name}" onerror="this.onerror=null;this.src='https://picsum.photos/id/104/300/180'"><div class="rec-card-content"><div class="rec-card-title">${item.name}</div><div class="rec-card-desc">${item.desc}</div><div class="rec-card-tag">${item.type}</div></div>`;
+                    card.addEventListener('click', (e) => { e.stopPropagation(); window.location.href = item.link; });
+                    track.appendChild(card);
+                    allCards.push(card);
+                });
+            }
+            if (allCards.length) { cardWidth = allCards[0].offsetWidth; step = cardWidth + gap; track.style.width = `${allCards.length * step}px`; }
+        }
+
+        function updateDots() { if (!dotsContainer) return; const dots = dotsContainer.querySelectorAll('.dot'); dots.forEach((dot, idx) => { if (idx === currentIndex) dot.classList.add('active'); else dot.classList.remove('active'); }); }
+        function moveToIndex(withTransition = true) { if (step === 0) return; const baseOffset = Math.floor(cloneCount / 2) * originalLen; const targetOffset = (baseOffset + currentIndex) * step; if (withTransition) track.style.transition = 'transform 0.5s ease'; else track.style.transition = 'none'; track.style.transform = `translateX(-${targetOffset}px)`; if (!withTransition) void track.offsetHeight; track.style.transition = 'transform 0.5s ease'; }
+        function nextSlide() {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            let newIndex = currentIndex + 1;
+            if (newIndex >= originalLen) {
+                currentIndex = newIndex;
+                moveToIndex(true);
+                const onTransitionEnd = () => {
+                    track.removeEventListener('transitionend', onTransitionEnd);
+                    currentIndex = 0;
+                    moveToIndex(false);
+                    isTransitioning = false;
+                    updateDots();
+                };
+                track.addEventListener('transitionend', onTransitionEnd, { once: true });
+            } else {
+                currentIndex = newIndex;
+                moveToIndex(true);
+                track.addEventListener('transitionend', () => { isTransitioning = false; }, { once: true });
+                updateDots();
+            }
+        }
+        function goToSlide(index) { if (isTransitioning || index === currentIndex) return; stopAuto(); currentIndex = index; moveToIndex(true); updateDots(); startAuto(); }
+        function startAuto() { if (autoTimer) clearInterval(autoTimer); autoTimer = setInterval(nextSlide, 3000); }
+        function stopAuto() { if (autoTimer) clearInterval(autoTimer); }
+        function buildDots() { if (!dotsContainer) return; dotsContainer.innerHTML = ''; for (let i = 0; i < originalLen; i++) { const dot = document.createElement('div'); dot.className = 'dot'; if (i === currentIndex) dot.classList.add('active'); dot.addEventListener('click', () => goToSlide(i)); dotsContainer.appendChild(dot); } }
+        function init() {
+            buildTrack(); buildDots();
+            setTimeout(() => { if (allCards.length && step === 0) { cardWidth = allCards[0].offsetWidth; step = cardWidth + gap; track.style.width = `${allCards.length * step}px`; } currentIndex = 0; moveToIndex(false); updateDots(); startAuto(); }, 200);
+            window.addEventListener('resize', () => { if (allCards.length) { cardWidth = allCards[0].offsetWidth; step = cardWidth + gap; track.style.width = `${allCards.length * step}px`; moveToIndex(false); } });
+            const slider = document.getElementById('performanceSlider'); if (slider) { slider.addEventListener('mouseenter', stopAuto); slider.addEventListener('mouseleave', startAuto); }
+        }
+        init();
+    })();
+// ========== 非遗动态时间轴（带HOT徽章 + 轮播高亮） ==========
+(function initTimelineWithHot() {
+    const listContainer = document.getElementById('timelineList');
+    const panelImage = document.getElementById('panelImage');
+    const panelPlaceholder = document.getElementById('panelPlaceholder');
+    if (!listContainer) return;
+
+    const timelineEvents = [
+        { date: "2026-06-10", title: "高甲戏《连升三级》", place: "福建泉州梨园古典剧院", price: "¥180起", link: "product.html?id=2&type=performance", img: "static/img/gaojiaxi.jpeg", hot: true },
+        { date: "2026-06-15", title: "皮影戏《西游记》专场", place: "北京皮影剧团", price: "¥120起", link: "product.html?id=4&type=performance", img: "static/img/piying01.jpg", hot: false },
+        { date: "2026-06-20", title: "昆曲《牡丹亭》", place: "上海大剧院", price: "¥280起", link: "product.html?id=1&type=performance", img: "static/img/kunqu1.jpg", hot: true },
+        { date: "2026-07-01", title: "非遗综合展演", place: "广州大剧院", price: "¥260起", link: "product.html?id=5&type=performance", img: "static/img/performances-img/4.jpg", hot: false },
+        { date: "2026-07-10", title: "京剧《贵妃醉酒》", place: "国家大剧院", price: "¥380起", link: "product.html?id=0&type=performance", img: "static/img/guifeizuijiu.jpg", hot: true },
+        { date: "2026-07-18", title: "剪纸艺术大师工作坊", place: "南京非遗馆", price: "免费预约", link: "product.html?id=21&type=merchandise", img: "static/img/jianzhi01.jpg", hot: false }
+    ];
+    timelineEvents.sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+    let autoTimer = null, currentImgIndex = 0, imageUrls = [];
+    let timelineItems = []; // 存储列表项DOM
+
+    // 高亮指定的列表项
+    function highlightItem(index) {
+        if (!timelineItems.length) return;
+        timelineItems.forEach((item, i) => {
+            if (i === index) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    function updateImage(url, index) {
+        if (url && url.trim()) {
+            panelImage.src = url;
+            panelImage.style.display = 'block';
+            panelImage.classList.add('show');
+            if (panelPlaceholder) panelPlaceholder.style.display = 'none';
+            panelImage.onerror = () => {
+                panelImage.style.display = 'none';
+                if (panelPlaceholder) panelPlaceholder.style.display = 'flex';
+            };
+        } else {
+            panelImage.style.display = 'none';
+            if (panelPlaceholder) panelPlaceholder.style.display = 'flex';
+        }
+        if (index !== undefined) {
+            highlightItem(index);
+        }
+    }
+
+    function nextImage() {
+        if (imageUrls.length) {
+            currentImgIndex = (currentImgIndex + 1) % imageUrls.length;
+            updateImage(imageUrls[currentImgIndex], currentImgIndex);
+        }
+    }
+
+    function startAutoPlay() {
+        if (autoTimer) clearInterval(autoTimer);
+        if (imageUrls.length > 1) autoTimer = setInterval(nextImage, 3000);
+    }
+
+    function stopAutoPlay() {
+        if (autoTimer) {
+            clearInterval(autoTimer);
+            autoTimer = null;
+        }
+    }
+
+    // 构建列表
+    let html = '';
+    imageUrls = [];
+    timelineEvents.forEach((ev, idx) => {
+        imageUrls.push(ev.img || '');
+        const hotBadge = ev.hot ? `<span class="hot-badge"><i class="fas fa-fire"></i> 热门推荐</span>` : '';
+        html += `<div class="timeline-item" data-img="${ev.img || ''}" data-link="${ev.link}" data-index="${idx}">${hotBadge}<div class="timeline-date">${ev.date}</div><div class="timeline-content"><div class="timeline-title">${ev.title}</div><div class="timeline-place"><span><i class="fas fa-map-marker-alt"></i> ${ev.place}</span><span><i class="fas fa-ticket-alt"></i> ${ev.price}</span></div></div></div>`;
+    });
+    listContainer.innerHTML = html;
+    timelineItems = document.querySelectorAll('.timeline-item');
+
+    // 绑定鼠标悬停事件
+    timelineItems.forEach((item, idx) => {
+        item.addEventListener('mouseenter', () => {
+            stopAutoPlay();
+            const img = item.getAttribute('data-img');
+            updateImage(img, idx);
+            currentImgIndex = idx;
+        });
+        item.addEventListener('click', () => {
+            const link = item.getAttribute('data-link');
+            if (link) window.location.href = link;
+        });
+    });
+
+    // 鼠标离开列表容器时，恢复自动轮播并高亮当前轮播项
+    listContainer.addEventListener('mouseleave', () => {
+        startAutoPlay();
+        // 确保高亮与当前图片索引一致
+        highlightItem(currentImgIndex);
+    });
+
+    // 初始化：显示第一项图片，高亮第一项
+    if (imageUrls.length) {
+        updateImage(imageUrls[0], 0);
+        currentImgIndex = 0;
+        startAutoPlay();
+    } else {
+        panelImage.style.display = 'none';
+        if (panelPlaceholder) panelPlaceholder.style.display = 'flex';
+    }
+})();
+    // 加载界面隐藏
+(function () {
+    var preloader = document.getElementById('preloader');
+    if (!preloader) return;
+
+    // 已经在本会话中访问过 → 直接跳过动画
+    if (sessionStorage.getItem('preloader_shown')) {
+        preloader.style.display = 'none';
+        return;
+    }
+    // 标记已访问，后续刷新不再显示动画
+    sessionStorage.setItem('preloader_shown', 'true');
+
+    // 固定显示时长（单位：毫秒），例如 2000 = 2 秒
+    var FIXED_DURATION = 2000;
+    var startTime = Date.now();
+
+    function hidePreloader() {
+        var elapsed = Date.now() - startTime;
+        if (elapsed >= FIXED_DURATION) {
+            preloader.classList.add('hide');
+            setTimeout(function() {
+                preloader.style.display = 'none';
+            }, 800);
+        } else {
+            // 还没到固定时长，继续等待
+            setTimeout(hidePreloader, FIXED_DURATION - elapsed);
+        }
+    }
+
+    // 等待 DOM 至少加载完毕（避免内容区域空白）
+    // 也可以改用 window.addEventListener('load', ...)，但固定时长已足够
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hidePreloader);
+    } else {
+        hidePreloader();
+    }
+})();</script>
+<script src="static/js/sidebar.js"></script>
+<script src="static/js/chat.js"></script>
+<script src="static/js/password-utils.js"></script>
+<script src="static/js/auth.js"></script>
+</body>
+</html>

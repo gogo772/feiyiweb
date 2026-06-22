@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>    <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="static/css/chat.css">
+    <link rel="stylesheet" href="static/css/auth.css">
+    <meta charset="UTF-8">
+    <title>云旅游 · 景区AI合影</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        html, body {
+    height: 100%;
+    scroll-snap-type: y mandatory;
+    overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
+    scroll-behavior: smooth;
+    scrollbar-width: none;      /* Firefox 隐藏滚动条 */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0;
+    background: transparent;    /* Chrome/Safari/Edge 隐藏滚动条 */
+}
+        .logo-img {
+    width: 64px;      /* 根据需要调整 */
+    height: 64px;
+    vertical-align: middle;  /* 让图片和文字垂直居中 */
+    margin-right: 8px;       /* 和文字间距 */
+}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            padding-top: 80px;
+            font-family: 'Segoe UI', sans-serif;
+            background-image: url('static/img/beijin/09.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card {
+            background: rgba(255,250,240,0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+        h2 {
+            font-size: 28px;
+            color: #8b3c1c;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .upload-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .upload-box {
+            flex: 1;
+            text-align: center;
+            background: rgba(0,0,0,0.05);
+            border-radius: 32px;
+            padding: 20px;
+        }
+        .upload-box img {
+            width: 100%;
+            max-height: 280px;
+            object-fit: contain;
+            border-radius: 20px;
+            margin-top: 15px;
+        }
+        .file-label {
+            display: inline-block;
+            background: #2c5f2d;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        /* 地点选择与景区图片区 */
+        .location-section {
+            margin-bottom: 24px;
+        }
+        .location-select {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 40px;
+            border: 1px solid #e2cfb0;
+            background: #fffef7;
+            font-size: 16px;
+            font-family: inherit;
+            margin-bottom: 20px;
+        }
+       .scene-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));  /* 每列最小220px，更宽 */
+    gap: 20px;
+    margin: 20px 0;
+}
+        .scene-card {
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+.scene-card.selected {
+    border-color: #c9a96e;
+    box-shadow: 0 0 0 2px #ffd966;
+    transform: scale(0.98);
+}
+        .scene-card img {
+    width: 100%;
+    height: 200px;          /* 原120px → 200px，更清晰 */
+    object-fit: cover;
+    display: block;
+    border-radius: 16px 16px 0 0;
+}
+        .scene-card .scene-name {
+    padding: 10px;
+    font-size: 0.9rem;      /* 稍微放大文字 */
+    background: rgba(0,0,0,0.6);
+    color: white;
+    text-align: center;
+}
+        .prompt-textarea {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 28px;
+            border: 1px solid #e2cfb0;
+            background: #fffef7;
+            font-size: 16px;
+            font-family: inherit;
+            margin-top: 15px;
+            min-height: 80px;
+            resize: vertical;
+        }
+        .btn-generate, .btn-save {
+            background: #b22234;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .btn-save { background: #c9a96e; color: #2c2c2c; }
+        .loading { text-align: center; padding: 30px; color: #8b3c1c; display: none; }
+
+        /* 统一顶部导航栏 */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            width: 100%;
+            padding: 12px 30px;
+            background: rgba(0, 0, 0, 0.65);
+            border-bottom: 1px solid rgba(255, 215, 150, 0.3);
+        }
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffecb3;
+            letter-spacing: 2px;
+            padding: 8px 18px;
+            border-radius: 40px;
+        }
+        .logo i { color: #ffc857; margin-right: 8px; }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            backdrop-filter: none;
+                margin-left: -267px;
+        }
+        .nav-links a {
+            color: #f5f0e6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .nav-links a:hover, .nav-item.active {
+            color: #ffd966;
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+        .auth-area {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .login-btn {
+            background: #b22234;
+            padding: 6px 18px;
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .login-btn:hover { background: #8b1a1a; }
+        .deepseek-btn {
+            background: #2c5f2d;
+            padding: 6px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .top-bar { padding: 10px 18px; }
+            .scene-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* 底部样式 */
+        .site-footer {
+            background: #1a1510;
+            color: #c4b89a;
+            padding: 50px 30px 30px;
+            border-top: 3px solid var(--chinese-gold);
+            margin-top: 50px;
+            margin-left: 75px;
+            margin-right: 75px;
+            border-radius: 30px 30px 0 0;
+        }
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .footer-col h4 {
+            color: var(--chinese-gold);
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            font-size: 1rem;
+        }
+        .footer-col p {
+            font-size: 0.85rem;
+            line-height: 2.5;
+        }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 8px; }
+        .footer-col ul li a {
+            color: #a09880;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .footer-col ul li a:hover { color: var(--chinese-gold); }
+        .friend-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .friend-links a {
+            color: #a09880;
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 6px 14px;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .friend-links a:hover {
+            border-color: var(--chinese-gold);
+            color: var(--chinese-gold);
+            background: rgba(201, 169, 110, 0.08);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(201, 169, 110, 0.2);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        :root { --chinese-gold: #C9A96E; }
+    </style>
+</head>
+<body>
+    <!-- 统一导航栏（含 DeepSeek 助手按钮） -->
+    <div class="top-bar">
+<div class="logo">
+    <img src="static/img/favicon_io/android-chrome-192x192.png" alt="华夏非遗" class="logo-img">
+    华夏非遗 · 薪火相传
+</div>        <div class="nav-links">
+            <a href="index.html" class="nav-item" data-page="index">首页</a>
+            <a href="performances.html" class="nav-item" data-page="performances">票务演出</a>
+            <a href="merchandise.html" class="nav-item" data-page="merchandise">文创周边</a>
+            <a href="travel.html" class="nav-item" data-page="travel">去旅游</a>
+            <a href="knowledge-graph.html" class="nav-item" data-page="knowledge">非遗图谱✨</a>
+            <a href="whereami.html" class="nav-item" data-page="whereami">云旅游✨</a>
+        </div>
+        <div class="auth-area" id="authArea"></div>
+    </div>
+
+    <div class="container">
+        <!-- 卡片1：上传人物照 -->
+        <div class="card">
+            <h2><i class="fas fa-user"></i> 1. 上传你的照片</h2>
+            <div class="upload-row">
+                <div class="upload-box">
+                    <div id="noPersonHint" style="color:#888;"></div>
+                    <label for="personUpload" class="file-label"><i class="fas fa-user-plus"></i> 选择人物照</label>
+                    <input type="file" id="personUpload" accept="image/*" style="display:none">
+                    <img id="personPreview" src="" style="display:none;">
+                </div>
+            </div>
+        </div>
+
+        <!-- 卡片2：选择景区 + 风景图片选择 + 额外描述（整合） -->
+        <div class="card">
+            <h2><i class="fas fa-map-marker-alt"></i> 2. 选择你想“去”的景区</h2>
+            <div class="location-section">
+                <select id="locationSelect" class="location-select">
+                    <option value="">-- 请选择景区 --</option>
+                    <option value="黄山">黄山</option>
+                    <option value="景德镇">景德镇</option>
+                    <option value="故宫">故宫</option>
+                    <option value="西湖">西湖</option>
+                    <option value="丽江古城">丽江古城</option>
+                </select>
+            </div>
+
+            <!-- 景区图片网格，动态生成 -->
+            <div id="sceneGridContainer" style="display: none;">
+                <h3 style="font-size: 1.2rem; margin-bottom: 12px;"><i class="fas fa-images"></i> 选择心仪的风景照</h3>
+                <div id="sceneGrid" class="scene-grid"></div>
+                <p style="font-size: 0.8rem; color: #8b3c1c; margin-top: 8px;">点击图片即可选中作为背景</p>
+            </div>
+
+            <!-- 可选效果描述 -->
+            <textarea id="promptInput" class="prompt-textarea" placeholder="✨ 额外效果描述（可选）例如：让人物站在左边一点，光影柔和，不要遮挡脸部，保持真实感"></textarea>
+        </div>
+
+        <!-- 卡片3：生成按钮 + 结果展示 -->
+        <div class="card" style="text-align: center;">
+            <button class="btn-generate" id="generateBtn" disabled><i class="fas fa-magic"></i> ✨ 融合生成 ✨</button>
+            <div id="loadingDiv" class="loading"><i class="fas fa-spinner fa-pulse"></i> AI合成中，大约20-40秒...</div>
+        </div>
+
+        <div class="card" id="resultCard" style="display: none;">
+            <h2><i class="fas fa-camera-retro"></i> 3. 合成结果</h2>
+            <img id="resultImg" class="result-img" style="max-width:100%; border-radius:32px;">
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>华夏非遗 · 薪火相传</h4>
+                <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
+            </div>
+            <div class="footer-col">
+                <h4>快捷导航</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="performances.html">票务演出</a></li>
+                    <li><a href="merchandise.html">文创周边</a></li>
+                    <li><a href="travel.html">去旅游</a></li>
+                    <li><a href="history.html">浏览记录</a></li>
+                    <li><a href="knowledge-graph.html" >非遗图谱✨</a></li>
+                    <li><a href="whereami.html">云旅游✨</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>联系方式</h4>
+                <p>📧 ich@culture.cn</p>
+                <p>📞 400-668-0808</p>
+                <p>📍 安徽新华学院</p>
+            </div>
+            <div class="footer-col">
+                <h4>友情链接</h4>
+                <ul>
+                    <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
+                    <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
+                    <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="friend-links">
+            <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
+            <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
+            <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
+            <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+        </div>
+    </footer>
+
+    <!-- AI 聊天窗口 (菲菲非遗小助手，无头像版) -->
+<div id="aiChatWindow" class="ai-chat-window">
+    <div class="chat-header">
+        <span><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span>
+        <span class="close-chat" id="closeChat">&times;</span>
+    </div>
+    <div class="chat-body" id="chatBody">
+        <div class="chat-message ai">
+            <div class="message-sender">菲菲</div>
+            <div class="message-bubble">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
+        </div>
+    </div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="例如：京剧有什么特点？">
+        <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+    <script>
+        // -------------------- 景区图片库 --------------------
+        const sceneImages = {
+            "黄山": [
+                "static/img/黄山/01.jpg",
+                "static/img/黄山/05.jpg",
+                "static/img/黄山/03.jpg",
+                "static/img/黄山/04.jpg",
+            ],
+            "景德镇": [
+                "static/img/景德镇/01.jpg",
+                "static/img/景德镇/02.jpg",
+                "static/img/景德镇/03.jpg",
+                "static/img/景德镇/04.jpg",
+            ],
+            "故宫": [
+                "static/img/故宫/01.jpg",
+                "static/img/故宫/02.jpg",
+                "static/img/故宫/03.jpg",
+                "static/img/故宫/04.jpg",
+            ],
+            "西湖": [
+                "static/img/西湖/01.jpg",
+                "static/img/西湖/02.jpg",
+                "static/img/西湖/03.jpg",
+                "static/img/西湖/04.jpg",
+            ],
+            "丽江古城": [
+                "static/img/丽江古城/01.jpg",
+                "static/img/丽江古城/02.jpg",
+                "static/img/丽江古城/03.jpg",
+                "static/img/丽江古城/04.jpg",
+            ]
+        };
+
+        // DOM 元素
+        const personInput = document.getElementById('personUpload');
+        const personPreview = document.getElementById('personPreview');
+        const noPersonHint = document.getElementById('noPersonHint');
+        const locationSelect = document.getElementById('locationSelect');
+        const sceneGridContainer = document.getElementById('sceneGridContainer');
+        const sceneGrid = document.getElementById('sceneGrid');
+        const promptInput = document.getElementById('promptInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const loadingDiv = document.getElementById('loadingDiv');
+        const resultCard = document.getElementById('resultCard');
+        const resultImg = document.getElementById('resultImg');
+        const saveBtn = document.getElementById('saveResultBtn');
+
+        let personFile = null;
+        let selectedSceneFile = null;
+        let selectedSceneUrl = null;
+        let currentResultUrl = null;
+
+        // 上传人物照
+        personInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                personFile = file;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    personPreview.src = ev.target.result;
+                    personPreview.style.display = 'block';
+                    if (noPersonHint) noPersonHint.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else if (file) {
+                alert('请选择图片文件');
+            }
+            checkReady();
+        });
+
+        // 地点切换：动态生成图片网格
+        locationSelect.addEventListener('change', async () => {
+            const location = locationSelect.value;
+            if (!location || !sceneImages[location]) {
+                sceneGridContainer.style.display = 'none';
+                selectedSceneFile = null;
+                selectedSceneUrl = null;
+                checkReady();
+                return;
+            }
+            sceneGridContainer.style.display = 'block';
+            const imageUrls = sceneImages[location];
+            sceneGrid.innerHTML = imageUrls.map((url, idx) => `
+                <div class="scene-card" data-url="${url}" data-index="${idx}">
+                    <img src="${url}" alt="${location}风景图" loading="lazy">
+                    <div class="scene-name">${location} · ${idx+1}</div>
+                </div>
+            `).join('');
+
+            const cards = document.querySelectorAll('.scene-card');
+            cards.forEach(card => {
+                card.addEventListener('click', async () => {
+                    cards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    const imgUrl = card.dataset.url;
+                    selectedSceneUrl = imgUrl;
+                    try {
+                        const response = await fetch(imgUrl);
+                        const blob = await response.blob();
+                        const file = new File([blob], `${location}_scene.jpg`, { type: 'image/jpeg' });
+                        selectedSceneFile = file;
+                    } catch (err) {
+                        console.error('加载风景图片失败', err);
+                        alert('无法加载该图片，请重试');
+                        selectedSceneFile = null;
+                    }
+                    checkReady();
+                });
+            });
+            selectedSceneFile = null;
+            selectedSceneUrl = null;
+            checkReady();
+        });
+
+        function checkReady() {
+            const hasPerson = personFile !== null;
+            const hasScene = selectedSceneFile !== null;
+            generateBtn.disabled = !(hasPerson && hasScene);
+        }
+
+        // 生成合成图片
+        generateBtn.onclick = async () => {
+            if (!personFile || !selectedSceneFile) {
+                alert('请先上传人物照并选择一张风景图');
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+            generateBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('personImage', personFile);
+            formData.append('sceneImage', selectedSceneFile);
+            const promptText = promptInput.value.trim();
+            const finalPrompt = promptText ? promptText : "将人物自然融合到风景中，保持真实感，光影协调。";
+            formData.append('prompt', finalPrompt);
+
+            try {
+                const response = await fetch('http://localhost:3001/api/seedream-merge', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success && data.imageUrl) {
+                    currentResultUrl = data.imageUrl;
+                    resultImg.src = data.imageUrl;
+                    resultCard.style.display = 'block';
+                    saveToHistory(locationSelect.value, finalPrompt, data.imageUrl);
+                } else {
+                    alert('合成失败：' + (data.error || '未知错误'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('请求失败，请确保后端服务已启动 (node seedream-api.js)');
+            } finally {
+                loadingDiv.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+        };
+
+        // 保存图片到本地
+        saveBtn.onclick = async () => {
+            if (!currentResultUrl) return;
+            try {
+                const blobRes = await fetch(currentResultUrl);
+                const blob = await blobRes.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `AI旅行_${Date.now()}.jpg`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                alert('保存失败，可以右键图片另存');
+            }
+        };
+
+        function saveToHistory(location, prompt, imgUrl) {
+            let history = JSON.parse(localStorage.getItem('browsing_history') || '[]');
+            history.unshift({
+                name: `AI合影 · ${location}`,
+                img: imgUrl,
+                type: 'AI融合',
+                desc: prompt.substring(0, 50)
+            });
+            localStorage.setItem('browsing_history', JSON.stringify(history.slice(0, 20)));
+        }
+
+        checkReady();
+    </script>
+    <script src="static/js/sidebar.js"></script>
+    <script src="static/js/chat.js"></script>
+<script src="static/js/password-utils.js"></script>
+<script src="static/js/auth.js"></script>
+</body>
+</html>

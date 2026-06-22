@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+        <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="static/css/chat.css">
+    <link rel="stylesheet" href="static/css/auth.css">
+    <meta charset="UTF-8">
+    <title>我的浏览记录 · 华夏非遗</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .logo-img {
+    width: 64px;      /* 根据需要调整 */
+    height: 64px;
+    vertical-align: middle;  /* 让图片和文字垂直居中 */
+    margin-right: 8px;       /* 和文字间距 */
+}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-image: url('static/img/beijin/09.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-size: 18px;
+            padding-top: 80px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        /* ---------- 统一顶部导航栏 ---------- */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.65);
+            flex-wrap: wrap;
+            gap: 15px;
+            width: 100%;
+            padding: 12px 30px;
+            border-bottom: 1px solid rgba(255, 215, 150, 0.3);
+        }
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffecb3;
+            letter-spacing: 2px;
+            padding: 8px 18px;
+            border-radius: 40px;
+        }
+        .logo i { color: #ffc857; margin-right: 8px; }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            backdrop-filter: none;
+            margin-left: -267px;
+        }
+        .nav-links a {
+            color: #f5f0e6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .nav-links a:hover,
+        .nav-item.active {
+            color: #ffd966;
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+        .auth-area {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .login-btn {
+            background: #b22234;
+            padding: 6px 18px;
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .login-btn:hover { background: #8b1a1a; }
+        .deepseek-btn {
+            background: #2c5f2d;
+            padding: 6px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .top-bar { padding: 10px 18px; }
+        }
+
+        .dashboard {
+            background: rgba(255,250,240,0.9);
+            border-radius: 48px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 32px;
+            color: #8b3c1c;
+            margin: 0;
+        }
+        .clear-btn {
+            background: #b22234;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .clear-btn:hover { background: #8b1a1a; }
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+            margin: 20px 0;
+        }
+        .card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        .card-body { padding: 16px; }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .delete-btn:hover { background: #b22234; }
+        .empty-tip { text-align: center; padding: 40px; color: #666; font-size: 18px; }
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #2c5f2d;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 24px;
+        }
+        .back-to-top.show { opacity: 1; visibility: visible; }
+        .back-to-top:hover { background-color: #1e3a1e; }
+
+        /* 浏览记录悬浮窗 */
+        #historyPreview {
+            position: fixed;
+            background: rgba(0,0,0,0.85);
+            border-radius: 20px;
+            width: 280px;
+            padding: 12px;
+            display: none;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+        #historyPreview .preview-title { font-weight: bold; margin-bottom: 8px; color: #ffd966; }
+        #previewList { font-size: 14px; color: #eee; }
+
+        /* ========== 统一底部样式 ========== */
+        .site-footer {
+            background: #1a1510;
+            color: #c4b89a;
+            padding: 50px 30px 30px;
+            border-top: 3px solid var(--chinese-gold);
+            margin-top: 50px;
+            margin-left: 75px;
+            margin-right: 75px;
+        }
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .footer-col h4 {
+            color: var(--chinese-gold);
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            font-size: 1rem;
+        }
+        .footer-col p {
+            font-size: 0.85rem;
+            line-height: 2.5;
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col ul li {
+            margin-bottom: 8px;
+        }
+        .footer-col ul li a {
+            color: #a09880;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .footer-col ul li a:hover {
+            color: var(--chinese-gold);
+        }
+        .friend-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .friend-links a {
+            color: #a09880;
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 6px 14px;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .friend-links a:hover {
+            border-color: var(--chinese-gold);
+            color: var(--chinese-gold);
+            background: rgba(201, 169, 110, 0.08);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(201, 169, 110, 0.2);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        :root {
+            --chinese-gold: #C9A96E;
+        }
+        html, body {
+    height: 100%;
+    scroll-snap-type: y mandatory;
+    overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
+    scroll-behavior: smooth;
+    scrollbar-width: none;      /* Firefox 隐藏滚动条 */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0;
+    background: transparent;    /* Chrome/Safari/Edge 隐藏滚动条 */
+}
+    </style>
+</head>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'history';
+        document.querySelectorAll('.nav-item').forEach(link => {
+            if(link.dataset.page === currentPage) link.classList.add('active');
+        });
+    });
+</script>
+<body>
+    <div class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></div>
+
+    <div class="container">
+        <!-- 统一导航栏（含 DeepSeek 助手按钮） -->
+        <div class="top-bar">
+            <div class="logo">
+    <img src="static/img/favicon_io/android-chrome-192x192.png" alt="华夏非遗" class="logo-img">
+    华夏非遗 · 薪火相传
+</div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-item" data-page="index">首页</a>
+                <a href="performances.html" class="nav-item" data-page="performances">票务演出</a>
+                <a href="merchandise.html" class="nav-item" data-page="merchandise">文创周边</a>
+                <a href="travel.html" class="nav-item" data-page="travel">去旅游</a>
+                <a href="knowledge-graph.html" class="nav-item" data-page="knowledge">非遗图谱</a>
+                <a href="whereami.html" class="nav-item" data-page="whereami">我在这里✨</a>
+            </div>
+            <div class="auth-area" id="authArea"></div>
+        </div>
+
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-history"></i> 我的浏览记录</h2>
+                <button class="clear-btn" id="clearHistoryBtn">清空所有</button>
+            </div>
+            <div id="historyList" class="history-grid">加载中...</div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>华夏非遗 · 薪火相传</h4>
+                <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
+            </div>
+            <div class="footer-col">
+                <h4>快捷导航</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="performances.html">票务演出</a></li>
+                    <li><a href="merchandise.html">文创周边</a></li>
+                    <li><a href="travel.html">去旅游</a></li>
+                    <li><a href="history.html">浏览记录</a></li>
+                    <li><a href="knowledge-graph.html" style="color:#ffd966;">非遗图谱✨</a></li>
+                    <li><a href="whereami.html" style="color:#ffd966;">我在这里✨</a></li>
+
+
+
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>联系方式</h4>
+                <p>📧 ich@culture.cn</p>
+                <p>📞 400-668-0808</p>
+                <p>📍 安徽新华学院</p>
+            </div>
+            <div class="footer-col">
+                <h4>友情链接</h4>
+                <ul>
+                    <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
+                    <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
+                    <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="friend-links">
+            <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
+            <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
+            <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
+            <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+        </div>
+    </footer>
+
+    <!-- AI 聊天窗口（结构与 index.html 完全一致，样式由 chat.css 提供） -->
+    <div id="aiChatWindow" class="ai-chat-window">
+        <div class="chat-header">
+            <span><i class="fas fa-robot"></i> 非遗助手</span>
+            <span class="close-chat" id="closeChat">&times;</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-message ai">
+                <div class="message-sender">非遗小助手</div>
+                <div class="message-bubble">您好！我是非遗小助手，有任何戏曲、演出、非遗的问题都可以问我～</div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="例如：京剧有什么特点？">
+            <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div id="historyPreview">
+        <div class="preview-title">最近浏览</div>
+        <div id="previewList"></div>
+    </div>
+
+   <script>
+    // ========== 浏览记录核心逻辑（按用户存储） ==========
+    const backBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) backBtn.classList.add('show');
+        else backBtn.classList.remove('show');
+    });
+    backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // 获取当前登录用户名
+    function getCurrentUsername() {
+        return localStorage.getItem('current_username') || '';
+    }
+
+    // 获取浏览记录数组
+    function loadHistory() {
+        const username = getCurrentUsername();
+        if (!username) return [];
+        const key = `browsing_history_${username}`;
+        return JSON.parse(localStorage.getItem(key)) || [];
+    }
+
+    // 保存浏览记录
+    function saveHistory(history) {
+        const username = getCurrentUsername();
+        if (username) {
+            localStorage.setItem(`browsing_history_${username}`, JSON.stringify(history));
+        }
+    }
+
+    let browsingHistory = loadHistory();
+
+    function renderHistory() {
+        const container = document.getElementById('historyList');
+        if (browsingHistory.length === 0) {
+            container.innerHTML = '<div class="empty-tip">暂无浏览记录</div>';
+            return;
+        }
+        container.innerHTML = browsingHistory.map((item, index) => `
+            <div class="card">
+                <img src="${item.img || 'https://picsum.photos/id/1/300/200'}" alt="${escapeHtml(item.name)}" onerror="this.src='https://picsum.photos/id/1/300/200'">
+                <div class="card-body">
+                    <strong>${escapeHtml(item.name)}</strong><br>
+                    <span>${escapeHtml(item.type || '浏览')}</span>
+                </div>
+                <button class="delete-btn" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        `).join('');
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.dataset.index);
+                if (confirm('确定删除这条记录吗？')) {
+                    browsingHistory.splice(idx, 1);
+                    saveHistory(browsingHistory);
+                    renderHistory();
+                }
+            });
+        });
+    }
+
+    function clearAllHistory() {
+        if (confirm('确定要清空所有浏览记录吗？此操作不可撤销。')) {
+            browsingHistory = [];
+            saveHistory(browsingHistory);
+            renderHistory();
+        }
+    }
+
+    document.getElementById('clearHistoryBtn').addEventListener('click', clearAllHistory);
+    renderHistory();
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+</script>
+    <script src="static/js/sidebar.js"></script>
+    <script src="static/js/chat.js"></script>
+<script src="static/js/password-utils.js"></script>
+<script src="static/js/auth.js"></script>
+</body>
+</html>

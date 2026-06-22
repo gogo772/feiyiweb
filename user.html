@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="static/css/chat.css">
+    <link rel="stylesheet" href="static/css/auth.css">   <!-- 新增统一登录样式 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>个人中心 · 华夏非遗</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 省略原有样式（保持不变，太长不重复） */
+        /* 注意：原有样式完全保留，不需要改动 */
+        html, body { height: 100%; scroll-snap-type: y mandatory; overflow-y: auto; scroll-behavior: smooth; scrollbar-width: none; }
+        html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; background: transparent; }
+        .logo-img { width: 64px; height: 64px; vertical-align: middle; margin-right: 8px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', 'Noto Sans CJK SC', Roboto, 'Microsoft YaHei', sans-serif; background-image: url('static/img/beijin/05.jpg'); background-size: cover; background-position: center; background-attachment: fixed; padding-top: 80px; min-height: 100vh; color: #2c2c2c; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .top-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; backdrop-filter: blur(12px); background: rgba(0, 0, 0, 0.65); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; width: 100%; padding: 20px 30px; border-bottom: 1px solid rgba(255, 215, 150, 0.3); }
+        .logo { font-size: 26px; font-weight: bold; color: #ffecb3; letter-spacing: 2px; }
+        .logo i { color: #ffc857; margin-right: 8px; }
+        .nav-links { display: flex; gap: 28px; margin-left: -267px; }
+        .nav-links a { color: #f5f0e6; text-decoration: none; font-weight: 500; font-size: 1rem; transition: 0.2s; }
+        .nav-links a:hover, .nav-item.active { color: #ffd966; text-decoration: underline; text-underline-offset: 6px; }
+        .auth-area { display: flex; gap: 12px; align-items: center; }
+        .user-welcome { color: #ffecb3; font-size: 0.9rem; background: rgba(0,0,0,0.4); padding: 6px 16px; border-radius: 40px; }
+        .login-btn, .register-btn { background: #b22234; padding: 10px 28px; border-radius: 30px; color: white; text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.2s; border: none; cursor: pointer; }
+        .register-btn { background: #2c5f2d; }
+        .login-btn:hover { background: #8b1a1a; }
+        .register-btn:hover { background: #1e3a1e; }
+        .profile-layout { display: flex; gap: 30px; flex-wrap: wrap; margin-top: 20px; }
+        .profile-sidebar { flex: 1.2; min-width: 240px; background: rgba(255, 250, 240, 0.92); backdrop-filter: blur(8px); border-radius: 40px; padding: 28px 16px; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08); height: fit-content; }
+        .user-avatar-large { text-align: center; margin-bottom: 24px; }
+        .avatar-img { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 3px solid #c9a96e; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .user-nickname { font-size: 1.4rem; font-weight: bold; color: #5a2e1a; margin-top: 12px; }
+        .sidebar-menu { list-style: none; margin-top: 20px; }
+        .sidebar-menu li { margin: 12px 0; padding: 12px 20px; border-radius: 60px; cursor: pointer; transition: 0.2s; font-weight: 500; color: #3e2a21; display: flex; align-items: center; gap: 12px; }
+        .sidebar-menu li i { width: 28px; font-size: 1.2rem; }
+        .sidebar-menu li:hover, .sidebar-menu li.active { background: #2c5f2d; color: white; box-shadow: 0 6px 14px rgba(44, 95, 45, 0.2); }
+        .profile-content { flex: 3; min-width: 280px; background: rgba(255, 250, 240, 0.92); backdrop-filter: blur(8px); border-radius: 40px; padding: 32px 36px; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08); }
+        .content-header { font-size: 1.8rem; font-weight: bold; color: #8b3c1c; border-left: 6px solid #c9a96e; padding-left: 20px; margin-bottom: 28px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #4a2a1a; }
+        .form-group input, .form-group select { width: 100%; padding: 12px 18px; border-radius: 60px; border: 1px solid #e2d5c0; background: #fffef7; font-size: 1rem; }
+        .btn-save { background: #b22234; color: white; border: none; padding: 12px 28px; border-radius: 60px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-save:hover { background: #8b1a1a; }
+        .order-list-simple, .notice-list-simple, .history-list-simple { display: flex; flex-direction: column; gap: 16px; }
+        .order-item, .notice-item, .history-item { background: rgba(0,0,0,0.04); padding: 14px 20px; border-radius: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; position: relative; }
+        .history-item .history-info { flex: 1; }
+        .history-item .history-info strong { display: block; font-size: 1rem; color: #5a2e1a; }
+        .history-item .history-info span { font-size: 0.8rem; color: #888; }
+        .delete-history-btn { background: #b22234; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .delete-history-btn:hover { background: #8b1a1a; }
+        .privacy-option { margin: 20px 0; }
+        hr { margin: 20px 0; border-color: #e2cfb0; }
+        @media (max-width: 768px) { .nav-links { display: none; } .profile-sidebar { flex: auto; } .profile-content { padding: 24px; } .top-bar { padding: 10px 18px; } }
+        .site-footer { background: #1a1510; color: #c4b89a; padding: 50px 30px 30px; border-top: 3px solid var(--chinese-gold); margin-top: 25px; margin-left: 149px; margin-right: 144px; border-radius: 30px 30px 0 0; }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .footer-col h4 { color: var(--chinese-gold); letter-spacing: 2px; margin-bottom: 14px; font-size: 1rem; }
+        .footer-col p { font-size: 0.85rem; line-height: 2.5; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 8px; }
+        .footer-col ul li a { color: #a09880; text-decoration: none; font-size: 0.85rem; transition: 0.3s; cursor: pointer; }
+        .footer-col ul li a:hover { color: var(--chinese-gold); }
+        .friend-links { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 20px; }
+        .friend-links a { color: #a09880; text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; padding: 6px 14px; border: 1px solid rgba(201, 169, 110, 0.3); border-radius: 20px; transition: 0.3s; }
+        .friend-links a:hover { border-color: var(--chinese-gold); color: var(--chinese-gold); background: rgba(201, 169, 110, 0.08); }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid rgba(201, 169, 110, 0.2); font-size: 0.8rem; letter-spacing: 2px; max-width: 1200px; margin: 0 auto; }
+        :root { --chinese-gold: #C9A96E; }
+    </style>
+</head>
+<body>
+
+
+<div class="top-bar">
+    <div class="logo">
+        <img src="static/img/favicon_io/android-chrome-192x192.png" alt="华夏非遗" class="logo-img">
+        华夏非遗 · 薪火相传
+    </div>
+    <div class="nav-links">
+        <a href="index.html" class="nav-item">首页</a>
+        <a href="performances.html" class="nav-item">票务演出</a>
+        <a href="merchandise.html" class="nav-item">文创周边</a>
+        <a href="travel.html" class="nav-item">去旅游</a>
+        <a href="knowledge-graph.html" class="nav-item">非遗图谱✨</a>
+        <a href="whereami.html" class="nav-item">云旅游✨</a>
+    </div>
+    <div class="auth-area" id="authArea"></div>
+</div>
+
+<div class="container">
+    <div class="profile-layout" id="profileLayout">
+        <div class="profile-sidebar" id="profileSidebar">
+            <div class="user-avatar-large">
+                <img id="avatarImg" class="avatar-img" src="static/img/default-avatar.jpg" alt="头像" onerror="this.src='https://picsum.photos/id/100/100/100'">
+                <div class="user-nickname" id="sidebarNickname">非遗守护人</div>
+            </div>
+            <ul class="sidebar-menu">
+                <li data-tab="profile"><i class="fas fa-user-circle"></i> 个人资料</li>
+                <li data-tab="security"><i class="fas fa-lock"></i> 账户安全</li>
+                <li data-tab="orders"><i class="fas fa-ticket-alt"></i> 我的订单</li>
+                <li data-tab="history"><i class="fas fa-history"></i> 浏览记录</li>
+                <li data-tab="messages"><i class="fas fa-bell"></i> 消息通知</li>
+            </ul>
+        </div>
+        <div class="profile-content" id="profileContent">
+            <div style="text-align:center; padding:40px;">加载中...</div>
+        </div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>华夏非遗 · 薪火相传</h4>
+            <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
+        </div>
+        <div class="footer-col">
+            <h4>快捷导航</h4>
+            <ul>
+                <li><a href="index.html">首页</a></li>
+                <li><a href="performances.html">票务演出</a></li>
+                <li><a href="merchandise.html">文创周边</a></li>
+                <li><a href="travel.html">去旅游</a></li>
+                <li><a href="history.html">浏览记录</a></li>
+                <li><a href="knowledge-graph.html">非遗图谱✨</a></li>
+                <li><a href="whereami.html">云旅游✨</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>联系方式</h4>
+            <p>📧 ich@culture.cn</p>
+            <p>📞 400-668-0808</p>
+            <p>📍 安徽新华学院</p>
+        </div>
+        <div class="footer-col">
+            <h4>友情链接</h4>
+            <ul>
+                <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
+                <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
+                <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="friend-links">
+        <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
+        <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
+        <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
+        <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+    </div>
+</footer>
+
+<script src="static/js/password-utils.js"></script>
+<script src="static/js/auth.js"></script>
+<script>
+    function showToast(message, duration = 2500) {
+    let toast = document.querySelector('.global-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'global-toast';
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            z-index: 10000;
+            backdrop-filter: blur(8px);
+            pointer-events: none;
+            transition: opacity 0.3s;
+            opacity: 0;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    setTimeout(() => {
+        toast.style.opacity = '0';
+    }, duration);
+}
+    // ========== 辅助函数 ==========
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // 获取当前登录用户信息（直接读取 localStorage）
+    function getCurrentUser() {
+        const username = localStorage.getItem('current_username');
+        if (!username) return null;
+        const users = JSON.parse(localStorage.getItem('nonprofit_users') || '{}');
+        return users[username] || null;
+    }
+
+    // 保存用户信息
+    function saveUser(user) {
+        const users = JSON.parse(localStorage.getItem('nonprofit_users') || '{}');
+        users[user.username] = user;
+        localStorage.setItem('nonprofit_users', JSON.stringify(users));
+        // 如果修改了当前登录用户的昵称或头像，不需要额外操作，因为只影响显示
+    }
+
+    function updateUserProfile(username, updates) {
+        const users = JSON.parse(localStorage.getItem('nonprofit_users') || '{}');
+        if (users[username]) {
+            Object.assign(users[username], updates);
+            localStorage.setItem('nonprofit_users', JSON.stringify(users));
+        }
+    }
+
+    function changePassword(username, oldPwd, newPwd) {
+        const users = JSON.parse(localStorage.getItem('nonprofit_users') || '{}');
+        const user = users[username];
+        if (!user || user.password !== oldPwd) return false;
+        user.password = newPwd;
+        localStorage.setItem('nonprofit_users', JSON.stringify(users));
+        return true;
+    }
+
+    function getUserOrders(username) {
+        const key = `orders_${username}`;
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : [];
+    }
+
+    function getUserHistory(username) {
+        const key = `browsing_history_${username}`;
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : [];
+    }
+
+    function saveUserHistory(username, history) {
+        localStorage.setItem(`browsing_history_${username}`, JSON.stringify(history));
+    }
+
+    // ========== 渲染个人中心各项 ==========
+    let currentTab = 'profile';
+
+    function renderHistoryPanel(user) {
+        const container = document.getElementById('profileContent');
+        let history = getUserHistory(user.username);
+        if (history.length === 0) {
+            container.innerHTML = `
+                <div class="content-header"><i class="fas fa-history"></i> 浏览记录</div>
+                <div style="padding:20px; text-align:center">暂无浏览记录</div>
+                <div style="margin-top:20px; text-align:center">
+                    <button id="clearHistoryBtn" class="btn-save" style="background:#666;">清空所有</button>
+                </div>
+            `;
+            document.getElementById('clearHistoryBtn')?.addEventListener('click', () => clearAllHistory(user));
+            return;
+        }
+
+        let html = `<div class="content-header"><i class="fas fa-history"></i> 浏览记录 (${history.length})</div>
+                    <div class="history-list-simple" id="historyListContainer">`;
+        history.forEach((item, idx) => {
+            html += `
+                <div class="history-item" data-idx="${idx}">
+                    <div class="history-info">
+                        <strong>${escapeHtml(item.name)}</strong>
+                        <span>${item.type || '浏览'} · ${item.date || ''}</span>
+                    </div>
+                    <button class="delete-history-btn" data-idx="${idx}"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
+        });
+        html += `</div>
+                 <div style="margin-top:20px; text-align:center">
+                    <button id="clearHistoryBtn" class="btn-save" style="background:#666;">清空所有</button>
+                 </div>`;
+        container.innerHTML = html;
+
+        document.querySelectorAll('.delete-history-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.dataset.idx);
+                if (confirm('确定删除这条记录吗？')) {
+                    const newHistory = [...history];
+                    newHistory.splice(idx, 1);
+                    saveUserHistory(user.username, newHistory);
+                    renderHistoryPanel(user);
+                }
+            });
+        });
+        document.getElementById('clearHistoryBtn')?.addEventListener('click', () => clearAllHistory(user));
+    }
+
+    function clearAllHistory(user) {
+        if (confirm('确定要清空所有浏览记录吗？此操作不可撤销。')) {
+            saveUserHistory(user.username, []);
+            renderHistoryPanel(user);
+        }
+    }
+
+    function renderRightPanel(user) {
+        const container = document.getElementById('profileContent');
+        if (!user) {
+            container.innerHTML = `<div style="text-align:center; padding:40px;">请先登录 → <a href="index.html" style="color:#b22234;">去首页登录</a></div>`;
+            return;
+        }
+        if (currentTab === 'profile') {
+            container.innerHTML = `
+                <div class="content-header"><i class="fas fa-id-card"></i> 个人资料</div>
+                <div class="form-group">
+                    <label>昵称</label>
+                    <input type="text" id="nicknameInput" value="${escapeHtml(user.nickname || '')}" placeholder="你的昵称">
+                </div>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="tel" id="phoneInput" value="${escapeHtml(user.phone || '')}" placeholder="绑定手机号">
+                </div>
+                <div class="form-group">
+                    <label>电子邮箱</label>
+                    <input type="email" id="emailInput" value="${escapeHtml(user.email || '')}" placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>头像链接(可选)</label>
+                    <input type="text" id="avatarInput" value="${escapeHtml(user.avatar || 'static/img/default-avatar.jpg')}" placeholder="图片URL">
+                </div>
+                <button class="btn-save" id="saveProfileBtn">保存修改</button>
+            `;
+            document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
+                const nickname = document.getElementById('nicknameInput').value.trim() || '非遗友人';
+                const phone = document.getElementById('phoneInput').value;
+                const email = document.getElementById('emailInput').value;
+                let avatar = document.getElementById('avatarInput').value.trim();
+                if (!avatar) avatar = 'static/img/default-avatar.jpg';
+                updateUserProfile(user.username, { nickname, phone, email, avatar });
+                document.getElementById('sidebarNickname').innerText = nickname;
+                document.getElementById('avatarImg').src = avatar;
+                showToast('保存成功！');
+                // 刷新当前面板
+                renderRightPanel(getCurrentUser());
+            });
+        }
+        else if (currentTab === 'security') {
+            container.innerHTML = `
+                <div class="content-header"><i class="fas fa-shield-alt"></i> 账户安全</div>
+                <div class="form-group">
+                    <label>修改密码</label>
+                    <input type="password" id="oldPwd" placeholder="原密码">
+                    <input type="password" id="newPwd" placeholder="新密码" style="margin-top:12px;">
+                    <input type="password" id="confirmPwd" placeholder="确认新密码" style="margin-top:12px;">
+                </div>
+                <button class="btn-save" id="changePwdBtn">更新密码</button>
+                <hr>
+                <div class="form-group">
+                    <label>绑定手机号 (已绑定: ${user.phone || '未绑定'})</label>
+                    <input type="tel" id="bindPhone" placeholder="新手机号">
+                    <button class="btn-save" id="bindPhoneBtn" style="margin-top:10px;">绑定手机</button>
+                </div>
+                <div class="form-group">
+                    <label>绑定邮箱 (已绑定: ${user.email || '未绑定'})</label>
+                    <input type="email" id="bindEmail" placeholder="新邮箱">
+                    <button class="btn-save" id="bindEmailBtn" style="margin-top:10px;">绑定邮箱</button>
+                </div>
+            `;
+            document.getElementById('changePwdBtn')?.addEventListener('click', () => {
+                const oldPwd = document.getElementById('oldPwd').value;
+                const newPwd = document.getElementById('newPwd').value;
+                const confirm = document.getElementById('confirmPwd').value;
+                if (!oldPwd || !newPwd) return showToast('请填写原密码和新密码');
+                if (newPwd !== confirm) return showToast('两次新密码不一致');
+                if (changePassword(user.username, oldPwd, newPwd)) {
+                    showToast('密码修改成功，请重新登录');
+                    window.authLogout();      // 清除登录状态
+                    window.location.href = 'index.html';
+                } else {
+                    showToast('原密码错误');
+                }
+            });
+            document.getElementById('bindPhoneBtn')?.addEventListener('click', () => {
+                const phone = document.getElementById('bindPhone').value.trim();
+                if (phone) {
+                    updateUserProfile(user.username, { phone });
+                    showToast('手机号绑定成功');
+                    renderRightPanel(getCurrentUser());
+                }
+            });
+            document.getElementById('bindEmailBtn')?.addEventListener('click', () => {
+                const email = document.getElementById('bindEmail').value.trim();
+                if (email) {
+                    updateUserProfile(user.username, { email });
+                    showToast('邮箱绑定成功');
+                    renderRightPanel(getCurrentUser());
+                }
+            });
+        }
+        else if (currentTab === 'orders') {
+            const orders = getUserOrders(user.username);
+            if (orders.length === 0) {
+                container.innerHTML = `<div class="content-header"><i class="fas fa-receipt"></i> 我的订单</div><div style="padding:20px; text-align:center">暂无订单，去<a href="performances.html" style="color:#b22234;">看看演出</a></div>`;
+            } else {
+                let html = `<div class="content-header"><i class="fas fa-receipt"></i> 我的订单 (${orders.length})</div><div class="order-list-simple">`;
+                orders.slice().reverse().forEach(order => {
+                    html += `<div class="order-item">
+                                <div><strong>${escapeHtml(order.name)}</strong><br><span style="font-size:0.8rem;">${order.date || ''} ${order.place || ''}</span></div>
+                                <div style="font-weight:bold; color:#b22234;">¥${order.price}</div>
+                            </div>`;
+                });
+                html += `</div><div style="margin-top:20px;"><a href="orders.html" class="btn-save" style="display:inline-block; text-decoration:none;">查看全部订单详情 →</a></div>`;
+                container.innerHTML = html;
+            }
+        }
+        else if (currentTab === 'history') {
+            renderHistoryPanel(user);
+        }
+        else if (currentTab === 'messages') {
+            const sysMsg = [
+                { title: "欢迎来到华夏非遗", content: "感谢您的支持，更多非遗好戏即将上演！", date: "2025-05-01" },
+                { title: "订单提醒", content: "您的演出票订单可前往「我的订单」查看", date: "2025-05-10" },
+                { title: "非遗活动", content: "六月非遗文化节，购票享满减优惠~", date: "2025-05-15" }
+            ];
+            let html = `<div class="content-header"><i class="fas fa-envelope"></i> 消息通知</div><div class="notice-list-simple">`;
+            sysMsg.forEach(msg => {
+                html += `<div class="notice-item"><div><strong>📢 ${escapeHtml(msg.title)}</strong><br><span style="font-size:0.8rem;">${msg.content}</span><div style="color:#AA8C6E; font-size:0.7rem;">${msg.date}</div></div></div>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+    }
+
+    function updateSidebarAndUI() {
+        const user = getCurrentUser();
+        if (user) {
+            document.getElementById('sidebarNickname').innerText = user.nickname || user.username;
+            document.getElementById('avatarImg').src = user.avatar || 'static/img/default-avatar.jpg';
+            // 顶部导航栏已由 auth.js 自动更新，无需再操作 authArea
+            renderRightPanel(user);
+        } else {
+            // 未登录时显示提示
+            document.getElementById('profileContent').innerHTML = `<div style="text-align:center; padding:60px;"><i class="fas fa-user-lock" style="font-size:48px; opacity:0.6;"></i><p style="margin-top:20px;">请先登录，解锁个人中心<br><a href="index.html" style="color:#b22234;">返回首页登录</a></p></div>`;
+        }
+    }
+
+    function bindMenuEvents() {
+        document.querySelectorAll('.sidebar-menu li').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+                item.classList.add('active');
+                currentTab = item.dataset.tab;
+                const user = getCurrentUser();
+                if (user) renderRightPanel(user);
+                else updateSidebarAndUI();
+            });
+        });
+        const firstTab = document.querySelector('.sidebar-menu li');
+        if (firstTab) firstTab.classList.add('active');
+    }
+
+    // 页面初始化
+    document.addEventListener('DOMContentLoaded', () => {
+        bindMenuEvents();
+        updateSidebarAndUI();
+    });
+</script>
+</body>
+</html>
