@@ -1,33 +1,31 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>    <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
-
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
     <link rel="stylesheet" href="static/css/chat.css">
     <link rel="stylesheet" href="static/css/auth.css">
+    <link rel="stylesheet" href="static/css/navbar.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>去旅游 · 非遗主题游 | 华夏非遗</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         html, body {
-    height: 100%;
-    scroll-snap-type: y mandatory;
-    overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
-    scroll-behavior: smooth;
-    scrollbar-width: none;      /* Firefox 隐藏滚动条 */
-}
+            height: 100%;
+            scroll-snap-type: y mandatory;
+            overflow-y: auto; /* 改为 auto，并隐藏滚动条 */
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Firefox 隐藏滚动条 */
+        }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-    width: 0;
-    background: transparent;    /* Chrome/Safari/Edge 隐藏滚动条 */
-}
-        .logo-img {
-    width: 64px;      /* 根据需要调整 */
-    height: 64px;
-    vertical-align: middle;  /* 让图片和文字垂直居中 */
-    margin-right: 8px;       /* 和文字间距 */
-}
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            width: 0;
+            background: transparent; /* Chrome/Safari/Edge 隐藏滚动条 */
+        }
+
+        /* 顶部导航栏：样式见 static/css/navbar.css */
+
         /* 返回顶部按钮样式 */
         .back-to-top {
             position: fixed;
@@ -46,38 +44,122 @@ body::-webkit-scrollbar {
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             font-size: 24px;
         }
+
         .back-to-top.show {
             opacity: 1;
             visibility: visible;
         }
+
         .back-to-top:hover {
             background-color: #1e3a1e;
+        }
+
+        /* ========== 面包屑导航 ========== */
+        .breadcrumb {
+            max-width: 1300px;
+            margin: 24px auto 0;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: #5a4632;
+            background: rgba(255, 250, 240, 0.85);
+            border: 1px solid rgba(201, 169, 110, 0.35);
+            border-radius: 40px;
+            box-shadow: 0 4px 12px rgba(90, 70, 50, 0.08);
+            backdrop-filter: blur(6px);
+        }
+        .breadcrumb a {
+            color: #8b3c1c;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+        .breadcrumb a:hover {
+            color: #c9a96e;
+            text-decoration: underline;
+        }
+        .breadcrumb .sep {
+            color: #c9a96e;
+            opacity: 0.7;
+        }
+        .breadcrumb .current {
+            color: #2c241e;
+            font-weight: 600;
+        }
+
+        /* ========== 返回星图悬浮按钮 ========== */
+        .back-to-starmap {
+            position: fixed;
+            right: 30px;
+            bottom: 96px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 40px;
+            background: linear-gradient(135deg, #2c241e, #1a1510);
+            color: #ffd966;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-decoration: none;
+            border: 1px solid rgba(201, 169, 110, 0.55);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+            z-index: 998;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .back-to-starmap:hover {
+            background: linear-gradient(135deg, #3a3028, #2c241e);
+            color: #fff5d6;
+            transform: translateX(-4px);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+        }
+        .back-to-starmap .arrow {
+            font-size: 1.1rem;
+            transition: transform 0.25s ease;
+        }
+        .back-to-starmap:hover .arrow {
+            transform: translateX(-3px);
+        }
+        @media (max-width: 768px) {
+            .back-to-starmap {
+                bottom: 88px;
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
         }
 
         /* 浏览记录悬浮窗 */
         #historyPreview {
             position: fixed;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.85);
             border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             width: 280px;
             padding: 12px;
             display: none;
             z-index: 1000;
             backdrop-filter: blur(8px);
         }
+
         #historyPreview .preview-title {
             font-weight: bold;
             margin-bottom: 8px;
             color: #ffd966;
         }
+
         #previewList {
             font-size: 14px;
             color: #eee;
         }
+
         #previewList div {
             margin-bottom: 8px;
         }
@@ -104,98 +186,11 @@ body::-webkit-scrollbar {
             padding: 0 20px;
         }
 
-        /* ---------- 统一顶部导航栏 ---------- */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            width: 100%;
-            padding: 12px 30px;
-            background: rgba(0, 0, 0, 0.65);
-            border-bottom: 1px solid rgba(255, 215, 150, 0.3);
-        }
-        .logo {
-            font-size: 26px;
-            font-weight: bold;
-            color: #ffecb3;
-            letter-spacing: 2px;
-            padding: 8px 18px;
-            border-radius: 40px;
-        }
-        .logo i {
-            color: #ffc857;
-            margin-right: 8px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 28px;
-            background: transparent;
-            padding: 0;
-            border-radius: 0;
-            backdrop-filter: none;
-                margin-left: -267px;
-        }
-        .nav-links a {
-            color: #f5f0e6;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1rem;
-            transition: 0.2s;
-        }
-        .nav-links a:hover,
-        .nav-item.active {
-            color: #ffd966;
-            text-decoration: underline;
-            text-underline-offset: 6px;
-        }
-        .auth-area {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .login-btn {
-            background: #b22234;
-            padding: 6px 18px;
-            border-radius: 30px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .login-btn:hover {
-            background: #8b1a1a;
-        }
-        .deepseek-btn {
-            background: #2c5f2d;
-            padding: 6px 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: white;
-        }
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            .top-bar {
-                padding: 10px 18px;
-            }
-        }
+        /* 顶部导航栏：样式见 static/css/navbar.css */
 
         /* 首屏横幅 */
         .hero-travel {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://picsum.photos/id/15/1920/500') center/cover no-repeat;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url('https://picsum.photos/id/15/1920/500') center/cover no-repeat;
             min-height: 450px;
             border-radius: 30px;
             display: flex;
@@ -207,10 +202,12 @@ body::-webkit-scrollbar {
             margin-bottom: 40px;
             padding: 40px 20px;
         }
+
         .hero-travel h1 {
             font-size: 48px;
             margin-bottom: 16px;
         }
+
         .hero-travel p {
             font-size: 20px;
             opacity: 0.9;
@@ -224,17 +221,19 @@ body::-webkit-scrollbar {
             flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 40px;
-            background: rgba(255,255,255,0.85);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
             padding: 12px 25px;
             border-radius: 60px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
+
         .filter-tabs {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
         }
+
         .filter-tab {
             background: #f0ebe2;
             padding: 8px 24px;
@@ -244,10 +243,12 @@ body::-webkit-scrollbar {
             font-weight: 500;
             color: #5a2e1a;
         }
+
         .filter-tab.active, .filter-tab:hover {
             background: #8b3c1c;
             color: white;
         }
+
         .sort-select {
             padding: 8px 16px;
             border-radius: 40px;
@@ -263,46 +264,54 @@ body::-webkit-scrollbar {
             gap: 30px;
             margin: 40px 0;
         }
+
         .tour-card {
-            background: rgba(255,255,255,0.55);
+            background: rgba(255, 255, 255, 0.55);
             backdrop-filter: blur(4px);
             border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             transition: transform 0.2s, box-shadow 0.2s;
         }
+
         .tour-card:hover {
             transform: translateY(-6px);
-            background: rgba(255,255,255,0.7);
-            box-shadow: 0 16px 30px rgba(0,0,0,0.12);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
         }
+
         .card-img {
             width: 100%;
             height: 220px;
             object-fit: cover;
         }
+
         .card-content {
             padding: 20px;
         }
+
         .card-title {
             font-size: 22px;
             font-weight: bold;
             margin-bottom: 10px;
             color: #5a2e1a;
         }
+
         .tags {
             display: flex;
             gap: 12px;
             margin-bottom: 15px;
             flex-wrap: wrap;
         }
+
         .tag {
-            background: rgba(0,0,0,0.1);
+            background: rgba(0, 0, 0, 0.1);
             padding: 4px 12px;
             border-radius: 30px;
             font-size: 13px;
             color: #5a3e2b;
         }
+
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -311,19 +320,23 @@ body::-webkit-scrollbar {
             flex-wrap: wrap;
             gap: 8px;
         }
+
         .price {
             font-size: 26px;
             font-weight: bold;
             color: #b22234;
         }
+
         .price small {
             font-size: 14px;
             font-weight: normal;
         }
+
         .sold {
             color: #666;
             font-size: 15px;
         }
+
         .btn-book {
             width: 100%;
             background: #2c5f2d;
@@ -337,6 +350,7 @@ body::-webkit-scrollbar {
             cursor: pointer;
             transition: 0.2s;
         }
+
         .btn-book:hover {
             background: #1e3a1e;
         }
@@ -349,8 +363,9 @@ body::-webkit-scrollbar {
             margin: 40px 0;
             flex-wrap: wrap;
         }
+
         .page-btn {
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             color: white;
             padding: 8px 18px;
             border-radius: 40px;
@@ -358,9 +373,11 @@ body::-webkit-scrollbar {
             transition: 0.2s;
             font-size: 18px;
         }
+
         .page-btn.active {
             background: #b22234;
         }
+
         .page-btn:hover:not(.active) {
             background: #2c5f2d;
         }
@@ -376,6 +393,7 @@ body::-webkit-scrollbar {
             margin-right: 75px;
             border-radius: 30px 30px 0 0;
         }
+
         .footer-grid {
             max-width: 1200px;
             margin: 0 auto;
@@ -384,22 +402,27 @@ body::-webkit-scrollbar {
             gap: 30px;
             margin-bottom: 30px;
         }
+
         .footer-col h4 {
             color: var(--chinese-gold);
             letter-spacing: 2px;
             margin-bottom: 14px;
             font-size: 1rem;
         }
+
         .footer-col p {
             font-size: 0.85rem;
             line-height: 2.5;
         }
+
         .footer-col ul {
             list-style: none;
         }
+
         .footer-col ul li {
             margin-bottom: 8px;
         }
+
         .footer-col ul li a {
             color: #a09880;
             text-decoration: none;
@@ -407,9 +430,11 @@ body::-webkit-scrollbar {
             transition: 0.3s;
             cursor: pointer;
         }
+
         .footer-col ul li a:hover {
             color: var(--chinese-gold);
         }
+
         .friend-links {
             display: flex;
             flex-wrap: wrap;
@@ -417,6 +442,7 @@ body::-webkit-scrollbar {
             justify-content: center;
             margin-bottom: 20px;
         }
+
         .friend-links a {
             color: #a09880;
             text-decoration: none;
@@ -427,11 +453,13 @@ body::-webkit-scrollbar {
             border-radius: 20px;
             transition: 0.3s;
         }
+
         .friend-links a:hover {
             border-color: var(--chinese-gold);
             color: var(--chinese-gold);
             background: rgba(201, 169, 110, 0.08);
         }
+
         .footer-bottom {
             text-align: center;
             padding-top: 20px;
@@ -441,21 +469,21 @@ body::-webkit-scrollbar {
             max-width: 1200px;
             margin: 0 auto;
         }
+
         :root {
             --chinese-gold: #C9A96E;
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
             .hero-travel h1 {
                 font-size: 32px;
             }
+
             .filter-bar {
                 flex-direction: column;
                 align-items: stretch;
             }
+
             .tour-grid {
                 grid-template-columns: 1fr;
             }
@@ -463,111 +491,96 @@ body::-webkit-scrollbar {
     </style>
 </head>
 <script>
-    // 高亮当前页面导航
-    window.addEventListener('DOMContentLoaded', () => {
-        const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'travel';
-        document.querySelectorAll('.nav-item').forEach(link => {
-            if (link.dataset.page === currentPage) {
-                link.classList.add('active');
-            }
-        });
-    });
+    // 导航栏激活态由 static/js/navbar.js 统一处理
 </script>
 <body>
-    <div class="back-to-top" id="backToTopBtn">
-        <i class="fas fa-arrow-up"></i>
-    </div>
-
-    <div class="container">
-        <!-- 统一导航栏（含 DeepSeek 助手按钮） -->
-        <div class="top-bar">
-            <div class="logo">
-    <img src="static/img/favicon_io/android-chrome-192x192.png" alt="华夏非遗" class="logo-img">
-    华夏非遗 · 薪火相传
+<div class="back-to-top" id="backToTopBtn">
+    <i class="fas fa-arrow-up"></i>
 </div>
-            <div class="nav-links">
-                <a href="index.html" class="nav-item" data-page="index">首页</a>
-                <a href="performances.html" class="nav-item" data-page="performances">票务演出</a>
-                <a href="merchandise.html" class="nav-item" data-page="merchandise">文创周边</a>
-                <a href="travel.html" class="nav-item" data-page="travel">去旅游</a>
-                <a href="knowledge-graph.html" class="nav-item" data-page="knowledge">非遗图谱✨</a>
-                <a href="whereami.html" class="nav-item" data-page="whereami">云旅游✨</a>
-            </div>
-            <div class="auth-area" id="authArea"></div>
-        </div>
 
-        <!-- 横幅 -->
-        <div class="hero-travel">
-            <h1>去旅行 · 发现非遗之美</h1>
-            <p>沉浸式体验 | 非遗主题深度游 | 品质纯玩团</p>
-        </div>
+<!-- 返回父页（皖韵星图）悬浮按钮 -->
+<a href="starmap.html" class="back-to-starmap" title="返回皖韵星图">
+    <span class="arrow">←</span>
+    <span>返回星图</span>
+</a>
 
-        <!-- 筛选栏 -->
-        <div class="filter-bar">
-            <div class="filter-tabs" id="filterTabs">
-                <div class="filter-tab active" data-filter="all">全部推荐</div>
-                <div class="filter-tab" data-filter="云南">彩云之南</div>
-                <div class="filter-tab" data-filter="贵州">多彩贵州</div>
-                <div class="filter-tab" data-filter="四川">天府四川</div>
-            </div>
-            <select class="sort-select" id="sortSelect">
-                <option value="default">默认排序</option>
-                <option value="price_asc">价格从低到高</option>
-                <option value="price_desc">价格从高到低</option>
-                <option value="sold_desc">销量最高</option>
-            </select>
-        </div>
+<div class="container">
+    <!-- 统一导航栏（含 DeepSeek 助手按钮） -->
+    <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
+    <div id="navbarMount"></div>
 
-        <!-- 旅游卡片容器 -->
-        <div id="tourGrid" class="tour-grid"></div>
-        <div id="pagination" class="pagination"></div>
+    <!-- 横幅 -->
+    <div class="hero-travel">
+        <h1>去旅行 · 发现非遗之美</h1>
+        <p>沉浸式体验 | 非遗主题深度游 | 品质纯玩团</p>
     </div>
 
-    <footer class="site-footer">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>华夏非遗 · 薪火相传</h4>
-                <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
-            </div>
-            <div class="footer-col">
-                <h4>快捷导航</h4>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="performances.html">票务演出</a></li>
-                    <li><a href="merchandise.html">文创周边</a></li>
-                    <li><a href="travel.html">去旅游</a></li>
-                    <li><a href="history.html">浏览记录</a></li>
-                    <li><a href="knowledge-graph.html" >非遗图谱✨</a></li>
-                            <li><a href="whereami.html" >云旅游✨</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>联系方式</h4>
-                <p>📧 ich@culture.cn</p>
-                <p>📞 400-668-0808</p>
-                <p>📍 安徽新华学院</p>
-            </div>
-            <div class="footer-col">
-                <h4>友情链接</h4>
-                <ul>
-                    <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
-                    <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
-                    <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
-                </ul>
-            </div>
+    <!-- 筛选栏 -->
+    <div class="filter-bar">
+        <div class="filter-tabs" id="filterTabs">
+            <div class="filter-tab active" data-filter="all">全部推荐</div>
+            <div class="filter-tab" data-filter="云南">彩云之南</div>
+            <div class="filter-tab" data-filter="贵州">多彩贵州</div>
+            <div class="filter-tab" data-filter="四川">天府四川</div>
         </div>
-        <div class="friend-links">
-            <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
-            <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
-            <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
-            <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
-        </div>
-    </footer>
+        <select class="sort-select" id="sortSelect">
+            <option value="default">默认排序</option>
+            <option value="price_asc">价格从低到高</option>
+            <option value="price_desc">价格从高到低</option>
+            <option value="sold_desc">销量最高</option>
+        </select>
+    </div>
 
-    <!-- AI 聊天窗口 (菲菲非遗小助手，无头像版) -->
+    <!-- 旅游卡片容器 -->
+    <div id="tourGrid" class="tour-grid"></div>
+    <div id="pagination" class="pagination"></div>
+</div>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>华夏非遗 · 薪火相传</h4>
+            <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
+        </div>
+        <div class="footer-col">
+            <h4>快捷导航</h4>
+            <ul>
+                <li><a href="index.html">首页</a></li>
+                <li><a href="performances.html">票务演出</a></li>
+                <li><a href="merchandise.html">文创周边</a></li>
+                <li><a href="starmap.html">去旅游</a></li>
+                <li><a href="history.html">浏览记录</a></li>
+                <li><a href="knowledge-graph.html">非遗图谱✨</a></li>
+                <li><a href="whereami.html">云旅游✨</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>联系方式</h4>
+            <p>📧 ich@culture.cn</p>
+            <p>📞 400-668-0808</p>
+            <p>📍 安徽新华学院</p>
+        </div>
+        <div class="footer-col">
+            <h4>友情链接</h4>
+            <ul>
+                <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
+                <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
+                <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="friend-links">
+        <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
+        <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
+        <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
+        <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+    </div>
+</footer>
+
+<!-- AI 聊天窗口 (菲菲非遗小助手，无头像版) -->
 <div id="aiChatWindow" class="ai-chat-window">
     <div class="chat-header">
         <span><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span>
@@ -585,125 +598,294 @@ body::-webkit-scrollbar {
     </div>
 </div>
 
-    <!-- 浏览记录悬浮窗 -->
-    <div id="historyPreview">
-        <div class="preview-title">最近浏览</div>
-        <div id="previewList"></div>
-    </div>
+<!-- 浏览记录悬浮窗 -->
+<div id="historyPreview">
+    <div class="preview-title">最近浏览</div>
+    <div id="previewList"></div>
+</div>
 
-    <script>
-        // ========== 登录检查工具函数（与 auth.js 保持一致） ==========
-function isLoggedIn() {
-    return localStorage.getItem('current_username') !== null;
-}
-
-function showLoginPrompt() {
-    if (typeof window.showLoginModal === 'function') {
-        window.showLoginModal();
-    } else {
-        alert('请先登录后再预订');
-        window.location.href = 'index.html';
+<script>
+    // ========== 登录检查工具函数（与 auth.js 保持一致） ==========
+    function isLoggedIn() {
+        return localStorage.getItem('current_username') !== null;
     }
-}
 
-function requireLogin(callback) {
-    if (isLoggedIn()) {
-        callback();
-    } else {
-        showLoginPrompt();
+    function showLoginPrompt() {
+        if (typeof window.showLoginModal === 'function') {
+            window.showLoginModal();
+        } else {
+            alert('请先登录后再预订');
+            window.location.href = 'index.html';
+        }
     }
-}
-        // 返回顶部按钮
-        const backBtn = document.getElementById('backToTopBtn');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) backBtn.classList.add('show');
-            else backBtn.classList.remove('show');
-        });
-        backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        // 浏览记录悬浮窗
-        const historyBtn = document.getElementById('historyNavBtn');
-        const previewDiv = document.getElementById('historyPreview');
-        let previewTimeout;
-        function showPreview() {
-            if (!historyBtn || !previewDiv) return;
-            const rect = historyBtn.getBoundingClientRect();
-            previewDiv.style.top = (rect.bottom + 5) + 'px';
-            previewDiv.style.left = rect.left + 'px';
-            const history = JSON.parse(localStorage.getItem('browsing_history')) || [];
-            const previewList = document.getElementById('previewList');
-            if (history.length === 0) {
-                previewList.innerHTML = '<div style="color:#999;">暂无浏览记录</div>';
-            } else {
-                const latest = history.slice(0, 3);
-                previewList.innerHTML = latest.map(item => `<div>📖 ${item.name}</div>`).join('');
-            }
-            previewDiv.style.display = 'block';
-            clearTimeout(previewTimeout);
+    function requireLogin(callback) {
+        if (isLoggedIn()) {
+            callback();
+        } else {
+            showLoginPrompt();
         }
-        function hidePreview() {
-            previewTimeout = setTimeout(() => {
-                if (previewDiv) previewDiv.style.display = 'none';
-            }, 300);
+    }
+
+    // 返回顶部按钮
+    const backBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) backBtn.classList.add('show');
+        else backBtn.classList.remove('show');
+    });
+    backBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+
+    // 浏览记录悬浮窗
+    const historyBtn = document.getElementById('historyNavBtn');
+    const previewDiv = document.getElementById('historyPreview');
+    let previewTimeout;
+
+    function showPreview() {
+        if (!historyBtn || !previewDiv) return;
+        const rect = historyBtn.getBoundingClientRect();
+        previewDiv.style.top = (rect.bottom + 5) + 'px';
+        previewDiv.style.left = rect.left + 'px';
+        const history = JSON.parse(localStorage.getItem('browsing_history')) || [];
+        const previewList = document.getElementById('previewList');
+        if (history.length === 0) {
+            previewList.innerHTML = '<div style="color:#999;">暂无浏览记录</div>';
+        } else {
+            const latest = history.slice(0, 3);
+            previewList.innerHTML = latest.map(item => `<div>📖 ${item.name}</div>`).join('');
         }
-        if (historyBtn && previewDiv) {
-            historyBtn.addEventListener('mouseenter', showPreview);
-            historyBtn.addEventListener('mouseleave', hidePreview);
-            previewDiv.addEventListener('mouseenter', () => clearTimeout(previewTimeout));
-            previewDiv.addEventListener('mouseleave', hidePreview);
+        previewDiv.style.display = 'block';
+        clearTimeout(previewTimeout);
+    }
+
+    function hidePreview() {
+        previewTimeout = setTimeout(() => {
+            if (previewDiv) previewDiv.style.display = 'none';
+        }, 300);
+    }
+
+    if (historyBtn && previewDiv) {
+        historyBtn.addEventListener('mouseenter', showPreview);
+        historyBtn.addEventListener('mouseleave', hidePreview);
+        previewDiv.addEventListener('mouseenter', () => clearTimeout(previewTimeout));
+        previewDiv.addEventListener('mouseleave', hidePreview);
+    }
+
+    // 旅游数据
+    const toursData = [
+        {
+            id: 1,
+            name: "【秘境云南】丽江·大理·泸沽湖7日深度非遗之旅",
+            region: "云南",
+            days: 7,
+            price: 3280,
+            groupSize: "2-8人小团",
+            sold: 1280,
+            img: "static/img/travel-img/1.jpg",
+            desc: "漫步丽江古城，体验东巴造纸，摩梭家访，非遗扎染",
+            highlight: "东巴文化体验 + 摩梭篝火晚会"
+        },
+        {
+            id: 2,
+            name: "【多彩贵州】黄果树·千户苗寨·荔波小七孔5日纯玩",
+            region: "贵州",
+            days: 5,
+            price: 2680,
+            groupSize: "4-12人",
+            sold: 2450,
+            img: "static/img/travel-img/2.jpg",
+            desc: "观黄果树瀑布，住苗寨观夜景，体验苗族蜡染",
+            highlight: "苗族蜡染DIY + 长桌宴"
+        },
+        {
+            id: 3,
+            name: "【佛国禅韵】峨眉山·乐山大佛·非遗武术4日体验",
+            region: "四川",
+            days: 4,
+            price: 1980,
+            groupSize: "2-6人",
+            sold: 862,
+            img: "static/img/travel-img/3.jpg",
+            desc: "学习峨眉武术，品尝素斋，观金顶云海",
+            highlight: "峨眉武术体验 + 禅修课程"
+        },
+        {
+            id: 4,
+            name: "【风花雪月】大理·洱海·沙溪古镇5日轻奢旅拍",
+            region: "云南",
+            days: 5,
+            price: 3580,
+            groupSize: "2-4人",
+            sold: 734,
+            img: "static/img/travel-img/4.jpg",
+            desc: "洱海S湾骑行，白族三道茶体验，沙溪茶马古道",
+            highlight: "旅拍服务 + 白族扎染"
+        },
+        {
+            id: 5,
+            name: "【黔东南秘境】肇兴侗寨·堂安梯田·非遗侗族大歌4日",
+            region: "贵州",
+            days: 4,
+            price: 2280,
+            groupSize: "4-10人",
+            sold: 591,
+            img: "static/img/travel-img/5.jpg",
+            desc: "聆听侗族大歌，学唱侗族琵琶歌，体验蜡染",
+            highlight: "侗族大歌教学 + 梯田徒步"
+        },
+        {
+            id: 6,
+            name: "【蜀道三国】成都·武侯祠·阆中古城·非遗皮影6日",
+            region: "四川",
+            days: 6,
+            price: 3180,
+            groupSize: "2-8人",
+            sold: 412,
+            img: "static/img/travel-img/6.jpg",
+            desc: "观川剧变脸，体验皮影制作，漫步三国古道",
+            highlight: "皮影戏体验 + 三国文化"
+        },
+        {
+            id: 7,
+            name: "【香格里拉】丽江·虎跳峡·普达措·松赞林寺6日",
+            region: "云南",
+            days: 6,
+            price: 3980,
+            groupSize: "2-6人",
+            sold: 1560,
+            img: "static/img/travel-img/7.jpg",
+            desc: "探秘藏族非遗唐卡，藏民家访，徒步秘境",
+            highlight: "唐卡绘制体验 + 藏式家访"
+        },
+        {
+            id: 8,
+            name: "【贵州全景】梵净山·镇远古城·西江苗寨8日",
+            region: "贵州",
+            days: 8,
+            price: 4380,
+            groupSize: "6-15人",
+            sold: 2030,
+            img: "static/img/travel-img/8.jpg",
+            desc: "登梵净山云顶，体验苗族银饰锻造，夜游镇远",
+            highlight: "银饰锻造 + 古城夜游"
+        },
+        {
+            id: 9,
+            name: "【成都慢生活】熊猫基地·都江堰·青城山4日",
+            region: "四川",
+            days: 4,
+            price: 2480,
+            groupSize: "2-8人",
+            sold: 984,
+            img: "static/img/travel-img/9.jpg",
+            desc: "熊猫义工体验，学习青城太极，品盖碗茶",
+            highlight: "熊猫义工 + 太极体验"
+        },
+        {
+            id: 10,
+            name: "【云南全景】昆明·大理·丽江·香格里拉9日",
+            region: "云南",
+            days: 9,
+            price: 5280,
+            groupSize: "4-12人",
+            sold: 2120,
+            img: "static/img/travel-img/10.jpg",
+            desc: "一次玩遍滇西，体验纳西古乐、藏族锅庄",
+            highlight: "纳西古乐 + 藏族锅庄舞"
+        },
+        {
+            id: 11,
+            name: "【黔北风情】赤水丹霞·茅台古镇·非遗晒醋4日",
+            region: "贵州",
+            days: 4,
+            price: 1980,
+            groupSize: "2-6人",
+            sold: 367,
+            img: "static/img/travel-img/11.jpg",
+            desc: "探秘赤水竹编，参观茅台酒厂，体验晒醋工艺",
+            highlight: "晒醋体验 + 茅台文化"
+        },
+        {
+            id: 12,
+            name: "【川西秘境】四姑娘山·丹巴藏寨·甲居5日",
+            region: "四川",
+            days: 5,
+            price: 3680,
+            groupSize: "2-4人",
+            sold: 521,
+            img: "static/img/travel-img/12.jpg",
+            desc: "嘉绒藏族非遗刺绣体验，藏式家访，雪山徒步",
+            highlight: "藏绣体验 + 雪山徒步"
+        },
+        {
+            id: 13,
+            name: "【版纳风情】西双版纳·傣族园·雨林穿越5日",
+            region: "云南",
+            days: 5,
+            price: 2980,
+            groupSize: "2-6人",
+            sold: 1670,
+            img: "static/img/travel-img/13.jpg",
+            desc: "傣族泼水节体验，学习傣陶制作，夜探雨林",
+            highlight: "傣陶制作 + 泼水狂欢"
+        },
+        {
+            id: 14,
+            name: "【贵州苗年】凯里·雷山·苗族非遗深度7日",
+            region: "贵州",
+            days: 7,
+            price: 4280,
+            groupSize: "4-12人",
+            sold: 886,
+            img: "static/img/travel-img/14.jpg",
+            desc: "参与苗年盛典，学习苗绣、苗族银饰锻造",
+            highlight: "苗年盛典 + 苗绣体验"
+        },
+        {
+            id: 15,
+            name: "【天府非遗】绵竹年画·蜀锦·川菜博物馆3日",
+            region: "四川",
+            days: 3,
+            price: 1680,
+            groupSize: "2-8人",
+            sold: 432,
+            img: "static/img/travel-img/15.jpg",
+            desc: "体验绵竹年画绘制，参观蜀锦织造，学做川菜",
+            highlight: "年画绘制 + 川菜教学"
         }
+    ];
 
-        // 旅游数据
-        const toursData = [
-            { id: 1, name: "【秘境云南】丽江·大理·泸沽湖7日深度非遗之旅", region: "云南", days: 7, price: 3280, groupSize: "2-8人小团", sold: 1280, img: "static/img/travel-img/1.jpg", desc: "漫步丽江古城，体验东巴造纸，摩梭家访，非遗扎染", highlight: "东巴文化体验 + 摩梭篝火晚会" },
-            { id: 2, name: "【多彩贵州】黄果树·千户苗寨·荔波小七孔5日纯玩", region: "贵州", days: 5, price: 2680, groupSize: "4-12人", sold: 2450, img: "static/img/travel-img/2.jpg", desc: "观黄果树瀑布，住苗寨观夜景，体验苗族蜡染", highlight: "苗族蜡染DIY + 长桌宴" },
-            { id: 3, name: "【佛国禅韵】峨眉山·乐山大佛·非遗武术4日体验", region: "四川", days: 4, price: 1980, groupSize: "2-6人", sold: 862, img: "static/img/travel-img/3.jpg", desc: "学习峨眉武术，品尝素斋，观金顶云海", highlight: "峨眉武术体验 + 禅修课程" },
-            { id: 4, name: "【风花雪月】大理·洱海·沙溪古镇5日轻奢旅拍", region: "云南", days: 5, price: 3580, groupSize: "2-4人", sold: 734, img: "static/img/travel-img/4.jpg", desc: "洱海S湾骑行，白族三道茶体验，沙溪茶马古道", highlight: "旅拍服务 + 白族扎染" },
-            { id: 5, name: "【黔东南秘境】肇兴侗寨·堂安梯田·非遗侗族大歌4日", region: "贵州", days: 4, price: 2280, groupSize: "4-10人", sold: 591, img: "static/img/travel-img/5.jpg", desc: "聆听侗族大歌，学唱侗族琵琶歌，体验蜡染", highlight: "侗族大歌教学 + 梯田徒步" },
-            { id: 6, name: "【蜀道三国】成都·武侯祠·阆中古城·非遗皮影6日", region: "四川", days: 6, price: 3180, groupSize: "2-8人", sold: 412, img: "static/img/travel-img/6.jpg", desc: "观川剧变脸，体验皮影制作，漫步三国古道", highlight: "皮影戏体验 + 三国文化" },
-            { id: 7, name: "【香格里拉】丽江·虎跳峡·普达措·松赞林寺6日", region: "云南", days: 6, price: 3980, groupSize: "2-6人", sold: 1560, img: "static/img/travel-img/7.jpg", desc: "探秘藏族非遗唐卡，藏民家访，徒步秘境", highlight: "唐卡绘制体验 + 藏式家访" },
-            { id: 8, name: "【贵州全景】梵净山·镇远古城·西江苗寨8日", region: "贵州", days: 8, price: 4380, groupSize: "6-15人", sold: 2030, img: "static/img/travel-img/8.jpg", desc: "登梵净山云顶，体验苗族银饰锻造，夜游镇远", highlight: "银饰锻造 + 古城夜游" },
-            { id: 9, name: "【成都慢生活】熊猫基地·都江堰·青城山4日", region: "四川", days: 4, price: 2480, groupSize: "2-8人", sold: 984, img: "static/img/travel-img/9.jpg", desc: "熊猫义工体验，学习青城太极，品盖碗茶", highlight: "熊猫义工 + 太极体验" },
-            { id: 10, name: "【云南全景】昆明·大理·丽江·香格里拉9日", region: "云南", days: 9, price: 5280, groupSize: "4-12人", sold: 2120, img: "static/img/travel-img/10.jpg", desc: "一次玩遍滇西，体验纳西古乐、藏族锅庄", highlight: "纳西古乐 + 藏族锅庄舞" },
-            { id: 11, name: "【黔北风情】赤水丹霞·茅台古镇·非遗晒醋4日", region: "贵州", days: 4, price: 1980, groupSize: "2-6人", sold: 367, img: "static/img/travel-img/11.jpg", desc: "探秘赤水竹编，参观茅台酒厂，体验晒醋工艺", highlight: "晒醋体验 + 茅台文化" },
-            { id: 12, name: "【川西秘境】四姑娘山·丹巴藏寨·甲居5日", region: "四川", days: 5, price: 3680, groupSize: "2-4人", sold: 521, img: "static/img/travel-img/12.jpg", desc: "嘉绒藏族非遗刺绣体验，藏式家访，雪山徒步", highlight: "藏绣体验 + 雪山徒步" },
-            { id: 13, name: "【版纳风情】西双版纳·傣族园·雨林穿越5日", region: "云南", days: 5, price: 2980, groupSize: "2-6人", sold: 1670, img: "static/img/travel-img/13.jpg", desc: "傣族泼水节体验，学习傣陶制作，夜探雨林", highlight: "傣陶制作 + 泼水狂欢" },
-            { id: 14, name: "【贵州苗年】凯里·雷山·苗族非遗深度7日", region: "贵州", days: 7, price: 4280, groupSize: "4-12人", sold: 886, img: "static/img/travel-img/14.jpg", desc: "参与苗年盛典，学习苗绣、苗族银饰锻造", highlight: "苗年盛典 + 苗绣体验" },
-            { id: 15, name: "【天府非遗】绵竹年画·蜀锦·川菜博物馆3日", region: "四川", days: 3, price: 1680, groupSize: "2-8人", sold: 432, img: "static/img/travel-img/15.jpg", desc: "体验绵竹年画绘制，参观蜀锦织造，学做川菜", highlight: "年画绘制 + 川菜教学" }
-        ];
+    let currentFilter = "all";
+    let currentSort = "default";
+    let currentPage = 1;
+    const itemsPerPage = 6;
 
-        let currentFilter = "all";
-        let currentSort = "default";
-        let currentPage = 1;
-        const itemsPerPage = 6;
+    function getFilteredAndSorted() {
+        let filtered = toursData.filter(t => currentFilter === "all" || t.region === currentFilter);
+        if (currentSort === "price_asc") filtered.sort((a, b) => a.price - b.price);
+        else if (currentSort === "price_desc") filtered.sort((a, b) => b.price - a.price);
+        else if (currentSort === "sold_desc") filtered.sort((a, b) => b.sold - a.sold);
+        else filtered.sort((a, b) => a.id - b.id);
+        return filtered;
+    }
 
-        function getFilteredAndSorted() {
-            let filtered = toursData.filter(t => currentFilter === "all" || t.region === currentFilter);
-            if (currentSort === "price_asc") filtered.sort((a, b) => a.price - b.price);
-            else if (currentSort === "price_desc") filtered.sort((a, b) => b.price - a.price);
-            else if (currentSort === "sold_desc") filtered.sort((a, b) => b.sold - a.sold);
-            else filtered.sort((a, b) => a.id - b.id);
-            return filtered;
+    function renderTours() {
+        const filtered = getFilteredAndSorted();
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageData = filtered.slice(start, end);
+        const grid = document.getElementById('tourGrid');
+        if (pageData.length === 0) {
+            grid.innerHTML = '<div style="text-align:center; padding:60px; color:#666;">暂无符合条件的旅游产品</div>';
+            return;
         }
-
-        function renderTours() {
-            const filtered = getFilteredAndSorted();
-            const totalPages = Math.ceil(filtered.length / itemsPerPage);
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageData = filtered.slice(start, end);
-            const grid = document.getElementById('tourGrid');
-            if (pageData.length === 0) {
-                grid.innerHTML = '<div style="text-align:center; padding:60px; color:#666;">暂无符合条件的旅游产品</div>';
-                return;
-            }
-            grid.innerHTML = pageData.map(tour => `
+        grid.innerHTML = pageData.map(tour => `
                 <div class="tour-card" data-id="${tour.id}">
                     <img class="card-img" src="${tour.img}" alt="${tour.name}" loading="lazy" onerror="this.src='https://picsum.photos/id/15/400/260'">
                     <div class="card-content">
                         <div class="card-title">${tour.name}</div>
                         <div class="tags">
-                            <span class="tag"><i class="fas fa-calendar-alt"></i> ${tour.days}天${tour.days-1}晚</span>
+                            <span class="tag"><i class="fas fa-calendar-alt"></i> ${tour.days}天${tour.days - 1}晚</span>
                             <span class="tag"><i class="fas fa-users"></i> ${tour.groupSize}</span>
                         </div>
                         <div class="info-row">
@@ -715,72 +897,73 @@ function requireLogin(callback) {
                     </div>
                 </div>
             `).join('');
-            // 绑定预订事件
-           document.querySelectorAll('.btn-book').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.dataset.id;
-        requireLogin(() => {
-            window.location.href = `product.html?id=${id}&type=travel`;
+        // 绑定预订事件
+        document.querySelectorAll('.btn-book').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.dataset.id;
+                requireLogin(() => {
+                    window.location.href = `product.html?id=${id}&type=travel`;
+                });
+            });
         });
-    });
-});
-            renderPagination(filtered.length);
-        }
+        renderPagination(filtered.length);
+    }
 
-        function renderPagination(totalItems) {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            const container = document.getElementById('pagination');
-            if (totalPages <= 1) {
-                container.innerHTML = '';
-                return;
-            }
-            let html = '';
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<div class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</div>`;
-            }
-            container.innerHTML = html;
-            document.querySelectorAll('.page-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    currentPage = parseInt(btn.dataset.page);
-                    renderTours();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-            });
+    function renderPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const container = document.getElementById('pagination');
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
         }
-
-        function bindFilters() {
-            const tabs = document.querySelectorAll('.filter-tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    currentFilter = tab.dataset.filter;
-                    currentPage = 1;
-                    renderTours();
-                });
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<div class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</div>`;
+        }
+        container.innerHTML = html;
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                currentPage = parseInt(btn.dataset.page);
+                renderTours();
+                window.scrollTo({top: 0, behavior: 'smooth'});
             });
-            const sortSelect = document.getElementById('sortSelect');
-            sortSelect.addEventListener('change', (e) => {
-                currentSort = e.target.value;
+        });
+    }
+
+    function bindFilters() {
+        const tabs = document.querySelectorAll('.filter-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.filter;
                 currentPage = 1;
                 renderTours();
             });
-        }
+        });
+        const sortSelect = document.getElementById('sortSelect');
+        sortSelect.addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            currentPage = 1;
+            renderTours();
+        });
+    }
 
-        renderTours();
-        bindFilters();
+    renderTours();
+    bindFilters();
 
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-    </script>
-    <script src="static/js/sidebar.js"></script>
-    <script src="static/js/chat.js"></script>
-    <script src="static/js/password-utils.js"></script>
-    <script src="static/js/auth.js"></script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+</script>
+<script src="static/js/sidebar.js"></script>
+<script src="static/js/chat.js"></script>
+<script src="static/js/password-utils.js"></script>
+<script src="static/js/auth.js"></script>
+<script src="static/js/navbar.js"></script>
 
 </body>
 </html>

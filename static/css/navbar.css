@@ -1,0 +1,129 @@
+/* =============================================================
+   公共导航栏样式 navbar.css
+   所有含 .top-bar 的页面统一引入
+   ============================================================= */
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+    padding: 12px 30px;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 215, 150, 0.3);
+    box-sizing: border-box;
+}
+
+.top-bar .logo {
+    font-size: 26px;
+    font-weight: bold;
+    color: #ffecb3;
+    letter-spacing: 2px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px 18px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-bar .logo-img {
+    width: 48px;
+    height: 48px;
+    vertical-align: middle;
+    margin-right: 4px;
+    border-radius: 50%;
+}
+
+.top-bar .nav-links {
+    display: flex;
+    gap: 28px;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    backdrop-filter: none;
+    margin-left: -267px;
+    flex-wrap: wrap;
+}
+
+.top-bar .nav-links a {
+    color: #f5f0e6;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.top-bar .nav-links a:hover,
+.top-bar .nav-item.active {
+    color: #ffd966;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+}
+
+.top-bar .auth-area {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.top-bar .user-welcome {
+    color: #ffecb3;
+    font-size: 0.9rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 6px 16px;
+    border-radius: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.top-bar .login-btn {
+    background: #b22234;
+    padding: 6px 18px;
+    border-radius: 30px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.top-bar .login-btn:hover {
+    background: #8b1a1a;
+}
+
+.top-bar .register-btn {
+    background: #2c5f2d;
+}
+
+.top-bar .register-btn:hover {
+    background: #1e3a1e;
+}
+
+@media (max-width: 768px) {
+    .top-bar {
+        padding: 10px 18px;
+    }
+    .top-bar .nav-links {
+        display: none;
+    }
+    .top-bar .logo {
+        font-size: 20px;
+    }
+    .top-bar .logo-img {
+        width: 36px;
+        height: 36px;
+    }
+}

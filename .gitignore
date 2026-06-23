@@ -21,7 +21,7 @@ node_modules/
 *~
 #一份评估报告和P0安全漏洞报告文档
 docs/
-
+.codebuddy
 # 操作系统
 .DS_Store
 Thumbs.db

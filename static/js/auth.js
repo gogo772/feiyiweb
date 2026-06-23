@@ -494,6 +494,8 @@
     function initAuth() {
         initUserStorage();
         updateAuthArea();
+        // 公共导航栏（navbar.js）渲染完成后，重新填充 #authArea
+        document.addEventListener('navbar:mounted', updateAuthArea);
     }
 
     if (document.readyState === 'loading') {

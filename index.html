@@ -4,6 +4,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
     <link rel="stylesheet" href="static/css/chat.css">
     <link rel="stylesheet" href="static/css/auth.css">
+    <link rel="stylesheet" href="static/css/navbar.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>华夏非遗 · 首页</title>
@@ -89,88 +90,7 @@
             margin: 0 auto;
         }
 
-        /* 顶部导航栏 */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            width: 100%;
-            padding: 15px 25px;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(255, 215, 150, 0.3);
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 18px;
-            border-radius: 40px;
-            color: #ffecb3;
-        }
-
-        .logo-img {
-            width: 64px;
-            height: 64px;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            padding: 8px 20px;
-            border-radius: 50px;
-            backdrop-filter: blur(4px);
-            margin-left: -267px;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: #ffd966;
-        }
-
-        .nav-item.active {
-            color: #ffd966 !important;
-            font-weight: bold;
-            text-decoration: underline;
-            text-underline-offset: 6px;
-        }
-
-        .auth-area {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .login-btn {
-            background: #b22234;
-            padding: 6px 18px;
-            border-radius: 30px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .login-btn:hover {
-            background: #8b1a1a;
-        }
+        /* 顶部导航栏：样式见 static/css/navbar.css */
 
         /* 首屏标题 */
         .hero-title {
@@ -615,7 +535,8 @@
 <!-- 第一页 -->
 <div class="page-section page-1">
     <div class="container" style="width:100%">
-        <div class="top-bar"><div class="logo"><img src="static/img/favicon_io/android-chrome-192x192.png" alt="华夏非遗" class="logo-img">华夏非遗 · 薪火相传</div><div class="nav-links"><a href="index.html" class="nav-item" data-page="index">首页</a><a href="performances.html" class="nav-item" data-page="performances">票务演出</a><a href="merchandise.html" class="nav-item" data-page="merchandise">文创周边</a><a href="travel.html" class="nav-item" data-page="travel">去旅游</a><a href="knowledge-graph.html" class="nav-item" data-page="knowledge">非遗图谱✨</a><a href="whereami.html" class="nav-item" data-page="whereami">云旅游✨</a></div><div class="auth-area" id="authArea"></div></div>
+        <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
+        <div id="navbarMount"></div>
     </div>
     <div class="title-wrapper"><div class="hero-title"><h1>守护千年文脉</h1><p>---让非遗活在当下，走向世界---</p></div><div class="stats-container"><div class="stat-card"><div class="stat-number" id="statProjects">0</div><div class="stat-label">收录非遗项目</div></div><div class="stat-card"><div class="stat-number" id="statNational">0</div><div class="stat-label">国家级名录</div></div><div class="stat-card"><div class="stat-number" id="statNodes">0</div><div class="stat-label">知识图谱节点</div></div></div></div>
 </div>
@@ -1015,5 +936,6 @@
 <script src="static/js/chat.js"></script>
 <script src="static/js/password-utils.js"></script>
 <script src="static/js/auth.js"></script>
+<script src="static/js/navbar.js"></script>
 </body>
 </html>
