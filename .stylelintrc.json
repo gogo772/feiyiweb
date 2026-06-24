@@ -1,0 +1,19 @@
+{
+  "rules": {
+    "no-empty-source": null,
+    "block-no-empty": null,
+    "declaration-block-no-duplicate-properties": true,
+    "no-duplicate-selectors": true,
+    "declaration-no-important": null,
+    "selector-class-pattern": null,
+    "no-descending-specificity": null,
+    "comment-empty-line-before": null,
+    "declaration-block-no-redundant-longhand-properties": null,
+    "number-max-precision": 6,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "font-family-name-quotes": null,
+    "keyframe-block-no-duplicate-selectors": null,
+    "no-invalid-double-slash-comments": null
+  }
+}
