@@ -1,694 +1,713 @@
-/* =============================================
-   非遗星图 | 沉浸式景点探索 · 朱砂星轨方案
-   starmap1.css（方案一 · 轻量统一 · 红金国风）
-   - 保留原有地图/雷达/筛选/滑块的功能结构
-   - 替换为暗调朱砂红 + 暖金色 + 米白文字
-   - 与首页 朱砂红 + 烫金 非遗国风质感对齐
+/* ============================================================
+   赛博星图 · 霓虹彩虹主题
+   starmap-cyber.css
+   - 替换原 starmap.css，赋予非遗星图未来科技感 + 彩虹元素
    - 配色体系：
-       背景    #120606
-       面板    rgba(28, 8, 8, 0.85)
-       主金色  #E9B94E
-       朱砂红  #C92B2B
-       正文    #F3E7D9
-       描边    rgba(233, 185, 78, 0.3)
-============================================= */
+       背景深空紫黑  #0a0a12
+       面板半透玻璃  rgba(16, 12, 30, 0.78)
+       霓虹蓝        #00d4ff
+       霓虹紫        #a855f7
+       霓虹粉        #ff6b9d
+       霓虹金        #fbbf24
+       霓虹绿        #6bcb77
+       霓虹红        #ff6b6b
+       文字辉光      #e0d6ff
+   ============================================================ */
 
-/* =============================================
-   1. CSS 变量 · 朱砂星轨色彩体系
-============================================= */
+/* ============================================================
+   1. CSS 变量 · 赛博色彩体系
+   ============================================================ */
 :root {
-  /* 敦煌华彩 · 土金 + 朱红 + 藏蓝 */
-  --star-deep: #1A0A05;
-  --star-bg: #2D1A0A;
-  --star-panel-bg: rgba(28, 8, 8, 0.85);
-  --star-panel-bg-solid: rgba(28, 8, 8, 0.9);
-
-  --star-gold: #D4A057;
-  --star-gold-glow: #E8C87A;
-  --star-gold-soft: #B88A4A;
-  --star-vermilion: #B22222;
-  --star-vermilion-soft: rgba(178, 34, 34, 0.85);
-  --star-cinnabar: #8A1A1A;
-  --star-rose: #D97070;
-
-  --star-text-main: #F5E6D3;
-  --star-text-dim: #E5D6BF;
-  --star-text-muted: #B9A78E;
-
-  --star-border: rgba(212, 160, 87, 0.3);
-  --star-border-strong: rgba(212, 160, 87, 0.45);
-  --star-border-vermilion: rgba(178, 34, 34, 0.5);
-
-  --star-transition: all 0.2s ease;
-  --star-transition-slow: all 0.25s ease;
+    --cyber-bg: #0a0a12;
+    --cyber-panel: rgba(16, 12, 30, 0.78);
+    --cyber-border: rgba(120, 80, 255, 0.35);
+    --neon-blue: #00d4ff;
+    --neon-purple: #a855f7;
+    --neon-pink: #ff6b9d;
+    --neon-gold: #fbbf24;
+    --neon-green: #6bcb77;
+    --neon-red: #ff6b6b;
+    --text-glow: #e0d6ff;
+    --glass-blur: blur(18px);
+    --cyber-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
 }
 
-/* =============================================
-   2. 全局重置 & 页面背景（暗调朱砂红渐变）
-============================================= */
+/* ============================================================
+   2. 全局重置 & 页面背景
+   ============================================================ */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  background: linear-gradient(145deg, #1A0A05 0%, #2D1A0A 100%);
-  font-family: 'Segoe UI', 'Poppins', 'Noto Sans SC', system-ui, sans-serif;
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  color: var(--star-text-main);
+    background: var(--cyber-bg);
+    font-family: 'Segoe UI', 'Poppins', 'Noto Sans SC', system-ui, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    color: #fff;
+    position: relative;
 }
 
-/* =============================================
-   3. 星空背景动画（朱砂星光 + 暖金光点）
-============================================= */
-.star-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  background-image:
-    radial-gradient(2px 2px at 15% 30%, #F3D27A, rgba(0, 0, 0, 0)),
-    radial-gradient(3px 3px at 70% 80%, #E9B94E, rgba(0, 0, 0, 0)),
-    radial-gradient(1px 1px at 90% 20%, #D97070, rgba(0, 0, 0, 0));
-  background-size: 300px 300px, 350px 350px, 200px 200px;
-  background-repeat: repeat;
-  opacity: 0.45;
-  animation: starMove 60s linear infinite;
+/* ============================================================
+   3. 赛博背景层（动态光晕 + 网格 + 粒子）
+   ============================================================ */
+.cyber-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 20% 30%, #1a0a2e 0%, #0a0a12 70%);
 }
 
-@keyframes starMove {
-  0%   { background-position: 0% 0%, 0% 0%, 0% 0%; }
-  100% { background-position: 350px 300px, 250px 350px, 200px 250px; }
+.cyber-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 212, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
 }
 
-/* =============================================
-   4. 加载遮罩 & 动画
-============================================= */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(18, 6, 6, 0.9);
-  backdrop-filter: blur(12px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 20px;
-  transition: opacity 0.5s ease;
-  pointer-events: all;
+.cyber-particles {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(2px 2px at 15% 20%, #00d4ff, transparent),
+        radial-gradient(3px 3px at 70% 80%, #a855f7, transparent),
+        radial-gradient(2px 2px at 90% 30%, #ff6b9d, transparent),
+        radial-gradient(4px 4px at 40% 60%, #fbbf24, transparent);
+    background-size: 250px 250px, 300px 300px, 200px 200px, 350px 350px;
+    background-repeat: repeat;
+    opacity: 0.5;
+    animation: particleDrift 40s linear infinite;
 }
 
-.loading-overlay.hide {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.loading-spinner {
-  width: 64px;
-  height: 64px;
-  border: 4px solid rgba(243, 215, 122, 0.18);
-  border-top: 4px solid var(--star-gold);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0%   { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-  font-size: 1rem;
-  letter-spacing: 2px;
-  color: var(--star-text-main);
-  background: rgba(18, 6, 6, 0.7);
-  padding: 8px 20px;
-  border-radius: 40px;
-  backdrop-filter: blur(4px);
-  border: 1px solid var(--star-border);
-}
-
-/* =============================================
-   5. 主布局 Dashboard
-============================================= */
-.dashboard {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  height: 100vh;
-  width: 100%;
-  padding: 80px 20px 20px 20px;
-  gap: 20px;
-  backdrop-filter: blur(1px);
-}
-
-/* =============================================
-   6. 地图容器（暗朱砂底 + 暖金描边）
-============================================= */
-.map-container {
-  flex: 3;
-  position: relative;
-  background: rgba(28, 8, 8, 0.6);
-  border-radius: 24px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.6),
-              inset 0 1px 0 rgba(233, 185, 78, 0.08);
-  border: 1px solid var(--star-border);
-  overflow: hidden;
-}
-
-#mapChart {
-  width: 100%;
-  height: 100%;
-}
-
-/* 地图内层加载状态 */
-.map-loading {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  background: rgba(28, 8, 8, 0.55);
-  backdrop-filter: blur(2px);
-  z-index: 5;
-  opacity: 1;
-  transition: opacity 0.25s ease;
-  pointer-events: none;
-}
-
-.map-loading.hide {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.map-loading .mini-spinner {
-  width: 42px;
-  height: 42px;
-  border: 3px solid rgba(233, 185, 78, 0.22);
-  border-top: 3px solid var(--star-gold);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-}
-
-.map-loading .mini-loading-text {
-  color: var(--star-gold-glow);
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 8px rgba(233, 185, 78, 0.45);
-}
-
-/* 地图空状态 */
-.map-empty {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: rgba(28, 8, 8, 0.7);
-  backdrop-filter: blur(4px);
-  z-index: 6;
-  color: var(--star-gold-glow);
-  text-align: center;
-  padding: 24px;
-}
-
-.map-empty.hide {
-  display: none;
-}
-
-.map-empty .empty-icon {
-  font-size: 3rem;
-  opacity: 0.7;
-}
-
-.map-empty .empty-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--star-gold);
-}
-
-.map-empty .empty-tip {
-  font-size: 0.9rem;
-  opacity: 0.8;
-  max-width: 320px;
-  line-height: 1.6;
-}
-
-/* =============================================
-   7. 图例（朱砂暗透 + 金色描边）
-============================================= */
-.map-legend {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: var(--star-panel-bg-solid);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  padding: 10px 16px;
-  border: 1px solid var(--star-border);
-  z-index: 20;
-  font-size: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 130px;
-  pointer-events: none;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  pointer-events: auto;
-  color: var(--star-text-main);
-}
-
-.legend-badge {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  box-shadow: 0 0 4px rgba(233, 185, 78, 0.25);
-}
-
-.legend-badge.circle {
-  border-radius: 50%;
-}
-
-.legend-text {
-  color: var(--star-text-main);
-  font-size: 0.7rem;
-}
-
-.lang-switch-btn {
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid var(--star-border);
-  cursor: pointer;
-  text-align: center;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--star-gold);
-  transition: var(--star-transition);
-  pointer-events: auto;
-}
-
-.lang-switch-btn:hover {
-  color: var(--star-text-main);
-  background: rgba(201, 43, 43, 0.35);
-  border-radius: 8px;
-}
-
-/* =============================================
-   8. 分类筛选标签（暗金底 → 朱砂红激活）
-============================================= */
-.filter-tags {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  background: var(--star-panel-bg-solid);
-  backdrop-filter: blur(12px);
-  border-radius: 12px;
-  padding: 8px 12px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  z-index: 20;
-  border: 1px solid var(--star-border);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-}
-
-.tag-btn {
-  padding: 6px 16px;
-  border-radius: 8px;
-  background: rgba(60, 28, 28, 0.7);
-  color: var(--star-gold-soft);
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: var(--star-transition);
-  border: 1px solid var(--star-border);
-}
-
-.tag-btn:hover {
-  background: rgba(120, 50, 50, 0.85);
-  color: var(--star-text-main);
-  border-color: var(--star-gold);
-}
-
-/* 选中：朱砂红底 + 金字 */
-.tag-btn.active {
-  background: #5D2E2E;            /* 深红褐 */
-  color: var(--star-gold);
-  border-color: var(--star-gold);
-  box-shadow: 0 2px 10px rgba(26, 42, 74, 0.45),
-              inset 0 0 6px rgba(212, 160, 87, 0.25);
-}
-
-/* =============================================
-   9. 省份切换器（朱砂暗透 + 金色描边）
-============================================= */
-.province-switcher {
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 30;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--star-panel-bg-solid);
-  backdrop-filter: blur(12px);
-  border-radius: 14px;
-  padding: 8px 16px;
-  border: 1px solid var(--star-border-strong);
-  font-size: 0.9rem;
-  color: var(--star-text-main);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-}
-
-.province-switcher .switcher-label {
-  color: var(--star-gold);
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.province-switcher select {
-  background: rgba(60, 28, 28, 0.9);
-  color: var(--star-text-main);
-  border: 1px solid var(--star-border);
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  transition: var(--star-transition);
-  min-width: 130px;
-}
-
-.province-switcher select:hover {
-  background: rgba(120, 50, 50, 0.95);
-  border-color: var(--star-gold);
-}
-
-.province-switcher select:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.province-switcher .switcher-status {
-  font-size: 0.7rem;
-  color: var(--star-gold-soft);
-  min-width: 50px;
-}
-
-.province-switcher .switcher-status.loading {
-  color: var(--star-gold);
-}
-
-.province-switcher .switcher-status.cached {
-  color: var(--star-rose);
-}
-
-@media (min-height: 900px) {
-    .radar-panel {
-        overflow-y: hidden;   /* 高分辨率下完全隐藏滚动条 */
+@keyframes particleDrift {
+    0% {
+        background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+    100% {
+        background-position: 300px 200px, 400px 300px, 250px 350px, 500px 400px;
     }
 }
 
-/* =============================================
-   10. 右侧雷达面板（暗红半透 + 1px 金色描边）
-============================================= */
+.cyber-glow-1,
+.cyber-glow-2,
+.cyber-glow-3 {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+    animation: glowPulse 6s ease-in-out infinite alternate;
+}
+.cyber-glow-1 {
+    width: 40vw;
+    height: 40vw;
+    top: -10%;
+    left: -5%;
+    background: radial-gradient(circle, #a855f7, transparent);
+}
+.cyber-glow-2 {
+    width: 50vw;
+    height: 50vw;
+    bottom: -15%;
+    right: -10%;
+    background: radial-gradient(circle, #00d4ff, transparent);
+    animation-delay: -2s;
+}
+.cyber-glow-3 {
+    width: 30vw;
+    height: 30vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, #ff6b9d, transparent);
+    animation-delay: -4s;
+    opacity: 0.15;
+}
+
+@keyframes glowPulse {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.2;
+    }
+    100% {
+        transform: scale(1.2) rotate(5deg);
+        opacity: 0.4;
+    }
+}
+
+/* ============================================================
+   4. 加载遮罩（用于初始加载，可被JS隐藏）
+   ============================================================ */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 18, 0.95);
+    backdrop-filter: blur(12px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    transition: opacity 0.3s;
+    pointer-events: all;
+}
+.loading-overlay.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+.loading-spinner {
+    width: 56px;
+    height: 56px;
+    border: 3px solid rgba(168, 85, 247, 0.2);
+    border-top: 3px solid #a855f7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.loading-text {
+    font-size: 1rem;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, #ff6b6b, #fbbf24, #6bcb77, #4d96ff, #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 600;
+}
+
+/* ============================================================
+   5. 主布局 Dashboard
+   ============================================================ */
+.dashboard {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    padding: 80px 20px 20px 20px;
+    gap: 18px;
+}
+
+/* ============================================================
+   6. 地图容器（赛博玻璃 + 霓虹边框 + 装饰角）
+   ============================================================ */
+.map-container {
+    flex: 3;
+    position: relative;
+    background: var(--cyber-panel);
+    border-radius: 28px;
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--cyber-border);
+    box-shadow: var(--cyber-shadow), inset 0 0 60px rgba(168, 85, 247, 0.05);
+    overflow: hidden;
+}
+
+/* 地图容器四角装饰 */
+.map-container .corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: rgba(168, 85, 247, 0.4);
+    border-style: solid;
+    border-width: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+.map-container .corner.tl {
+    top: 12px;
+    left: 12px;
+    border-top-width: 2px;
+    border-left-width: 2px;
+    border-radius: 4px 0 0 0;
+}
+.map-container .corner.tr {
+    top: 12px;
+    right: 12px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-radius: 0 4px 0 0;
+}
+.map-container .corner.bl {
+    bottom: 12px;
+    left: 12px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-radius: 0 0 0 4px;
+}
+.map-container .corner.br {
+    bottom: 12px;
+    right: 12px;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+    border-radius: 0 0 4px 0;
+}
+
+#mapChart {
+    width: 100%;
+    height: 100%;
+}
+
+/* 地图内层加载 / 空状态 */
+.map-loading,
+.map-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: rgba(10, 10, 18, 0.7);
+    backdrop-filter: blur(6px);
+    z-index: 5;
+    transition: opacity 0.25s;
+    pointer-events: none;
+}
+.map-loading.hide,
+.map-empty.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+.mini-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(168, 85, 247, 0.2);
+    border-top: 3px solid #a855f7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+.mini-loading-text,
+.empty-title {
+    font-size: 0.95rem;
+    background: linear-gradient(90deg, #00d4ff, #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.empty-icon {
+    font-size: 3rem;
+}
+
+/* ============================================================
+   7. 省份切换器（赛博风格）
+   ============================================================ */
+.province-switcher {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(10, 10, 18, 0.8);
+    backdrop-filter: blur(16px);
+    border-radius: 40px;
+    padding: 6px 18px 6px 22px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.08), inset 0 0 20px rgba(168, 85, 247, 0.05);
+    font-size: 0.85rem;
+}
+.province-switcher .switcher-label {
+    color: #00d4ff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+.province-switcher select {
+    background: rgba(20, 12, 40, 0.9);
+    color: #e0d6ff;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 30px;
+    padding: 4px 16px 4px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+}
+.province-switcher select:hover {
+    border-color: #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+}
+.province-switcher .switcher-status {
+    font-size: 0.7rem;
+    color: #6bcb77;
+    min-width: 40px;
+}
+
+/* ============================================================
+   8. 图例（霓虹）
+   ============================================================ */
+.map-legend {
+    position: absolute;
+    top: 80px;
+    right: 16px;
+    background: rgba(10, 10, 18, 0.75);
+    backdrop-filter: blur(14px);
+    border-radius: 16px;
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    z-index: 20;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 110px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #d4ccf0;
+}
+.legend-badge {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.legend-badge.circle {
+    border-radius: 50%;
+}
+.lang-switch-btn {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(168, 85, 247, 0.2);
+    text-align: center;
+    font-size: 0.7rem;
+    cursor: pointer;
+    color: #a855f7;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+}
+.lang-switch-btn:hover {
+    color: #00d4ff;
+    text-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+}
+
+/* ============================================================
+   9. 分类筛选标签（彩虹霓虹）
+   ============================================================ */
+.filter-tags {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(10, 10, 18, 0.7);
+    backdrop-filter: blur(14px);
+    border-radius: 40px;
+    padding: 6px 12px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    z-index: 20;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+.tag-btn {
+    padding: 5px 14px;
+    border-radius: 30px;
+    background: rgba(30, 20, 50, 0.6);
+    color: #a8a0c0;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    border: 1px solid transparent;
+    font-weight: 500;
+}
+.tag-btn:hover {
+    background: rgba(60, 40, 100, 0.8);
+    color: #fff;
+    border-color: rgba(168, 85, 247, 0.3);
+    transform: translateY(-1px);
+}
+.tag-btn.active {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(0, 212, 255, 0.3));
+    color: #fff;
+    border-color: #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.05);
+}
+
+/* ============================================================
+   10. 右侧雷达面板（赛博玻璃 + 装饰角）
+   ============================================================ */
 .radar-panel {
-  flex: 1.2;
-  background: var(--star-panel-bg);
-  backdrop-filter: blur(12px);
-  border-radius: 24px;
-  padding: 6px 14px 12px 14px;  /* 顶部 8px → 6px，左右 16px → 14px */
-  border: 1px solid var(--star-border);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;                    /* 原 16px → 10px */
-  overflow-y: auto;             /* 保留滚动能力，但内容减少后可能不再触发 */
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55),
-              inset 0 1px 0 rgba(233, 185, 78, 0.06);
+    flex: 1.2;
+    background: var(--cyber-panel);
+    backdrop-filter: var(--glass-blur);
+    border-radius: 28px;
+    padding: 18px 16px 14px 16px;
+    border: 1px solid var(--cyber-border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    box-shadow: var(--cyber-shadow), inset 0 0 60px rgba(0, 212, 255, 0.02);
+    position: relative;
+}
+.radar-panel .panel-corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: rgba(0, 212, 255, 0.25);
+    border-style: solid;
+    border-width: 0;
+    pointer-events: none;
+}
+.radar-panel .panel-corner.tl {
+    top: 10px;
+    left: 10px;
+    border-top-width: 1.5px;
+    border-left-width: 1.5px;
+}
+.radar-panel .panel-corner.tr {
+    top: 10px;
+    right: 10px;
+    border-top-width: 1.5px;
+    border-right-width: 1.5px;
+}
+.radar-panel .panel-corner.bl {
+    bottom: 10px;
+    left: 10px;
+    border-bottom-width: 1.5px;
+    border-left-width: 1.5px;
+}
+.radar-panel .panel-corner.br {
+    bottom: 10px;
+    right: 10px;
+    border-bottom-width: 1.5px;
+    border-right-width: 1.5px;
 }
 
 .title-section {
-  text-align: center;
+    text-align: center;
 }
-
 .title-section h1 {
-  margin-top: 0;          /* 清除默认 margin-top */
-  margin-bottom: 2px;     /* 减小下边距 */
-  font-size: 1.3rem;      /* 略微缩小字号，节省空间 */
-  font-weight: 500;
-  background: linear-gradient(135deg, var(--star-gold), var(--star-gold-glow));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  letter-spacing: 1px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff6b6b, #fbbf24, #6bcb77, #4d96ff, #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 2px;
+    text-shadow: 0 0 40px rgba(168, 85, 247, 0.2);
 }
-
 .title-section p {
-  color: var(--star-text-dim);
-  margin-top: 0;          /* 清除默认 margin-top */
-  margin-bottom: 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
+    color: #9488b0;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    margin-top: 2px;
 }
 
 .radar-wrapper {
-  background: rgba(18, 6, 6, 0.55);
-  border-radius: 16px;
-  padding: 10px;
-  border: 1px solid var(--star-border);
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 20px;
+    padding: 8px;
+    border: 1px solid rgba(168, 85, 247, 0.15);
 }
-
 #radarChart {
-  height: 200px;          /* 原 240px → 200px，降低40px */
-  width: 100%;
+    height: 180px;
+    width: 100%;
 }
 
-/* =============================================
-   11. 偏好滑块（暗金轨道 + 朱砂红滑块）
-============================================= */
+/* ============================================================
+   11. 偏好滑块（彩虹轨道 + 霓虹拇指）
+   ============================================================ */
 .slider-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;               /* 原 12px → 6px，减少6px */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
-
 .slider-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.75rem;
-  background: rgba(60, 28, 28, 0.7);
-  padding: 4px 8px;       /* 原 6px 10px → 4px 8px */
-  border-radius: 8px;
-  border: 1px solid var(--star-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    background: rgba(20, 12, 40, 0.4);
+    padding: 3px 10px 3px 12px;
+    border-radius: 30px;
+    border: 1px solid rgba(168, 85, 247, 0.08);
+    backdrop-filter: blur(4px);
 }
-
 .slider-item label {
-  width: 85px;            /* 原 100px → 85px，适应小屏 */
-  color: var(--star-gold-soft);
+    width: 86px;
+    color: #b8add0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 400;
 }
-
+.slider-item label i {
+    color: #a855f7;
+    font-size: 0.7rem;
+    width: 14px;
+}
 input[type="range"] {
-  flex: 1;
-  height: 3px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: linear-gradient(90deg, var(--star-gold-soft), var(--star-gold));
-  border-radius: 4px;
-  outline: none;
+    flex: 1;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(90deg, #ff6b6b, #fbbf24, #6bcb77, #4d96ff, #a855f7);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
 }
-
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  background: var(--star-vermilion);
-  border: 2px solid var(--star-gold);
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 6px rgba(201, 43, 43, 0.55);
-  transition: var(--star-transition);
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(circle, #fff, #a855f7);
+    border: 2px solid #00d4ff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 16px rgba(168, 85, 247, 0.5);
+    transition: 0.15s;
 }
-
 input[type="range"]::-webkit-slider-thumb:hover {
-  background: var(--star-cinnabar);
-  box-shadow: 0 0 10px rgba(201, 43, 43, 0.75);
+    transform: scale(1.15);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
 }
-
 input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  background: var(--star-vermilion);
-  border: 2px solid var(--star-gold);
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 6px rgba(201, 43, 43, 0.55);
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(circle, #fff, #a855f7);
+    border: 2px solid #00d4ff;
+    border-radius: 50%;
+    cursor: pointer;
 }
-
-input[type="range"]::-moz-range-track {
-  background: linear-gradient(90deg, var(--star-gold-soft), var(--star-gold));
-  height: 3px;
-  border-radius: 4px;
-}
-
 .slider-value {
-  width: 36px;
-  text-align: right;
-  font-family: monospace;
-  color: var(--star-gold);
+    width: 28px;
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
 }
 
-/* =============================================
+/* ============================================================
    12. 灵感提示 & CTA 按钮
-============================================= */
+   ============================================================ */
 .info-tip {
-  background: rgba(28, 8, 8, 0.85);
-  border-radius: 12px;
-  padding: 6px 12px;      /* 原 12px → 6px 12px */
-  font-size: 0.7rem;
-  border-left: 2px solid var(--star-vermilion);
-  color: var(--star-text-dim);
-  line-height: 1.5;
+    background: rgba(10, 10, 18, 0.6);
+    border-radius: 14px;
+    padding: 8px 12px;
+    font-size: 0.65rem;
+    border-left: 3px solid #a855f7;
+    color: #b8add0;
+    line-height: 1.6;
+    backdrop-filter: blur(4px);
 }
-
-.info-tip p strong {
-  color: var(--star-gold);
+.info-tip p {
+    margin: 0;
 }
 
 .starmap-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 6px 16px;      /* 原 12px 18px → 6px 16px */
-  border-radius: 14px;
-  background: linear-gradient(135deg, #5D2E2E, var(--star-vermilion));
-  color: var(--star-gold);
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-decoration: none;
-  letter-spacing: 1px;
-  border: 1px solid var(--star-gold);
-  box-shadow: 0 6px 16px rgba(201, 43, 43, 0.45),
-              inset 0 0 6px rgba(233, 185, 78, 0.15);
-  transition: var(--star-transition-slow);
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 40px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(0, 212, 255, 0.15));
+    color: #e0d6ff;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.05);
+    transition: all 0.3s;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
 }
-
 .starmap-cta:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #7A3D3D, #B22222);
-  box-shadow: 0 10px 22px rgba(201, 43, 43, 0.65),
-              inset 0 0 8px rgba(233, 185, 78, 0.25);
-  color: #FFE5A3;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(0, 212, 255, 0.25));
+    border-color: #a855f7;
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.15);
+    transform: translateY(-2px);
+    color: #fff;
 }
-
 .starmap-cta .cta-arrow {
-  font-size: 1.1rem;
-  transition: transform 0.25s ease;
+    transition: transform 0.25s;
 }
-
 .starmap-cta:hover .cta-arrow {
-  transform: translateX(4px);
+    transform: translateX(4px);
 }
 
-/* =============================================
-   13. 响应式 · ≤1000px
-============================================= */
-@media (max-width: 1000px) {
-  .filter-tags {
-    gap: 6px;
-    padding: 6px 10px;
-  }
-  .tag-btn {
-    padding: 4px 10px;
-    font-size: 0.7rem;
-  }
-  .slider-item label {
-    width: 85px;
-    font-size: 0.7rem;
-  }
-
-  .province-switcher {
-    top: 70px;
-    left: 50%;
-    padding: 5px 8px;
-    font-size: 0.78rem;
-    gap: 6px;
-  }
-  .province-switcher select {
-    padding: 3px 6px;
-    font-size: 0.78rem;
-    min-width: 90px;
-    max-width: 140px;
-  }
-  .province-switcher .switcher-status {
-    font-size: 0.65rem;
-  }
-  .map-loading .mini-loading-text {
-    font-size: 0.85rem;
-  }
-}
-
-/* =============================================
-   14. 响应式 · ≤600px
-============================================= */
-@media (max-width: 600px) {
-  .province-switcher {
-    top: 60px;
-    padding: 4px 6px;
-    font-size: 0.7rem;
-  }
-  .province-switcher select {
-    font-size: 0.7rem;
-    min-width: 78px;
-    max-width: 110px;
-  }
-}
-
-/* =============================================
-   15. 滚动条国风化（雷达面板内）
-============================================= */
+/* ============================================================
+   13. 滚动条（雷达面板内）
+   ============================================================ */
 .radar-panel::-webkit-scrollbar {
-  width: 6px;
+    width: 4px;
 }
-
 .radar-panel::-webkit-scrollbar-track {
-  background: rgba(18, 6, 6, 0.5);
-  border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 }
-
 .radar-panel::-webkit-scrollbar-thumb {
-  background: var(--star-gold-soft);
-  border-radius: 4px;
+    background: linear-gradient(#a855f7, #00d4ff);
+    border-radius: 4px;
 }
 
-.radar-panel::-webkit-scrollbar-thumb:hover {
-  background: var(--star-gold);
+/* ============================================================
+   14. 响应式 · ≤900px
+   ============================================================ */
+@media (max-width: 900px) {
+    .dashboard {
+        flex-direction: column;
+        padding: 70px 12px 12px 12px;
+        gap: 12px;
+    }
+    .map-container {
+        flex: 2;
+        min-height: 50vh;
+    }
+    .radar-panel {
+        flex: 1;
+        min-height: 45vh;
+    }
+    .province-switcher {
+        top: 12px;
+        padding: 4px 12px;
+        font-size: 0.7rem;
+        gap: 6px;
+    }
+    .filter-tags {
+        bottom: 10px;
+        left: 10px;
+        padding: 4px 8px;
+        gap: 4px;
+    }
+    .tag-btn {
+        padding: 3px 10px;
+        font-size: 0.65rem;
+    }
+    .slider-item label {
+        width: 70px;
+        font-size: 0.65rem;
+    }
+}
+
+/* ============================================================
+   15. 额外：原有地图/雷达内部样式兼容
+   （确保 ECharts 容器无额外干扰）
+   ============================================================ */
+#mapChart,
+#radarChart {
+    background: transparent;
 }

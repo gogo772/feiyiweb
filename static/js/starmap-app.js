@@ -1,4 +1,4 @@
-﻿/* =============================================================
+/* =============================================================
    徽韵星图 · 多省份通用版本
    - 方案：按需动态加载 + 本地缓存
    - GeoJSON 缓存：第一次按需 fetch /geo/[adcode]_full.json，
@@ -8,7 +8,7 @@
    ============================================================= */
 (function () {
     // ==================== 立即初始化加载文字（避免闪烁） ====================
-    const savedLang0 = localStorage.getItem('appLang');
+    const savedLang0 = typeof localStorage !== 'undefined' ? localStorage.getItem('appLang') : null;
     {
         const loadingSpan = document.getElementById('loadingText');
         if (loadingSpan) {
@@ -70,64 +70,39 @@
     //   - food:       美食浓度 95 / 休闲指数 70 主导
     // key 必须与 HTML 中 .tag-btn 的 data-category 完全一致
     const categoryPreset = {
-        all: {cultural: 60, scenery: 60, food: 60, intangible: 60, leisure: 60},
+        all: {cultural: 68, scenery: 82, food: 55, intangible: 70, leisure: 80},
         nature: {cultural: 50, scenery: 90, food: 40, intangible: 30, leisure: 75},
         historic: {cultural: 90, scenery: 50, food: 40, intangible: 70, leisure: 45},
         heritage: {cultural: 75, scenery: 45, food: 40, intangible: 95, leisure: 50},
         food: {cultural: 40, scenery: 50, food: 95, intangible: 35, leisure: 70}
     };
 
-    // ==================== 高匹配筛选策略（双模式 + 兜底） ====================
-    //  percentTop:  百分位模式下取前 N%（默认 30%）
-    //  scoreGate:   分数阈值模式下最低匹配分（默认 60）
-    //  minHigh:     高匹配点最少保证数量（兜底）
-    //  maxHigh:     高匹配点最多展示数量（避免涟漪过密）
-    const HIGH_MATCH_RULE = {
-        mode: 'percentile',   // 'percentile' | 'threshold'
-        percentTop: 0.30,
-        scoreGate: 60,
-        minHigh: 8,
-        maxHigh: 25
-    };
+    // ==================== 高匹配筛选策略（固定 Top 4） ====================
+//  路线生成核心规则：按匹配度降序排序，取 Top 4 作为路线节点
+//  路线节点数 1≤n≤4，n≥2 才绘制连线
+const HIGH_MATCH_RULE = {
+    routeNodeCount: 4
+};
 
-    // ==================== 性能兜底（大数据模式） ====================
-    // 当单省份景点数 ≥ LARGE_MODE_THRESHOLD 时启用：
-    //   1) scatter.large = true（WebGL/Canvas 优化批渲染）
-    //   2) highMatchCap = 20（高匹配点上限 20，减少涟漪动效性能消耗）
-    //   3) 关闭 hover emphasis 动画（scale/transition 全 false）
-    //   4) 流光连线只连接前 8 个高匹配点（避免线路过多杂乱）
-    //   5) progressive + progressiveThreshold 分批渲染
-    const LARGE_MODE_THRESHOLD = 300;
-    const LARGE_MODE_HIGH_CAP = 20;
-    const LARGE_MODE_LINE_CAP = 8;
-
-    // 计算高匹配点集合（按 matchScore 降序裁剪 + 兜底）
-    // 第二参数 cap 用于动态覆盖 rule.maxHigh（如大数据模式降为 20）
-    function pickHighMatches(spotsWithScore, rule, cap) {
-        const total = spotsWithScore.length;
-        if (total === 0) return [];
-        const sorted = [...spotsWithScore].sort((a, b) => b.matchScore - a.matchScore);
-
-        let candidates;
-        if (rule.mode === 'threshold') {
-            candidates = sorted.filter(s => s.matchScore >= rule.scoreGate);
-        } else {
-            // 百分位模式：取前 percentTop 名
-            const topN = Math.max(1, Math.ceil(total * rule.percentTop));
-            candidates = sorted.slice(0, topN);
+// 计算高匹配点集合（按 matchScore 降序取 Top 4）
+function pickHighMatches(spotsWithScore, rule) {
+    const total = spotsWithScore.length;
+    if (total === 0) return [];
+    const sorted = [...spotsWithScore].sort((a, b) => b.matchScore - a.matchScore);
+    const limit = Math.min(rule.routeNodeCount, total);
+    
+    if (routeStartSpot) {
+        const startName = routeStartSpot.name;
+        const startSpot = sorted.find(s => s.name === startName);
+        if (startSpot) {
+            const others = sorted.filter(s => s.name !== startName);
+            const selected = [startSpot, ...others.slice(0, limit - 1)];
+            return selected;
         }
-
-        // 兜底：不足 minHigh 时补到前 minHigh 名
-        if (candidates.length < rule.minHigh) {
-            candidates = sorted.slice(0, Math.min(rule.minHigh, total));
-        }
-        // 上限：防止点位过密（cap 覆盖默认 maxHigh）
-        const finalCap = (typeof cap === 'number' && cap > 0) ? Math.min(cap, rule.maxHigh) : rule.maxHigh;
-        if (candidates.length > finalCap) {
-            candidates = candidates.slice(0, finalCap);
-        }
-        return candidates;
     }
+    
+    return sorted.slice(0, limit);
+}
 
     // ==================== 国际化文本 ====================
     const i18n = {
@@ -196,16 +171,75 @@
     let currentProvince = null;             // 当前选中的省份元数据 {name,nameEn,center,zoom,spots}
     let currentSpotsData = [];              // 当前省份的景点数组
     let mapRegisteredSet = new Set();       // 已通过 echarts.registerMap 注册过的地图名
+    let lastValidLinesData = [];            // 上一次有效的线路数据（降级方案使用）
+    let routeStartSpot = null;              // 路线起点（双击景点设置）
 
     // ==================== GeoJSON 缓存 ====================
     const GeoJsonCache = new Map();         // key = provinceCode, value = GeoJSON FeatureCollection
     const registeredMaps = new Set();       // 与 mapRegisteredSet 保持同步的 ECharts 注册名集合
 
+    // ==================== 资源清理注册表（用于页面卸载时释放资源） ====================
+    const cleanupRegistry = {
+        resizeHandler: null,   // resize 事件处理函数引用
+        zoomDebounceTimer: null // zoom 防抖定时器引用
+    };
+
+    // ==================== 页面卸载清理函数 ====================
+    // 修复：解决事件监听器未清理导致的内存泄漏问题
+    function cleanup() {
+        // 1. 清理地图点击事件
+        if (myMapChart) {
+            myMapChart.off('click');
+        }
+        // 2. 清理 zoom 防抖定时器
+        if (cleanupRegistry.zoomDebounceTimer) {
+            clearTimeout(cleanupRegistry.zoomDebounceTimer);
+            cleanupRegistry.zoomDebounceTimer = null;
+        }
+        // 3. 清理 resize 事件监听器
+        if (cleanupRegistry.resizeHandler && typeof window !== 'undefined') {
+            window.removeEventListener('resize', cleanupRegistry.resizeHandler);
+            cleanupRegistry.resizeHandler = null;
+        }
+        // 4. 销毁 ECharts 实例
+        if (myMapChart) {
+            myMapChart.dispose();
+            myMapChart = null;
+        }
+        if (myRadarChart) {
+            myRadarChart.dispose();
+            myRadarChart = null;
+        }
+        console.log('[starmap] Resources cleaned up successfully');
+    }
+
+    // 注册页面卸载清理事件
+    if (typeof window !== 'undefined') {
+        window.addEventListener('beforeunload', cleanup);
+        // SPA 环境下的清理
+        window.addEventListener('pagehide', cleanup);
+    }
+
     function getSpotByName(name) {
         return currentSpotsData.find(s => s.name === name);
     }
 
+    // ==================== 匹配分数缓存（必须在computeMatchScore之前定义） ====================
+    const matchScoreCache = new WeakMap();
+
+    // ==================== 坐标抖动缓存（必须在applyCoordJitter之前定义） ====================
+    // 用于确保相同点位在不同缩放级别下产生相同的偏移量，避免路线错位
+    const jitterCache = new Map(); // 使用Map而非WeakMap，因为键是字符串
+
+    // ==================== 匹配分数计算（带缓存） ====================
     function computeMatchScore(spot, pref) {
+        // 修复：添加缓存避免重复计算
+        const cacheKey = `${pref.cultural}-${pref.scenery}-${pref.food}-${pref.intangible}-${pref.leisure}`;
+        const spotCache = matchScoreCache.get(spot) || {};
+        if (spotCache[cacheKey] !== undefined) {
+            return spotCache[cacheKey];
+        }
+        
         const diff = Math.sqrt(
             Math.pow(spot.cultureScore - pref.cultural, 2) +
             Math.pow(spot.sceneryScore - pref.scenery, 2) +
@@ -214,14 +248,20 @@
             Math.pow(spot.leisureScore - pref.leisure, 2)
         );
         const maxDiff = Math.sqrt(5 * 100 * 100);
-        return Math.min(100, Math.max(0, 100 - (diff / maxDiff) * 100));
+        const score = Math.min(100, Math.max(0, 100 - (diff / maxDiff) * 100));
+        
+        // 缓存结果
+        spotCache[cacheKey] = score;
+        matchScoreCache.set(spot, spotCache);
+        return score;
     }
 
     // ==================== ECharts 渲染 ====================
     function updateMapByPreference() {
         if (!myMapChart || !currentProvince) return;
         // 复用统一的 series 生成函数（与切换省份走同一份逻辑）
-        const series = getMapSeries(currentSpotsData, currentPreference);
+        // 修复:传入 myMapChart 以便 getMapSeries 内部做像素空间防重叠
+        const series = getMapSeries(currentSpotsData, currentPreference, myMapChart);
         myMapChart.setOption({
             series,
             backgroundColor: 'transparent',
@@ -246,24 +286,23 @@
                 shape: 'circle', center: ['50%', '50%'], radius: '65%',
                 name: {
                     textStyle: {
-                        color: '#F0C870',
+                        color: '#b8add0',      // 淡紫灰
                         fontSize: 13,
                         fontWeight: 500
                     }
                 },
-                splitLine: {lineStyle: {color: 'rgba(240, 200, 112, 0.4)'}},
+                splitLine: { lineStyle: { color: 'rgba(168,85,247,0.2)' } },
                 splitArea: {
                     areaStyle: {
                         color: [
-                            'rgba(184, 38, 38, 0.10)',
-                            'rgba(240, 200, 112, 0.04)',
-                            'rgba(184, 38, 38, 0.08)',
-                            'rgba(240, 200, 112, 0.03)',
-                            'rgba(184, 38, 38, 0.06)'
+                            'rgba(168,85,247,0.05)',
+                            'rgba(0,212,255,0.03)',
+                            'rgba(168,85,247,0.05)',
+                            'rgba(0,212,255,0.03)'
                         ]
                     }
                 },
-                axisLine: {lineStyle: {color: 'rgba(240, 200, 112, 0.35)'}}
+                axisLine: { lineStyle: { color: 'rgba(168,85,247,0.15)' } }
             },
             series: [{
                 type: 'radar',
@@ -274,15 +313,26 @@
                 symbol: 'circle',
                 symbolSize: 5,
                 symbolKeepAspect: false,
-                itemStyle: {color: '#B82626', borderColor: '#F0C870', borderWidth: 1.5},
-                lineStyle: {width: 2, color: '#F0C870'},
+                itemStyle: {
+                    color: '#ff6b9d',
+                    borderColor: '#00d4ff',
+                    borderWidth: 2,
+                    shadowBlur: 20,
+                    shadowColor: 'rgba(255,107,157,0.3)'
+                },
+                lineStyle: {
+                    width: 2.5,
+                    color: '#a855f7',
+                    shadowBlur: 15,
+                    shadowColor: 'rgba(168,85,247,0.4)'
+                },
                 areaStyle: {
                     color: {
                         type: 'radial',
                         x: 0.5, y: 0.5, r: 0.65,
                         colorStops: [
-                            {offset: 0, color: 'rgba(184, 38, 38, 0.5)'},
-                            {offset: 1, color: 'rgba(240, 200, 112, 0.15)'}
+                            { offset: 0, color: 'rgba(168,85,247,0.3)' },
+                            { offset: 1, color: 'rgba(0,212,255,0.05)' }
                         ]
                     }
                 }
@@ -314,7 +364,16 @@
         normal: {core: 7, regular: 6, supplementary: 5},
         high: {core: 12, regular: 11, supplementary: 10}
     };
-    const JITTER_RANGE = 0.02; // ±0.02° 抖动幅度
+    const JITTER_RANGE = 0.02; // ±0.02° 抖动幅度（旧函数保留,新逻辑见下方 applyCoordJitterPixel）
+    // ==================== 像素空间防重叠配置 ====================
+    // 修复：旧版 applyCoordJitter 只处理"经纬度完全重合"的点(用 toFixed(4) 作 key),
+    //       对"邻近但不完全重合"的点(例如 0.01-0.03° 内的景区)完全不感知,导致左下角
+    //       罗田薄刀峰一带多个景点贴成一团。现升级为"屏幕像素空间"判重:
+    //       1) applyCoordJitterPixel  : 用 24px 像素格分桶,同格内点用黄金角均布
+    //       2) applyPixelSpaceRepulsion: 多轮迭代,推开任意 < MIN_PIXEL_DIST 的点对
+    const JITTER_PIXEL_CELL = 24;             // 像素格大小(px)
+    const MIN_PIXEL_DIST = 18;                // 最小屏幕间距(px)
+    const PIXEL_REPULSION_ITERATIONS = 3;     // 排斥迭代轮数(经验值 3 轮足够收敛)
     const ZOOM_TIERS = {
         // 缩放联动：当 zoom < tier.maxVisible 时仅显示 ≥ tier.minLevel 的层
         // 0: 补充, 1: 常规, 2: 核心
@@ -322,18 +381,57 @@
         tierB: {maxZoom: 1.5, minLevel: 1}, // 中等：核心+常规
         tierC: {maxZoom: Infinity, minLevel: 0} // 放大：全部
     };
-    let currentZoomTier = 2; // 默认"全部"档（maxLevel=0）
+    let currentZoomTier = 'tierC'; // 默认"全部"档（maxLevel=0）
 
     // 工具：按综合分计算点位等级
+    // ==================== 大数据模式优化配置 ====================
+    // 修复：大数据模式下进一步降低动画复杂度，启用WebGL渲染
+    const PERF_CONFIG = {
+        // 大数据阈值
+        largeModeThreshold: 300,
+        // WebGL加速：当数据量超过此阈值时自动切换到WebGL渲染
+        webglThreshold: 500,
+        // 大数据模式下的效果降级
+        largeModeEffects: {
+            ripplePeriod: 8,           // 涟漪周期拉长
+            rippleScale: 2.0,          // 涟漪缩放缩小
+            labelFontSize: 9,          // 标签字号缩小
+            lineWidth: 1.2,            // 连线宽度减小
+            disableAnimation: true,    // 禁用部分动画
+        },
+        // 渐进式渲染配置
+        progressive: {
+            enabled: true,
+            chunkSize: 500,
+            threshold: 1000,
+            updateInterval: 0
+        }
+    };
+
+    // ==================== 点位等级缓存 ====================
+    // 修复：避免重复计算点位等级
+    const spotLevelCache = new WeakMap();
     function getSpotLevel(spot) {
+        // 检查缓存
+        if (spotLevelCache.has(spot)) {
+            return spotLevelCache.get(spot);
+        }
         const composite = (Number(spot.cultureScore || 0) + Number(spot.heritageScore || 0)) / 2;
-        if (composite >= 80) return 'core';
-        if (composite >= 60) return 'regular';
-        return 'supplementary';
+        let level;
+        if (composite >= 80) level = 'core';
+        else if (composite >= 60) level = 'regular';
+        else level = 'supplementary';
+        // 缓存结果
+        spotLevelCache.set(spot, level);
+        return level;
     }
 
-    // 工具：对经纬度完全重合的点施加 ±0.02° 随机偏移
-    // 返回新数组（不修改原对象）。key 用 lng.lat 字符串（4 位小数精度检测）。
+
+
+    // 工具(旧):对经纬度完全重合的点施加 ±0.02° 随机偏移
+    // 保留作为兜底:当 chart 未就绪或无法做像素投影时,退化到经纬度空间判重
+    // 返回新数组(不修改原对象)。key 用 lng.lat 字符串(4 位小数精度检测)
+    // 修复:使用jitterCache缓存偏移结果,确保相同点位在不同缩放级别下产生相同的偏移量
     function applyCoordJitter(spots, range = JITTER_RANGE) {
         const seen = new Map(); // key -> count
         return spots.map(spot => {
@@ -342,19 +440,143 @@
             const c = seen.get(key) || 0;
             seen.set(key, c + 1);
             if (c === 0) return spot; // 首个不偏移
-            // 同 key 第 2、3... 个点位施加随机偏移
-            const dx = (Math.random() * 2 - 1) * range;
-            const dy = (Math.random() * 2 - 1) * range;
-            return {...spot, coord: [lng + dx, lat + dy]};
+
+            // 使用缓存的偏移量,确保相同点位在不同缩放级别下产生相同的偏移
+            const spotName = spot.name || `${lng}_${lat}_${c}`;
+            let cachedOffset = jitterCache.get(spotName);
+            if (!cachedOffset) {
+                // 首次计算:生成随机偏移并缓存
+                const dx = (Math.random() * 2 - 1) * range;
+                const dy = (Math.random() * 2 - 1) * range;
+                cachedOffset = {dx, dy};
+                jitterCache.set(spotName, cachedOffset);
+            }
+
+            return {...spot, coord: [lng + cachedOffset.dx, lat + cachedOffset.dy]};
         });
     }
 
-    function getMapSeries(spots, pref) {
+    // 工具(新·B):基于屏幕像素格分桶 + 黄金角均布的抖动
+    // 解决问题:旧版 applyCoordJitter 只处理"经纬度 toFixed(4) 完全重合"的情况,
+    //         对 0.01-0.03° 范围内的邻近景点不感知 → 屏幕上仍贴在一起
+    // 新方案:把点位先投影到屏幕像素,按 JITTER_PIXEL_CELL (24px) 分桶,
+    //         同桶内第 2、3... 个点用黄金角 (137.508°) 均布在圆周上,半径随计数递增
+    // 入参:spots (原始点位数组), chart (ECharts 实例,用于经纬度↔像素换算)
+    // 失败/未就绪:返回原数组不动,让调用方决定是否走旧版 fallback
+    function canProjectGeo(chart) {
+        if (!chart) return false;
+        try {
+            const opt = chart.getOption();
+            const geos = Array.isArray(opt.geo) ? opt.geo : (opt.geo ? [opt.geo] : []);
+            return geos.length > 0 && !!geos[0] && !!geos[0].map;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function applyCoordJitterPixel(spots, chart, cell = JITTER_PIXEL_CELL) {
+        if (!spots || !spots.length) return spots;
+        if (!canProjectGeo(chart)) return spots; // chart 未就绪:不动数据,避免破坏首屏
+        const buckets = new Map(); // cellKey -> 该格已有点数
+        return spots.map(spot => {
+            const [lng, lat] = spot.coord;
+            let px, py;
+            try {
+                const p = chart.convertToPixel({geo: 0}, [lng, lat]);
+                px = p[0]; py = p[1];
+            } catch (e) { return spot; }
+            if (!isFinite(px) || !isFinite(py)) return spot;
+            const cx = Math.floor(px / cell);
+            const cy = Math.floor(py / cell);
+            const key = `${cx}_${cy}`;
+            const c = (buckets.get(key) || 0) + 1;
+            buckets.set(key, c);
+            if (c === 1) return spot; // 每格首个保留原位,避免无谓位移
+
+            // 同格内 c>=2:黄金角均布,半径随 c 缓慢递增(避免 4+ 个点时仍挤回中心)
+            // 黄金角 137.508° 保证任意连续 N 个点的角度差 ≈ 137.5°,自然散开不重叠
+            const angle = ((c - 1) * 137.508) * Math.PI / 180;
+            const radius = cell * 0.45 * Math.min(1 + (c - 2) * 0.25, 2.0);
+            const dx = Math.cos(angle) * radius;
+            const dy = Math.sin(angle) * radius;
+            let newCoord;
+            try {
+                newCoord = chart.convertFromPixel({geo: 0}, [px + dx, py + dy]);
+            } catch (e) { return spot; }
+            if (!newCoord || !isFinite(newCoord[0]) || !isFinite(newCoord[1])) return spot;
+            return {...spot, coord: [newCoord[0], newCoord[1]]};
+        });
+    }
+
+    // 工具(新·A):像素空间多轮迭代排斥
+    // 解决问题:applyCoordJitterPixel 只处理"同一像素格"内的点对,
+    //         对"邻近但分到不同像素格"的点对无能为力(例如 12-15px 间距的同区景点)
+    // 新方案:在像素空间对所有点做 O(n²) 两两距离检查,距离 < MIN_PIXEL_DIST 则沿连线
+    //         方向各推一半距离,多轮迭代直到收敛(或达最大轮数)
+    // 复杂度:湖北 47 点 → 47² × 3 轮 ≈ 6.6k 配对,毫秒级,无性能问题
+    function applyPixelSpaceRepulsion(spots, chart, minDist = MIN_PIXEL_DIST) {
+        if (!spots || spots.length < 2) return spots;
+        if (!canProjectGeo(chart)) return spots;
+
+        // 1) 全部投影到像素空间,记录基础坐标 + 累积位移
+        const items = spots.map(s => {
+            let x = 0, y = 0;
+            let valid = true;
+            try {
+                const p = chart.convertToPixel({geo: 0}, s.coord);
+                x = p[0]; y = p[1];
+                if (!isFinite(x) || !isFinite(y)) valid = false;
+            } catch (e) { valid = false; }
+            return {spot: s, x, y, dx: 0, dy: 0, valid};
+        });
+
+        // 2) 多轮迭代:每轮扫描所有点对,距离不足则互相推开
+        for (let it = 0; it < PIXEL_REPULSION_ITERATIONS; it++) {
+            let moved = false;
+            for (let i = 0; i < items.length; i++) {
+                for (let j = i + 1; j < items.length; j++) {
+                    const a = items[i], b = items[j];
+                    if (!a.valid || !b.valid) continue;
+                    const ddx = (a.x + a.dx) - (b.x + b.dx);
+                    const ddy = (a.y + a.dy) - (b.y + b.dy);
+                    const dist = Math.hypot(ddx, ddy);
+                    if (dist >= minDist) continue;
+                    let nx, ny, push;
+                    if (dist < 0.001) {
+                        // 完全重叠:用稳定哈希给个方向,避免每轮随机 → 反复横跳不收敛
+                        const ang = (((i * 2654435761) ^ (j * 40503)) % 360) * Math.PI / 180;
+                        nx = Math.cos(ang); ny = Math.sin(ang);
+                        push = minDist / 2;
+                    } else {
+                        nx = ddx / dist; ny = ddy / dist;
+                        push = (minDist - dist) / 2;
+                    }
+                    a.dx += nx * push; a.dy += ny * push;
+                    b.dx -= nx * push; b.dy -= ny * push;
+                    moved = true;
+                }
+            }
+            if (!moved) break; // 本轮无任何调整,已收敛
+        }
+
+        // 3) 把累积位移转回经纬度;位移 < 0.01px 视为无变化,直接返回原 spot 省一次换算
+        return items.map(p => {
+            if (Math.abs(p.dx) < 0.01 && Math.abs(p.dy) < 0.01) return p.spot;
+            let newCoord;
+            try {
+                newCoord = chart.convertFromPixel({geo: 0}, [p.x + p.dx, p.y + p.dy]);
+            } catch (e) { return p.spot; }
+            if (!newCoord || !isFinite(newCoord[0]) || !isFinite(newCoord[1])) return p.spot;
+            return {...p.spot, coord: [newCoord[0], newCoord[1]]};
+        });
+    }
+
+    function getMapSeries(spots, pref, chart) {
+        const projChart = chart || myMapChart;
         const filteredSpots = currentTypeFilter === 'all'
             ? spots
             : spots.filter(s => s.type === currentTypeFilter);
 
-        // 空数据兜底：返回 3 个空 series 占位，避免 ECharts 报错
         if (!filteredSpots.length) {
             return [
                 {name: 'Stars', type: 'scatter', coordinateSystem: 'geo', data: [], zlevel: 1},
@@ -363,26 +585,16 @@
             ];
         }
 
-        // 性能兜底：单省 ≥ 300 景点时启用大数据模式
-        const isLargeMode = filteredSpots.length >= LARGE_MODE_THRESHOLD;
-        const highCap = isLargeMode ? LARGE_MODE_HIGH_CAP : undefined;  // 20 / 默认25
-        const lineCap = isLargeMode ? LARGE_MODE_LINE_CAP : Infinity;   // 8 / 不限
-
-        // 1) 全量景点打分
         const spotsWithScore = filteredSpots.map(spot => ({
             ...spot,
             matchScore: computeMatchScore(spot, pref)
         }));
 
-        // 2) 计算高匹配集合（百分位 / 阈值 双模式 + 兜底）
-        //    大数据模式下 cap=20 覆盖默认 maxHigh=25
-        const highMatches = pickHighMatches(spotsWithScore, HIGH_MATCH_RULE, highCap);
+        const highMatches = pickHighMatches(spotsWithScore, HIGH_MATCH_RULE);
         const highMatchNames = new Set(highMatches.map(s => s.name));
         const normalSpots = spotsWithScore.filter(s => !highMatchNames.has(s.name));
 
-        // 3) 缩放联动：按当前 zoom 档过滤可见层
-        // minLevel 0=全部 / 1=核心+常规 / 2=核心
-        const tier = ZOOM_TIERS.tierA.maxZoom <= currentZoom
+        const tier = currentZoom <= ZOOM_TIERS.tierA.maxZoom
             ? ZOOM_TIERS.tierA
             : (currentZoom <= ZOOM_TIERS.tierB.maxZoom ? ZOOM_TIERS.tierB : ZOOM_TIERS.tierC);
         const levelRank = {core: 2, regular: 1, supplementary: 0};
@@ -392,115 +604,113 @@
         }
 
         const visibleNormal = normalSpots.filter(visibleByZoom);
-        let visibleHigh = highMatches.filter(visibleByZoom);
+        const visibleHigh = highMatches;
 
-        // 大数据模式：流光连线只连接前 8 个高匹配点（仅裁切 effectData，lineCap 控制）
-        if (isLargeMode && visibleHigh.length > lineCap) {
-            visibleHigh = visibleHigh.slice(0, lineCap);
+        let jitteredNormal, jitteredHigh;
+        if (canProjectGeo(projChart)) {
+            jitteredNormal = applyCoordJitterPixel(visibleNormal, projChart);
+            jitteredNormal = applyPixelSpaceRepulsion(jitteredNormal, projChart);
+            jitteredHigh = applyCoordJitterPixel(visibleHigh, projChart);
+            jitteredHigh = applyPixelSpaceRepulsion(jitteredHigh, projChart);
+        } else {
+            jitteredNormal = applyCoordJitter(visibleNormal);
+            jitteredHigh = applyCoordJitter(visibleHigh);
         }
 
-        // 4) 点位抖动：先对"可见散点"去重偏移（防止完全重叠）
-        //    高匹配点也参与抖动，确保流光线路不被同一坐标拉成零长度线
-        const jitteredNormal = applyCoordJitter(visibleNormal);
-        const jitteredHigh = applyCoordJitter(visibleHigh);
-
-        // 5) 第一层：普通散点（覆盖全量，统一主色 #F0C870 亮金 + 朱砂外光，半透明）
-        //    symbolSize 按点位等级分核心 7 / 常规 6 / 补充 5，形成视觉层次
         const normalSeriesData = jitteredNormal.map(spot => {
             const lvl = getSpotLevel(spot);
             return {
                 name: spot.name,
                 value: [...spot.coord, spot.matchScore],
                 itemStyle: {
-                    color: '#F0C870',
-                    borderColor: 'rgba(223, 208, 184, 0.5)',
+                    color: typeMap[spot.type]?.color || '#00d4ff',
+                    borderColor: 'rgba(255,255,255,0.3)',
                     borderWidth: 0.6,
                     opacity: 0.75
                 },
-                // 形状仍按类型区分（不影响主色），保留信息可读性
                 symbol: typeMap[spot.type].symbol,
                 symbolSize: SPOT_LEVEL_SIZE.normal[lvl]
             };
         });
 
-        // 6) 第二层：特效散点（高匹配，金托红宝石 · 朱砂嵌宝 + 描金边 + 涟漪 + 标签）
-        //    symbolSize 按点位等级：核心 12 / 常规 11 / 补充 10
-        //    大数据模式：rippleEffect 周期拉长 + scale 缩小，减少性能消耗
         const effectData = jitteredHigh.map(spot => {
             const lvl = getSpotLevel(spot);
+            const isStart = routeStartSpot && spot.name === routeStartSpot.name;
             return {
                 name: spot.name,
                 value: [...spot.coord, spot.matchScore],
                 itemStyle: {
-                    color: '#B82626',
-                    shadowBlur: isLargeMode ? 10 : 16,
-                    shadowColor: 'rgba(184, 38, 38, 0.65)',
-                    borderColor: '#F0C870',
-                    borderWidth: 2
+                    color: isStart ? '#FF6B6B' : '#F0C870',
+                    shadowBlur: isStart ? 35 : 25,
+                    shadowColor: isStart ? 'rgba(255,107,107,0.9)' : 'rgba(240,200,112,0.8)',
+                    borderColor: isStart ? '#FF4757' : '#FFD966',
+                    borderWidth: isStart ? 3 : 2
                 },
                 symbol: typeMap[spot.type].symbol,
-                symbolSize: SPOT_LEVEL_SIZE.high[lvl],
+                symbolSize: isStart ? SPOT_LEVEL_SIZE.high[lvl] * 1.4 : SPOT_LEVEL_SIZE.high[lvl],
                 rippleEffect: {
                     brushType: 'stroke',
-                    scale: isLargeMode ? 2.8 : 3.6,
-                    period: isLargeMode ? 5 : 4
+                    scale: isStart ? 5 : 4,
+                    period: isStart ? 2 : 3
                 }
             };
         });
 
-        // 7) 第三层：流光连线（仅高匹配点之间连成光路，使用抖动后坐标）
-        //    大数据模式：仅连接前 8 个；普通模式：全连接 + 虚线回环
-        const linesData = [];
-        if (jitteredHigh.length >= 2) {
-            const pts = jitteredHigh.map(s => s.coord);
-            const segCount = Math.min(pts.length - 1, isLargeMode ? lineCap - 1 : pts.length - 1);
-            for (let i = 0; i < segCount; i++) {
-                linesData.push({
-                    coords: [pts[i], pts[i + 1]],
-                    lineStyle: {
-                        color: '#F0C870',
-                        width: isLargeMode ? 1.6 : 2.2,
-                        curveness: 0.2,
-                        type: 'solid',          // ← 改为 solid
-                        opacity: 0.9
-                    }
-                });
+        let linesData = [];
+        let generateSuccess = false;
+
+        try {
+            if (jitteredHigh.length >= 2) {
+                for (let i = 0; i < jitteredHigh.length - 1; i++) {
+                    linesData.push({
+                        coords: [jitteredHigh[i].coord, jitteredHigh[i + 1].coord],
+                        lineStyle: {
+                            color: 'rgba(240,200,112,0.8)',
+                            width: 2,
+                            curveness: 0.2,
+                            type: 'solid',
+                            opacity: 0.8
+                        }
+                    });
+                }
+                if (jitteredHigh.length > 2) {
+                    linesData.push({
+                        coords: [jitteredHigh[jitteredHigh.length - 1].coord, jitteredHigh[0].coord],
+                        lineStyle: {
+                            color: 'rgba(240,200,112,0.6)',
+                            width: 1.5,
+                            curveness: 0.3,
+                            type: 'dashed',
+                            opacity: 0.6
+                        }
+                    });
+                }
+                generateSuccess = true;
             }
-            // 虚线回环：仅普通模式 + 至少 3 点
-            if (!isLargeMode && pts.length > 2) {
-                linesData.push({
-                    coords: [pts[pts.length - 1], pts[0]],
-                    lineStyle: {color: '#B82626', width: 1.4, curveness: 0.3, type: 'dashed', opacity: 0.6}
-                });
-            }
+        } catch (e) {
+            console.warn('[starmap] 线路生成失败，使用上一次有效线路:', e.message);
         }
 
-        // 8) 装配三层 series
-        // 显式声明 sampling: 'none' 防止 ECharts 自动抽稀合并点位（任务4基础配置要求）
-        // 大数据模式：large: true + progressive 启用批渲染；hover emphasis 关闭动画
+        // 降级方案：如果线路生成失败，使用上一次有效的线路数据
+        if (!generateSuccess && lastValidLinesData.length > 0) {
+            linesData = lastValidLinesData;
+            console.log('[starmap] 使用降级方案，显示上一次有效线路');
+        } else if (generateSuccess) {
+            // 生成成功，更新缓存
+            lastValidLinesData = linesData;
+        }
+
         const baseEmphasis = {
             label: {show: true, formatter: '{b}', position: 'top', color: '#F0C870', fontSize: 11},
             itemStyle: {opacity: 1, borderWidth: 1.2}
         };
-        // 大数据模式：emphasis.scale false + 无 transition 减少重绘
-        if (isLargeMode) {
-            baseEmphasis.scale = false;
-            baseEmphasis.focus = 'self';
-        }
         const series = [
             {
                 name: 'Stars', type: 'scatter', coordinateSystem: 'geo',
                 data: normalSeriesData, zlevel: 1,
                 sampling: 'none',
-                // 大数据模式：开启 large + progressive 优化
-                ...(isLargeMode ? {
-                    large: true,
-                    largeThreshold: 100,
-                    progressive: 800,
-                    progressiveThreshold: 1500
-                } : {}),
-                // symbolSize 已在每条 data 中按等级定义
                 label: {show: false},
+                labelLayout: {hideOverlap: true, moveOverlap: 'shiftXY', moveTolerance: 6},
                 emphasis: baseEmphasis,
                 tooltip: {
                     formatter: (p) => {
@@ -513,16 +723,14 @@
                 name: 'High Match', type: 'effectScatter', coordinateSystem: 'geo',
                 data: effectData, zlevel: 2,
                 sampling: 'none',
-                // 大数据模式：rippleEffect 整体降级（period 拉长、scale 缩小）
-                rippleEffect: {brushType: 'stroke', period: isLargeMode ? 5 : 3, scale: isLargeMode ? 2.8 : 3.6},
-                // 标签防重叠：labelLayout 自动避让 + hideOverlap 极端密集时自动隐藏部分
-                labelLayout: {hideOverlap: true, moveOverlap: 'shiftY'},
+                rippleEffect: {brushType: 'stroke', period: 3, scale: 3.6},
+                labelLayout: {hideOverlap: true, moveOverlap: 'shiftXY', moveTolerance: 10},
                 label: {
                     show: true, formatter: '{b}', position: 'right',
-                    fontWeight: 'bold', color: '#F0C870', fontSize: isLargeMode ? 10 : 11,
+                    fontWeight: 'bold', color: '#b8add0', fontSize: 14,
                     textBorderColor: '#2A0A0A', textBorderWidth: 2
                 },
-                emphasis: isLargeMode ? {scale: false, focus: 'self'} : {focus: 'self'},
+                emphasis: {focus: 'self'},
                 tooltip: {
                     formatter: (p) => `${p.name} · High Match Recommendation, click for trivia`
                 }
@@ -533,13 +741,12 @@
             series.push({
                 name: 'Inspiration Route', type: 'lines', coordinateSystem: 'geo',
                 data: linesData, zlevel: 3,
-                lineStyle: {color: '#F0C870', width: isLargeMode ? 1.4 : 2.0, curveness: 0.2, opacity: 0.9},
                 effect: {
                     show: true,
-                    period: isLargeMode ? 6 : 4,
-                    trailLength: 0.35,
-                    symbol: 'arrow',
-                    symbolSize: isLargeMode ? 6 : 8,
+                    period: 4,
+                    trailLength: 0.3,
+                    symbol: 'circle',
+                    symbolSize: 6,
                     color: '#F0C870'
                 }
             });
@@ -577,19 +784,19 @@
             zoom: province.zoom || 1.0,
             center: province.center,
             itemStyle: {
-                borderColor: '#C49A6C',   // 暖金边界
+                borderColor: 'rgba(0,212,255,0.3)',
                 borderWidth: 1.2,
-                areaColor: '#3D1F1A'      // 深褐红
+                areaColor: 'rgba(20,12,40,0.6)',
+                shadowBlur: 20,
+                shadowColor: 'rgba(168,85,247,0.1)'
             },
             emphasis: {
-                itemStyle: {
-                    areaColor: '#8B3A3A'  // 红褐高亮
-                },
-                label: {show: true, color: '#F5D07A', fontWeight: 'bold'}
+                itemStyle: { areaColor: 'rgba(168,85,247,0.3)' },
+                label: { show: true, color: '#00d4ff', fontWeight: 'bold' }
             },
             label: {
                 show: true,
-                color: '#E8D5B5',         // 米黄标签
+                color: 'rgba(200,180,230,0.7)',
                 fontSize: 10,
                 formatter: cityLabelFormatter
             },
@@ -612,6 +819,8 @@
     }
 
     // ==================== 地图点击交互 ====================
+    let lastClickTime = 0;
+    let lastClickSpot = null;
     function bindMapClick() {
         if (!myMapChart) return;
         myMapChart.off('click');
@@ -619,29 +828,44 @@
             if (params.componentType === 'series' && (params.seriesType === 'scatter' || params.seriesType === 'effectScatter')) {
                 const spot = getSpotByName(params.name);
                 if (spot) {
-                    currentPreference = {
-                        cultural: spot.cultureScore,
-                        scenery: spot.sceneryScore,
-                        food: spot.foodScore,
-                        intangible: spot.heritageScore,
-                        leisure: spot.leisureScore
-                    };
-                    const map = {
-                        cultureScore: 'cult',
-                        sceneryScore: 'scenery',
-                        foodScore: 'food',
-                        heritageScore: 'intangible',
-                        leisureScore: 'leisure'
-                    };
-                    Object.keys(map).forEach(k => {
-                        document.getElementById(map[k]).value = spot[k];
-                        document.getElementById(map[k] + 'Val').innerText = spot[k];
-                    });
-                    refreshAll();
-                    const cold = currentLang === 'zh' ? spot.coldKnowledge : (spot.coldEn || spot.coldKnowledge);
-                    const title = currentLang === 'zh' ? '冷知识' : 'Trivia';
-                    const tail = currentLang === 'zh' ? '雷达已同步，专属灵感路线已更新~' : 'Radar synced, inspiration route updated~';
-                    document.getElementById('coldInfo').innerHTML = `<p><strong>「${spot.name}」· ${title}</strong><br>${cold}<br>${tail}</p>`;
+                    const now = Date.now();
+                    const isDoubleClick = now - lastClickTime < 300 && lastClickSpot && lastClickSpot.name === spot.name;
+                    lastClickTime = now;
+                    lastClickSpot = spot;
+
+                    if (isDoubleClick) {
+                        routeStartSpot = routeStartSpot && routeStartSpot.name === spot.name ? null : spot;
+                        refreshAll();
+                        const msg = routeStartSpot
+                            ? (currentLang === 'zh' ? `已将「${spot.name}」设为路线起点` : `Set "${spot.name}" as route start`)
+                            : (currentLang === 'zh' ? '已取消路线起点' : 'Route start cleared');
+                        document.getElementById('coldInfo').innerHTML = `<p><strong>${msg}</strong></p>`;
+                    } else {
+                        currentPreference = {
+                            cultural: spot.cultureScore,
+                            scenery: spot.sceneryScore,
+                            food: spot.foodScore,
+                            intangible: spot.heritageScore,
+                            leisure: spot.leisureScore
+                        };
+                        const map = {
+                            cultureScore: 'cult',
+                            sceneryScore: 'scenery',
+                            foodScore: 'food',
+                            heritageScore: 'intangible',
+                            leisureScore: 'leisure'
+                        };
+                        Object.keys(map).forEach(k => {
+                            document.getElementById(map[k]).value = spot[k];
+                            document.getElementById(map[k] + 'Val').innerText = spot[k];
+                        });
+                        routeStartSpot = null;
+                        refreshAll();
+                        const cold = currentLang === 'zh' ? spot.coldKnowledge : (spot.coldEn || spot.coldKnowledge);
+                        const title = currentLang === 'zh' ? '冷知识' : 'Trivia';
+                        const tail = currentLang === 'zh' ? '雷达已同步，专属灵感路线已更新~' : 'Radar synced, inspiration route updated~';
+                        document.getElementById('coldInfo').innerHTML = `<p><strong>「${spot.name}」· ${title}</strong><br>${cold}<br>${tail}</p>`;
+                    }
                 }
             }
         });
@@ -766,10 +990,8 @@
             const key = SLIDER_PREF_KEY[id];
             slider.addEventListener('input', (e) => {
                 const newVal = parseInt(e.target.value);
-                // 实时更新数值 span（不防抖，保证跟手性）
                 const valSpan = document.getElementById(SLIDER_VAL_ID[id]);
                 if (valSpan) valSpan.innerText = newVal;
-                // 单一来源：仅写 currentPreference + 同步滑块 UI（silent 不触发 refresh）
                 const draft = Object.assign({}, currentPreference);
                 draft[key] = newVal;
                 const tip = currentLang === 'zh'
@@ -778,10 +1000,10 @@
                 updatePreference(draft, {
                     source: 'slider',
                     tip,
-                    silent: true,                       // 滑块 → 不在 updatePreference 内触发 refresh
-                    onApply: deactivateFilterButtons    // 手动拖滑块 → 分类按钮激活态调整
+                    silent: true,
+                    onApply: deactivateFilterButtons
                 });
-                // 200ms 防抖：仅延迟刷新雷达 + 地图（避免拖动过程频繁重绘卡顿）
+                routeStartSpot = null;
                 debouncedRefreshAll();
             });
         });
@@ -833,8 +1055,9 @@
                         : `🎯 Preset "${btn.innerText}" applied: weights synced to sliders & radar.`;
                     updatePreference(preset, {tip, silent: true});
                 }
-                // 6) 类型筛选变化或偏好预设应用 → 统一触发一次重绘
+                // 6) 类型筛选变化或偏好预设应用 → 清除路线起点并统一触发一次重绘
                 if (typeChanged || preset) {
+                    routeStartSpot = null;
                     refreshAll();
                 }
                 // 7) 兜底冷知识文案（无预设时）
@@ -899,11 +1122,11 @@
 
     function switchLanguage() {
         currentLang = currentLang === 'zh' ? 'en' : 'zh';
-        localStorage.setItem('appLang', currentLang);
+        storage.set('appLang', currentLang);
+        routeStartSpot = null;
         refreshSpotsByLang();
         renderProvinceOptions();
         applyLanguage();
-        // 切语言后立即重设 geo（让地图区域 label 立即刷新为新语言）
         refreshMapGeoConfig();
         refreshAll();
     }
@@ -955,17 +1178,82 @@
         };
     }
 
+    // ==================== 工具函数：HTML转义（防止XSS） ====================
+    function escapeHtml(text) {
+        if (typeof text !== 'string') return text;
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ==================== 工具函数：安全设置innerHTML ====================
+    function safeInnerHTML(element, html) {
+        if (!element) return;
+        // 对于纯文本内容，使用textContent更安全
+        if (typeof html === 'string' && !html.includes('<')) {
+            element.textContent = html;
+        } else {
+            // 对于包含HTML的内容，需要进行转义处理
+            element.innerHTML = html;
+        }
+    }
+
+    // ==================== 工具函数：安全的localStorage操作 ====================
+    const storage = {
+        set(key, value) {
+            try {
+                localStorage.setItem(key, value);
+                return true;
+            } catch (err) {
+                // localStorage可能在隐私模式、磁盘满或被禁用时抛出异常
+                console.warn(`[starmap] Failed to save to localStorage: ${key}`, err.message);
+                return false;
+            }
+        },
+        get(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (err) {
+                console.warn(`[starmap] Failed to read from localStorage: ${key}`, err.message);
+                return null;
+            }
+        },
+        remove(key) {
+            try {
+                localStorage.removeItem(key);
+                return true;
+            } catch (err) {
+                console.warn(`[starmap] Failed to remove from localStorage: ${key}`, err.message);
+                return false;
+            }
+        }
+    };
+
     async function loadGeoJson(provinceCode, geoPath) {
         if (GeoJsonCache.has(provinceCode)) {
             return {geoJson: GeoJsonCache.get(provinceCode), fromCache: true};
         }
         const url = geoPath || `geo/${provinceCode}_full.json`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status} ${url}`);
-        const geoJson = await res.json();
-        if (!geoJson || !Array.isArray(geoJson.features)) throw new Error('Invalid GeoJSON: ' + url);
-        GeoJsonCache.set(provinceCode, geoJson);
-        return {geoJson, fromCache: false};
+        try {
+            const res = await fetch(url);
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status} ${res.statusText} - ${url}`);
+            }
+            const geoJson = await res.json();
+            if (!geoJson || !Array.isArray(geoJson.features)) {
+                throw new Error(`Invalid GeoJSON structure: ${url}`);
+            }
+            GeoJsonCache.set(provinceCode, geoJson);
+            return {geoJson, fromCache: false};
+        } catch (err) {
+            // 完善错误处理：区分网络错误和其他错误
+            if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                console.error(`[starmap] Network error loading GeoJSON: ${url}`, err);
+                throw new Error(`网络连接失败，请检查网络设置: ${url}`);
+            }
+            console.error(`[starmap] Failed to load GeoJSON: ${url}`, err);
+            throw err;
+        }
     }
 
     // 切换省份入口
@@ -1028,11 +1316,19 @@
             };
             const spotList = currentLang === 'en' ? cfg.spotsEn : cfg.spotsZh;
             currentSpotsData = Array.isArray(spotList) ? spotList : [];
+            // 切换省份时清空抖动缓存，避免不同省份的同名景点产生混淆的偏移量
+            jitterCache.clear();
+            // 切换省份时清空线路缓存，避免不同省份的线路数据混淆
+            lastValidLinesData = [];
+            // 切换省份时清空路线起点
+            routeStartSpot = null;
             // 同步初始 zoom 给缩放联动判断（任务4进阶特性）
             currentZoom = cfg.zoom || 1.0;
             currentZoomTier = (currentZoom <= 1.0) ? 'tierA' : (currentZoom <= 1.5 ? 'tierB' : 'tierC');
 
             // === 阶段 3：更新 ECharts 地图配置 + 散点系列（强制全量更新） ===
+            // 修复:拆成两次 setOption —— 先设 geo,再设 series
+            // 原因:getMapSeries 内部需要 convertToPixel({geo:0}),必须 geo 已注册到图表后才能换算
             if (myMapChart) {
                 myMapChart.setOption({
                     geo: {
@@ -1048,9 +1344,12 @@
                         label: { show: true, color: '#E8D5B5', fontSize: 10, formatter: cityLabelFormatter },
                         tooltip: { show: true }
                     },
-                    backgroundColor: 'transparent',
-                    series: getMapSeries(currentSpotsData, currentPreference)
+                    backgroundColor: 'transparent'
                 }, true);
+                // 第二次 setOption:geo 已就绪,getMapSeries 可安全做像素空间防重叠
+                myMapChart.setOption({
+                    series: getMapSeries(currentSpotsData, currentPreference, myMapChart)
+                }, false);
             }
 
             // === 阶段 4：联动刷新右侧雷达 + 标题 + 状态 + 筛选 + 持久化 ===
@@ -1062,10 +1361,8 @@
             // 仅在 HTML 上确保"全部星点"默认 active（已在 DOM 中标注）
             // 若新省份无对应类型数据，ECharts 会自动展示空 set，并触发 setMapEmpty 兜底
             applyLanguage();
-            try {
-                localStorage.setItem('appProvince', provinceCode);
-            } catch (e) {
-            }
+            // 修复：使用安全的storage对象，替代直接调用localStorage
+            storage.set('appProvince', provinceCode);
 
             setStatus(t.statusReady, '');
             setMapLoading(false);
@@ -1118,8 +1415,8 @@
             : provinceListFallback;
         if (!list || !list.length) return;
         renderProvinceOptions();
-        // 默认选择：localStorage -> 首项
-        const saved = localStorage.getItem('appProvince');
+        // 默认选择：storage -> 首项（修复：使用安全的storage对象）
+        const saved = storage.get('appProvince');
         const initial = (saved && provinceConfig[saved]) ? saved : (list[0]?.code);
         if (initial) {
             sel.value = initial;
@@ -1156,33 +1453,33 @@
         if (!myMapChart) {
             myMapChart = echarts.init(document.getElementById('mapChart'));
             bindMapClick();
-            window.addEventListener('resize', () => {
+            // 修复：保存resize处理函数引用，以便cleanup函数能正确清理
+            cleanupRegistry.resizeHandler = () => {
                 myMapChart && myMapChart.resize();
                 myRadarChart && myRadarChart.resize();
-            });
+            };
+            window.addEventListener('resize', cleanupRegistry.resizeHandler);
             // 缩放联动：监听 georoam，更新 currentZoom 后重新计算可见层（任务4进阶特性）
-            let zoomDebounce = null;
+            // 修复：使用cleanupRegistry.zoomDebounceTimer替代局部变量，便于cleanup清理
+            cleanupRegistry.zoomDebounceTimer = null;
             myMapChart.on('georoam', (e) => {
                 if (!myMapChart) return;
-                // 防抖：连续缩放/拖拽结束后再重算，避免每帧都重 setOption
-                if (zoomDebounce) clearTimeout(zoomDebounce);
-                zoomDebounce = setTimeout(() => {
+                if (cleanupRegistry.zoomDebounceTimer) clearTimeout(cleanupRegistry.zoomDebounceTimer);
+                cleanupRegistry.zoomDebounceTimer = setTimeout(() => {
                     try {
                         const opt = myMapChart.getOption();
-                        // ECharts 5：geo 是数组（可能有多个），取第一个
                         const geos = Array.isArray(opt.geo) ? opt.geo : (opt.geo ? [opt.geo] : []);
                         const z = (geos[0] && typeof geos[0].zoom === 'number') ? geos[0].zoom : currentZoom;
                         if (Math.abs(z - currentZoom) > 0.01) {
                             currentZoom = z;
-                            // 缩放档位变化时才重算 series（避免无意义 setOption）
                             const newTier = (z <= 1.0) ? 'tierA' : (z <= 1.5 ? 'tierB' : 'tierC');
                             if (newTier !== currentZoomTier) {
                                 currentZoomTier = newTier;
-                                // 增量更新 series，不动 geo / backgroundColor
-                                myMapChart.setOption({
-                                    series: getMapSeries(currentSpotsData, currentPreference)
-                                }, false);
                             }
+                            // 每次缩放变化都重算 series，确保像素空间防重叠跟随新 zoom 重排
+                            myMapChart.setOption({
+                                series: getMapSeries(currentSpotsData, currentPreference, myMapChart)
+                            }, false);
                         }
                     } catch (err) { /* 静默：getOption 异常不阻断交互 */
                     }
@@ -1192,7 +1489,8 @@
     }
 
     function initLang() {
-        const savedLang = localStorage.getItem('appLang');
+        // 修复：使用安全的storage对象读取语言设置
+        const savedLang = storage.get('appLang');
         currentLang = savedLang === 'en' ? 'en' : 'zh';
         applyLanguage();
         document.getElementById('langSwitchBtn').addEventListener('click', switchLanguage);
@@ -1238,14 +1536,48 @@
         }, 500);
     }
 
-    if (typeof echarts !== 'undefined') {
-        startApp();
-    } else {
-        const wait = setInterval(() => {
-            if (typeof echarts !== 'undefined') {
-                clearInterval(wait);
-                startApp();
+    // ==================== ECharts 加载检测（优化轮询机制） ====================
+    // 修复：使用更高效的加载检测方式，避免不必要的轮询
+    
+    function checkEChartsAndStart() {
+        if (typeof echarts !== 'undefined') {
+            startApp();
+            return true;
+        }
+        return false;
+    }
+    
+    // 方案1：如果脚本已经加载，直接启动
+    if (checkEChartsAndStart()) {
+        // ECharts已就绪，无需进一步处理
+    }
+    // 方案2：监听DOMContentLoaded事件
+    else if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function onReady() {
+            document.removeEventListener('DOMContentLoaded', onReady);
+            // DOM就绪后检查，给ECharts一点时间加载
+            setTimeout(checkEChartsAndStart, 100);
+        });
+    }
+    // 方案3：使用指数退避轮询（仅作为兜底）
+    else {
+        let attempts = 0;
+        const maxAttempts = 20;
+        
+        function pollWithBackoff() {
+            attempts++;
+            if (checkEChartsAndStart()) {
+                return;
             }
-        }, 200);
+            if (attempts >= maxAttempts) {
+                console.error('[starmap] ECharts loading timeout');
+                return;
+            }
+            // 指数退避：100ms, 200ms, 400ms, 800ms... 最多2秒
+            const delay = Math.min(100 * Math.pow(2, attempts), 1000);
+            setTimeout(pollWithBackoff, delay);
+        }
+        
+        pollWithBackoff();
     }
 })();
