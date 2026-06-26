@@ -1,7 +1,7 @@
 // ==================== 动态侧边栏（公告｜公众号｜DeepSeek｜回顶） ====================
 (function() {
     // ---------- 配置项 ----------
-    const wechatQrUrl = 'img/qrcode.jpg';            // 微信公众号二维码图片路径
+    const wechatQrUrl = 'static/img/11111.jpg';            // 微信公众号二维码图片路径
     const siteName = '华夏非遗 · 薪火相传';
 
     // 公告通知中的演出数据（可自行修改或从已有数据中获取）
@@ -342,18 +342,18 @@
     <!-- 微信公众号：自定义图片 -->
     <button class="sidebar-btn wechat-btn" id="wechatBtn">
         <div class="btn-emoji">
-            <img src="img/02.jpg" alt="公众号" class="sidebar-icon">
+            <img src="static/img/02.jpg" alt="公众号" class="sidebar-icon">
         </div>
         <span class="btn-label">公众号</span>
         <div class="wechat-qr-hover">
-            <img src="img/11111.jpg" alt="二维码">
+            <img src="static/img/11111.jpg" alt="二维码">
             <p>扫码关注</p>
         </div>
     </button>
     <!-- DeepSeek 助手：自定义图片 -->
     <button class="sidebar-btn" id="deepseekSidebarBtn">
         <div class="btn-emoji">
-            <img src="img/头像01.jpg" alt="AI助手" class="sidebar-icon">
+            <img src="static/img/头像01.jpg" alt="AI助手" class="sidebar-icon">
         </div>
         <span class="btn-label">菲菲助手</span>
     </button>

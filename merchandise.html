@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
         <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
@@ -6,13 +6,13 @@
     <link rel="stylesheet" href="static/css/chat.css">
     <link rel="stylesheet" href="static/css/auth.css">
     <link rel="stylesheet" href="static/css/navbar.css">
+    <link rel="stylesheet" href="static/css/common.css">
     <meta charset="UTF-8">
     <title>文创周边 · 华夏非遗</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         html, body {
-    height: 100%;
-    scroll-snap-type: y mandatory;
+    min-height: 100%;
     overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
     scroll-behavior: smooth;
     scrollbar-width: none;      /* Firefox 隐藏滚动条 */
@@ -245,76 +245,7 @@ body::-webkit-scrollbar {
         .page-btn.active { background: #b22234; }
         .page-btn:hover:not(.active) { background: #2c5f2d; }
 
-        /* 底部样式 */
-        .site-footer {
-            background: #1a1510;
-            color: #c4b89a;
-            padding: 50px 30px 30px;
-            border-top: 3px solid var(--chinese-gold);
-            margin-top: 50px;
-            margin-left: 75px;
-            margin-right: 75px;
-            border-radius: 30px 30px 0 0;
-        }
-        .footer-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        .footer-col h4 {
-            color: var(--chinese-gold);
-            letter-spacing: 2px;
-            margin-bottom: 14px;
-            font-size: 1rem;
-        }
-        .footer-col p {
-            font-size: 0.85rem;
-            line-height: 2.5;
-        }
-        .footer-col ul { list-style: none; }
-        .footer-col ul li { margin-bottom: 8px; }
-        .footer-col ul li a {
-            color: #a09880;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: 0.3s;
-        }
-        .footer-col ul li a:hover { color: var(--chinese-gold); }
-        .friend-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .friend-links a {
-            color: #a09880;
-            text-decoration: none;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            padding: 6px 14px;
-            border: 1px solid rgba(201, 169, 110, 0.3);
-            border-radius: 20px;
-        }
-        .friend-links a:hover {
-            border-color: var(--chinese-gold);
-            color: var(--chinese-gold);
-            background: rgba(201, 169, 110, 0.08);
-        }
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(201, 169, 110, 0.2);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        :root { --chinese-gold: #C9A96E; }
-
+        /* 页脚样式已迁移至 static/css/common.css */
         .back-to-top {
             position: fixed;
             bottom: 30px;
@@ -419,49 +350,7 @@ body::-webkit-scrollbar {
         <div id="pagination" class="pagination"></div>
     </div>
 
-    <footer class="site-footer">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>华夏非遗 · 薪火相传</h4>
-                <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
-            </div>
-            <div class="footer-col">
-                <h4>快捷导航</h4>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="performances.html">票务演出</a></li>
-                    <li><a href="merchandise.html">文创周边</a></li>
-                    <li><a href="travel.html">去旅游</a></li>
-                    <li><a href="history.html">浏览记录</a></li>
-                    <li><a href="knowledge-graph.html" >非遗图谱✨</a></li>
-                    <li><a href="whereami.html">云旅游✨</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>联系方式</h4>
-                <p>📧 ich@culture.cn</p>
-                <p>📞 400-668-0808</p>
-                <p>📍 安徽新华学院</p>
-            </div>
-            <div class="footer-col">
-                <h4>友情链接</h4>
-                <ul>
-                    <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
-                    <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
-                    <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="friend-links">
-            <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
-            <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
-            <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
-            <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
-        </div>
-    </footer>
+    <div id="footerMount"></div>
 
    <!-- AI 聊天窗口 (菲菲非遗小助手，无头像版) -->
 <div id="aiChatWindow" class="ai-chat-window">
@@ -629,15 +518,13 @@ const descriptions = [
     "南京云锦小方巾，真丝材质，皇家工艺。"
 ];
 
-// 为每个商品分配类别
+// 为每个商品分配类别（必须与筛选栏 filter-tab 的 data-filter 一致）
 function getCategory(name, index) {
-    if (name.includes("脸谱") || name.includes("面具") || name.includes("傩面具") || name.includes("藏戏面具")) return "脸谱";
-    if (name.includes("扇") || name.includes("团扇")) return "扇子";
-    if (name.includes("香囊") || name.includes("头饰") || name.includes("钥匙扣") || name.includes("书扣")) return "饰品";
+    if (name.includes("香囊") || name.includes("头饰") || name.includes("钥匙扣") || name.includes("书扣") || name.includes("脸谱") || name.includes("面具") || name.includes("傩面具")) return "饰品";
     if (name.includes("文化衫") || name.includes("围巾") || name.includes("丝巾")) return "布艺";
     if (name.includes("陶瓷") || name.includes("泥塑") || name.includes("兔儿爷")) return "陶瓷";
     if (name.includes("手账") || name.includes("明信片") || name.includes("U盘") || name.includes("书签")) return "文具";
-    return "家居"; // 剩下剪纸、皮影、摆件、提篮等归为家居
+    return "家居"; // 剩下扇子、剪纸、皮影、摆件、提篮等归为家居
 }
 
 for (let i = 0; i < productNames.length; i++) {
@@ -646,7 +533,7 @@ for (let i = 0; i < productNames.length; i++) {
         name: productNames[i],
         category: getCategory(productNames[i], i),
         price: 49 + (i * 7),
-        img: `img/merchandise-img/${i}.jpg`,
+        img: `static/img/merchandise-img/${i}.jpg`,
         desc: descriptions[i]
     });
 }
@@ -687,7 +574,7 @@ function renderGoods() {
     }
     container.innerHTML = pageProducts.map(p => `
         <div class="goods-card">
-            <img src="${p.img}" alt="${p.name}" onerror="this.src='https://picsum.photos/id/1/300/300'">
+            <img src="${p.img}" alt="${p.name}" onerror="this.onerror=null;this.src='static/img/placeholder.svg'">
             <div class="goods-info">
                 <h3>${escapeHtml(p.name)}</h3>
                 <div class="goods-desc">${escapeHtml(p.desc)}</div>
@@ -763,7 +650,8 @@ bindFilterEvents();
     <script src="static/js/sidebar.js"></script>
     <script src="static/js/chat.js"></script>
     <script src="static/js/password-utils.js"></script>
-    <script src="static/js/auth.js"></script>
+    <script src="static/js/components.js"></script>
+<script src="static/js/auth.js"></script>
     <script src="static/js/navbar.js"></script>
 <script src="static/js/historyTracker.js"></script>
 </body>

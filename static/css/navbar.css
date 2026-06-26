@@ -15,7 +15,7 @@
     flex-wrap: wrap;
     gap: 15px;
     width: 100%;
-    padding: 12px 30px;
+    padding: 4px 30px;
     background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -28,7 +28,6 @@
     font-weight: bold;
     color: #ffecb3;
     letter-spacing: 2px;
-    background: rgba(0, 0, 0, 0.5);
     padding: 8px 18px;
     border-radius: 40px;
     display: flex;

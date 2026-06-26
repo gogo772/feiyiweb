@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
         <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
     <link rel="stylesheet" href="static/css/chat.css">
     <link rel="stylesheet" href="static/css/auth.css">
     <link rel="stylesheet" href="static/css/navbar.css">
+    <link rel="stylesheet" href="static/css/common.css">
     <meta charset="UTF-8">
     <title>我的浏览记录 · 华夏非遗</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -125,87 +126,9 @@
         #historyPreview .preview-title { font-weight: bold; margin-bottom: 8px; color: #ffd966; }
         #previewList { font-size: 14px; color: #eee; }
 
-        /* ========== 统一底部样式 ========== */
-        .site-footer {
-            background: #1a1510;
-            color: #c4b89a;
-            padding: 50px 30px 30px;
-            border-top: 3px solid var(--chinese-gold);
-            margin-top: 50px;
-            margin-left: 75px;
-            margin-right: 75px;
-        }
-        .footer-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        .footer-col h4 {
-            color: var(--chinese-gold);
-            letter-spacing: 2px;
-            margin-bottom: 14px;
-            font-size: 1rem;
-        }
-        .footer-col p {
-            font-size: 0.85rem;
-            line-height: 2.5;
-        }
-        .footer-col ul {
-            list-style: none;
-        }
-        .footer-col ul li {
-            margin-bottom: 8px;
-        }
-        .footer-col ul li a {
-            color: #a09880;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .footer-col ul li a:hover {
-            color: var(--chinese-gold);
-        }
-        .friend-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .friend-links a {
-            color: #a09880;
-            text-decoration: none;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            padding: 6px 14px;
-            border: 1px solid rgba(201, 169, 110, 0.3);
-            border-radius: 20px;
-            transition: 0.3s;
-        }
-        .friend-links a:hover {
-            border-color: var(--chinese-gold);
-            color: var(--chinese-gold);
-            background: rgba(201, 169, 110, 0.08);
-        }
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(201, 169, 110, 0.2);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        :root {
-            --chinese-gold: #C9A96E;
-        }
-        html, body {
-    height: 100%;
-    scroll-snap-type: y mandatory;
+        /* 页脚样式已迁移至 static/css/common.css */
+                html, body {
+    min-height: 100%;
     overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
     scroll-behavior: smooth;
     scrollbar-width: none;      /* Firefox 隐藏滚动条 */
@@ -237,52 +160,7 @@ body::-webkit-scrollbar {
         </div>
     </div>
 
-    <footer class="site-footer">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>华夏非遗 · 薪火相传</h4>
-                <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
-            </div>
-            <div class="footer-col">
-                <h4>快捷导航</h4>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="performances.html">票务演出</a></li>
-                    <li><a href="merchandise.html">文创周边</a></li>
-                    <li><a href="travel.html">去旅游</a></li>
-                    <li><a href="history.html">浏览记录</a></li>
-                    <li><a href="knowledge-graph.html" style="color:#ffd966;">非遗图谱✨</a></li>
-                    <li><a href="whereami.html" style="color:#ffd966;">我在这里✨</a></li>
-
-
-
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>联系方式</h4>
-                <p>📧 ich@culture.cn</p>
-                <p>📞 400-668-0808</p>
-                <p>📍 安徽新华学院</p>
-            </div>
-            <div class="footer-col">
-                <h4>友情链接</h4>
-                <ul>
-                    <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
-                    <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
-                    <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="friend-links">
-            <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
-            <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
-            <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
-            <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
-        </div>
-    </footer>
+    <div id="footerMount"></div>
 
     <!-- AI 聊天窗口（结构与 index.html 完全一致，样式由 chat.css 提供） -->
     <div id="aiChatWindow" class="ai-chat-window">
@@ -347,7 +225,7 @@ body::-webkit-scrollbar {
         }
         container.innerHTML = browsingHistory.map((item, index) => `
             <div class="card">
-                <img src="${item.img || 'https://picsum.photos/id/1/300/200'}" alt="${escapeHtml(item.name)}" onerror="this.src='https://picsum.photos/id/1/300/200'">
+                <img src="${item.img || 'static/img/placeholder.svg'}" alt="${escapeHtml(item.name)}" onerror="this.onerror=null;this.src='static/img/placeholder.svg'">
                 <div class="card-body">
                     <strong>${escapeHtml(item.name)}</strong><br>
                     <span>${escapeHtml(item.type || '浏览')}</span>
@@ -391,6 +269,7 @@ body::-webkit-scrollbar {
     <script src="static/js/sidebar.js"></script>
     <script src="static/js/chat.js"></script>
 <script src="static/js/password-utils.js"></script>
+<script src="static/js/components.js"></script>
 <script src="static/js/auth.js"></script>
 <script src="static/js/navbar.js"></script>
 </body>

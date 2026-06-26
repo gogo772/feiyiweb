@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
         <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
@@ -14,10 +14,10 @@
     <link rel="stylesheet" href="static/css/chat.css">
     <link rel="stylesheet" href="static/css/auth.css">
     <link rel="stylesheet" href="static/css/navbar.css">
+    <link rel="stylesheet" href="static/css/common.css">
     <style>
         html, body {
-    height: 100%;
-    scroll-snap-type: y mandatory;
+    min-height: 100%;
     overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
     scroll-behavior: smooth;
     scrollbar-width: none;      /* Firefox 隐藏滚动条 */
@@ -565,7 +565,10 @@ body::-webkit-scrollbar {
     <!-- 引入侧边栏脚本（公告｜公众号｜AI助手｜回顶部） -->
     <script src="static/js/sidebar.js"></script>
 <script src="static/js/password-utils.js"></script>
+<script src="static/js/components.js"></script>
 <script src="static/js/auth.js"></script>
 <script src="static/js/navbar.js"></script>
+<!-- 公共页脚（由 static/js/components.js 动态加载） -->
+<div id="footerMount"></div>
 </body>
 </html>

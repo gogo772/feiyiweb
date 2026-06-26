@@ -465,7 +465,7 @@
             username: username,
             password: passwordHash,   // ← 不再明文存储密码
             nickname: username,
-            avatar: 'img/default-avatar.jpg',
+            avatar: 'static/img/placeholder.svg',
             phone: '',
             email: '',
             privacy: { showPhone: false, showEmail: false }
