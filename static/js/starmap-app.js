@@ -839,7 +839,8 @@ function pickHighMatches(spotsWithScore, rule) {
                         const msg = routeStartSpot
                             ? (currentLang === 'zh' ? `已将「${spot.name}」设为路线起点` : `Set "${spot.name}" as route start`)
                             : (currentLang === 'zh' ? '已取消路线起点' : 'Route start cleared');
-                        document.getElementById('coldInfo').innerHTML = `<p><strong>${msg}</strong></p>`;
+                        const coldInfoEl = document.getElementById('coldInfo');
+                        if (coldInfoEl) coldInfoEl.innerHTML = `<p><strong>${msg}</strong></p>`;
                     } else {
                         currentPreference = {
                             cultural: spot.cultureScore,
@@ -864,7 +865,8 @@ function pickHighMatches(spotsWithScore, rule) {
                         const cold = currentLang === 'zh' ? spot.coldKnowledge : (spot.coldEn || spot.coldKnowledge);
                         const title = currentLang === 'zh' ? '冷知识' : 'Trivia';
                         const tail = currentLang === 'zh' ? '雷达已同步，专属灵感路线已更新~' : 'Radar synced, inspiration route updated~';
-                        document.getElementById('coldInfo').innerHTML = `<p><strong>「${spot.name}」· ${title}</strong><br>${cold}<br>${tail}</p>`;
+                        const coldInfoEl = document.getElementById('coldInfo');
+                        if (coldInfoEl) coldInfoEl.innerHTML = `<p><strong>「${spot.name}」· ${title}</strong><br>${cold}<br>${tail}</p>`;
                     }
                 }
             }
@@ -1102,7 +1104,8 @@ function pickHighMatches(spotsWithScore, rule) {
         document.getElementById('foodLabel').innerText = t.food;
         document.getElementById('heritageLabel').innerText = t.intangible;
         document.getElementById('leisureLabel').innerText = t.leisure;
-        document.getElementById('coldInfo').innerHTML = `<p>${t.defaultInfo}</p>`;
+        const coldInfoEl = document.getElementById('coldInfo');
+        if (coldInfoEl) coldInfoEl.innerHTML = `<p>${t.defaultInfo}</p>`;
         const sl = document.querySelector('.province-switcher .switcher-label');
         if (sl) sl.innerText = t.switcherLabel;
 
@@ -1122,6 +1125,7 @@ function pickHighMatches(spotsWithScore, rule) {
 
     function switchLanguage() {
         currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        window.currentLang = currentLang;
         storage.set('appLang', currentLang);
         routeStartSpot = null;
         refreshSpotsByLang();
@@ -1129,6 +1133,10 @@ function pickHighMatches(spotsWithScore, rule) {
         applyLanguage();
         refreshMapGeoConfig();
         refreshAll();
+        // 同步刷新天气组件语言
+        if (typeof window.refreshWeatherLanguage === 'function') {
+            window.refreshWeatherLanguage(currentLang);
+        }
     }
 
     // ==================== 核心：省份按需加载 + 缓存 ====================
@@ -1350,6 +1358,19 @@ function pickHighMatches(spotsWithScore, rule) {
                 myMapChart.setOption({
                     series: getMapSeries(currentSpotsData, currentPreference, myMapChart)
                 }, false);
+
+                // 页面刷新后自动居中：确保地图视图恢复默认中心位置和缩放
+                requestAnimationFrame(() => {
+                    if (myMapChart) {
+                        myMapChart.resize();
+                        myMapChart.setOption({
+                            geo: {
+                                center: cfg.center,
+                                zoom: cfg.zoom || 1.0
+                            }
+                        });
+                    }
+                });
             }
 
             // === 阶段 4：联动刷新右侧雷达 + 标题 + 状态 + 筛选 + 持久化 ===
@@ -1363,6 +1384,12 @@ function pickHighMatches(spotsWithScore, rule) {
             applyLanguage();
             // 修复：使用安全的storage对象，替代直接调用localStorage
             storage.set('appProvince', provinceCode);
+
+            // 联动天气组件切换到对应省份
+            window.currentProvinceCode = provinceCode;
+            if (typeof window.syncWeatherToMapProvince === 'function') {
+                window.syncWeatherToMapProvince(provinceCode);
+            }
 
             setStatus(t.statusReady, '');
             setMapLoading(false);
@@ -1383,7 +1410,8 @@ function pickHighMatches(spotsWithScore, rule) {
             const sel = document.getElementById('provinceSelect');
             const fallback = currentProvinceCode || (provinceListFallback[0] && provinceListFallback[0].code);
             if (sel && fallback) sel.value = fallback;
-            document.getElementById('coldInfo').innerHTML =
+            const coldInfoEl = document.getElementById('coldInfo');
+            if (coldInfoEl) coldInfoEl.innerHTML =
                 `<p>⚠️ ${provinceCode} 地图数据加载失败，请检查 /${cfg.geoPath} 是否存在。<br>错误：${err.message}</p>`;
         } finally {
             setSelectDisabled(false);
@@ -1407,7 +1435,7 @@ function pickHighMatches(spotsWithScore, rule) {
         if (prev && provinceConfig[prev]) sel.value = prev;
     }
 
-    function bindProvinceSwitcher() {
+    async function bindProvinceSwitcher() {
         const sel = document.getElementById('provinceSelect');
         if (!sel) return;
         const list = (Array.isArray(window.PROVINCE_LIST) && window.PROVINCE_LIST.length)
@@ -1420,7 +1448,12 @@ function pickHighMatches(spotsWithScore, rule) {
         const initial = (saved && provinceConfig[saved]) ? saved : (list[0]?.code);
         if (initial) {
             sel.value = initial;
-            switchProvince(initial);
+            await switchProvince(initial);
+        }
+        // 省份初始化完成后，同步初始化天气组件
+        if (typeof window.initWeatherWidget === 'function') {
+            const lang = (typeof window.currentLang !== 'undefined') ? window.currentLang : 'zh';
+            window.initWeatherWidget(lang);
         }
         // 防抖包装：300ms 内连续切换只触发最后一次，避免重复请求与重绘
         const debouncedSwitch = debounce((code) => switchProvince(code), 300);
@@ -1492,6 +1525,7 @@ function pickHighMatches(spotsWithScore, rule) {
         // 修复：使用安全的storage对象读取语言设置
         const savedLang = storage.get('appLang');
         currentLang = savedLang === 'en' ? 'en' : 'zh';
+        window.currentLang = currentLang;
         applyLanguage();
         document.getElementById('langSwitchBtn').addEventListener('click', switchLanguage);
     }
@@ -1580,4 +1614,7 @@ function pickHighMatches(spotsWithScore, rule) {
         
         pollWithBackoff();
     }
+
+    // 暴露省份切换函数，供天气组件联动调用
+    window.changeMapProvince = switchProvince;
 })();

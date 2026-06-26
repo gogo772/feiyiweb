@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
     <link rel="apple-touch-icon" href="static/img/logo/logo.png">
     <link rel="stylesheet" href="static/css/navbar.css">
     <link rel="stylesheet" href="static/css/starmap.css">
+    <link rel="stylesheet" href="static/css/weather.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <script src="static/js/spots-data.js"></script>
@@ -26,6 +27,29 @@
         <div class="map-container">
             <span class="map-corner-bl"></span>
             <span class="map-corner-br"></span>
+            <!-- 天气组件（左上角） -->
+            <div class="starmap-weather-wrap" id="starmapWeatherWrap">
+                <div class="weather-widget" id="weatherWidget">
+                    <div class="weather-info" id="weatherInfo">
+                        <img class="weather-icon" src="" alt="">
+                        <span class="weather-temp">--°C</span>
+                        <span class="weather-location" id="weatherLocation">--</span>
+                        <div class="weather-tooltip" id="weatherTooltip"></div>
+                    </div>
+                    <div class="city-dropdown" id="cityDropdown">
+                        <div class="city-dropdown-trigger">
+                            <span id="currentCityDisplay">合肥</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="city-dropdown-menu" id="cityMenu">
+                            <!-- 省份快速切换栏 -->
+                            <div class="weather-province-tabs" id="weatherProvinceTabs"></div>
+                            <!-- 城市列表容器 -->
+                            <div class="weather-cities-container" id="weatherCitiesContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="province-switcher" id="provinceSwitcher">
                 <span class="switcher-label">🗺️ 省份</span>
                 <select id="provinceSelect" aria-label="省份切换"></select>
@@ -78,18 +102,17 @@
                 <div class="slider-item"><label id="heritageLabel">非遗互动度</label><input type="range" id="heritageSlider" min="0" max="100" value="70"><span id="heritageValue" class="slider-value">70</span></div>
                 <div class="slider-item"><label id="leisureLabel">休闲指数</label><input type="range" id="leisureSlider" min="0" max="100" value="80"><span id="leisureValue" class="slider-value">80</span></div>
             </div>
-            <div class="info-tip" id="coldInfo">
-                <p>✨ 灵感星语：点击任意景点，获取专属冷知识<br>调节雷达滑块，高匹配景点涟漪闪烁，并生成流光旅程~<br>左下角可分类筛选景区。</p>
-            </div>
-            <a href="travel.html" class="starmap-cta" id="starmapCta" title="查看全部非遗线路列表">
+            <a href="travel.html" class="starmap-cta" id="starmapCta" title="开启非遗深度之旅">
                 <i class="fas fa-route"></i>
-                <span>查看全部非遗线路</span>
-                <span class="cta-arrow">→</span>
+                <span>开启非遗深度之旅</span>
+                <i class="fas fa-arrow-right cta-arrow-icon" aria-hidden="true"></i>
             </a>
         </div>
     </div>
 
+    <script src="static/js/tianqi.js"></script>
     <script src="static/js/starmap-app.js"></script>
     <script src="static/js/navbar.js"></script>
+    <script src="static/js/auth.js"></script>
 </body>
 </html>

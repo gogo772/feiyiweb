@@ -12,9 +12,11 @@
   "type": "commonjs",
   "dependencies": {
     "axios": "^1.16.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "multer": "^2.1.1"
+    "multer": "^2.1.1",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "stylelint": "^17.13.0"
