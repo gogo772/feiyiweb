@@ -12,8 +12,8 @@
         { key: 'index',        href: 'index.html',           i18nKey: 'navHome' },
         { key: 'performances', href: 'performances.html',    i18nKey: 'navPerformances' },
         { key: 'merchandise',  href: 'merchandise.html',     i18nKey: 'navMerchandise' },
-        { key: 'travel',       href: 'starmap.html',         i18nKey: 'navTravel' },
         { key: 'knowledge',    href: 'knowledge-graph.html', i18nKey: 'navKnowledge' },
+        { key: 'travel',       href: 'starmap.html',         i18nKey: 'navTravel' },
         { key: 'whereami',     href: 'whereami.html',        i18nKey: 'navWhereami' }
     ];
 

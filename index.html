@@ -62,11 +62,10 @@
         }
 
         .page-3 {
+            scroll-snap-align: none;
             scroll-margin-top: 80px;
-        }
-
-        .page-3 > #footerMount {
-            margin-top: auto;
+            padding-bottom: 80px;
+            min-height: auto;
         }
 
         .page-1 {
@@ -181,20 +180,22 @@
         /* 3D 圆环轮播 */
         .carousel-section {
             width: 100%;
-            max-width: 1400px;
-                margin-top: 170px;
-            perspective: 1400px;
+            max-width: 1050px;
+            margin-top: 170px;
+            perspective: 1050px;
             position: relative;
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .carousel-wrapper {
             position: relative;
             width: 100%;
-            height: 600px;
+            height: 450px;
             transform-style: preserve-3d;
             transition: transform 0.6s ease;
             display: flex;
@@ -216,7 +217,7 @@
                 filter: drop-shadow(0 0 0px rgba(255, 215, 150, 0));
             }
             50% {
-                filter: drop-shadow(0 0 30px rgba(255, 215, 150, 0.9));
+                filter: drop-shadow(0 0 22px rgba(255, 215, 150, 0.9));
             }
             100% {
                 filter: drop-shadow(0 0 0px rgba(255, 215, 150, 0));
@@ -225,17 +226,17 @@
 
         .carousel-card {
             position: absolute;
-            width: 460px;
-            height: 320px;
+            width: 345px;
+            height: 240px;
             left: 50%;
             top: 50%;
-            margin-left: -230px;
-            margin-top: -160px;
-            border-radius: 24px;
+            margin-left: -172.5px;
+            margin-top: -120px;
+            border-radius: 18px;
             overflow: hidden;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(201, 169, 110, 0.6);
-            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 26px -8px rgba(0, 0, 0, 0.4);
             will-change: transform;
             display: flex;
             flex-direction: column;
@@ -257,7 +258,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 10px 12px;
+            padding: 8px 10px;
             text-align: center;
             background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), transparent);
             opacity: 0;
@@ -270,14 +271,14 @@
         }
 
         .card-info h4 {
-            font-size: 1rem;
+            font-size: 0.75rem;
             color: #ffd966;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             font-weight: 600;
         }
 
         .card-info p {
-            font-size: 0.75rem;
+            font-size: 0.56rem;
             color: #f0e6d2;
             line-height: 1.3;
         }
@@ -286,13 +287,13 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 44px;
-            height: 44px;
+            width: 33px;
+            height: 33px;
             background: rgba(0, 0, 0, 0.6);
             border: none;
             border-radius: 50%;
             color: white;
-            font-size: 22px;
+            font-size: 16px;
             cursor: pointer;
             z-index: 20;
             transition: 0.2s;
@@ -307,11 +308,11 @@
         }
 
         #prevBtn {
-            left: 10px;
+            left: 8px;
         }
 
         #nextBtn {
-            right: 10px;
+            right: 8px;
         }
 
         @media (max-width: 768px) {
@@ -413,7 +414,7 @@
             border-radius: 48px;
             padding: 24px;
             gap: 24px;
-            margin: 30px 0 50px;
+            margin: 30px 0 120px;
             z-index: 5;
             position: relative;
         }
@@ -566,87 +567,6 @@
             }
         }
 
-        /* 底部样式 */
-        .site-footer {
-            background: #1a1510;
-            color: #c4b89a;
-            padding: 50px 30px 30px;
-            border-top: 3px solid var(--chinese-gold);
-            margin-top: 80px;
-            border-radius: 30px 30px 0 0;
-        }
-
-        .footer-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .footer-col h4 {
-            color: var(--chinese-gold);
-            letter-spacing: 2px;
-            margin-bottom: 14px;
-            font-size: 1rem;
-        }
-
-        .footer-col p {
-            font-size: 0.85rem;
-            line-height: 2.5;
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 8px;
-        }
-
-        .footer-col ul li a {
-            color: #a09880;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .footer-col ul li a:hover {
-            color: var(--chinese-gold);
-        }
-
-        .friend-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .friend-links a {
-
-            color: #a09880;
-            font-size: 1rem;
-            padding: 40px;
-        }
-
-        .friend-links a:hover {
-            border-color: var(--chinese-gold);
-            color: var(--chinese-gold);
-            background: rgba(201, 169, 110, 0.08);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(201, 169, 110, 0.2);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
 
         :root {
             --chinese-gold: #C9A96E;
@@ -1044,45 +964,9 @@
                 <div class="panel-placeholder" id="panelPlaceholder"></div>
                 <img id="panelImage" class="panel-image" alt="非遗图片" style="display: none;"></div>
         </div>
-        <footer class="site-footer">
-            <div class="footer-grid">
-                <div class="footer-col"><h4 data-i18n="siteTitle">华夏非遗 · 薪火相传</h4>
-                    <p data-i18n="ichBrandingDesc">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p></div>
-                <div class="footer-col"><h4 data-i18n="quickNav">快捷导航</h4>
-                    <ul>
-                        <li><a href="index.html" data-i18n="navHome">首页</a></li>
-                        <li><a href="performances.html" data-i18n="navPerformances">票务演出</a></li>
-                        <li><a href="merchandise.html" data-i18n="navMerchandise">文创周边</a></li>
-                        <li><a href="travel.html" data-i18n="navTravel">去旅游</a></li>
-                        <li><a href="history.html" data-i18n="historyTab">浏览记录</a></li>
-                        <li><a href="knowledge-graph.html" data-i18n="navKnowledge">非遗图谱✨</a></li>
-                        <li><a href="whereami.html" data-i18n="navWhereami">云旅游✨</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col"><h4 data-i18n="contact">联系方式</h4>
-                    <p data-i18n="email">📧 ich@culture.cn</p>
-                    <p data-i18n="phone">📞 400-668-0808</p>
-                    <p data-i18n="address">📍 安徽新华学院</p></div>
-                <div class="footer-col"><h4 data-i18n="friendLinks">友情链接</h4>
-                    <ul>
-                        <li><a href="https://www.mct.gov.cn" target="_blank" data-i18n="mct">文化和旅游部</a></li>
-                        <li><a href="http://www.ncha.gov.cn" target="_blank" data-i18n="ncha">国家文物局</a></li>
-                        <li><a href="https://www.ihchina.cn" target="_blank"
-                               data-i18n="ihchina">中国非物质文化遗产网</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="friend-links"><span style="color:var(--chinese-gold);letter-spacing:2px;" data-i18n="partners">合作伙伴：</span><a
-                    href="https://www.zgysyjy.org.cn" target="_blank" data-i18n="partner1">中国艺术研究院</a><a
-                    href="https://www.dpm.org.cn" target="_blank" data-i18n="partner2">故宫博物院</a><a
-                    href="https://www.nlc.cn" target="_blank" data-i18n="partner3">国家图书馆</a></div>
-            <div class="footer-bottom"><p data-i18n="copyright">© 2026 华夏非遗保护工程 | 传承文明 利在千秋 |
-                第二十八届中国机器人及人工智能大赛</p></div>
-        </footer>
-
     </div>
-    <div id="footerMount"></div>
 </div>
+<div id="footerMount"></div>
 
 <!-- AI聊天等辅助 -->
 <div id="aiChatWindow" class="ai-chat-window">
@@ -1112,7 +996,17 @@ const backBtn = document.getElementById('backToTopBtn');
 window.addEventListener('scroll', () => {
     if (window.scrollY > 300) backBtn.classList.add('show'); else backBtn.classList.remove('show');
 });
-backBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+backBtn.addEventListener('click', () => {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+});
+
+let lastScrollY = window.scrollY;
+window.addEventListener('scroll', () => {
+    if (lastScrollY > 500 && window.scrollY < 100) {
+        triggerStatsAnimation();
+    }
+    lastScrollY = window.scrollY;
+});
 
 // 存储每个数字的动画帧 ID，用于取消重复动画
 const animationIds = {};
@@ -1128,18 +1022,18 @@ function animateNumber(elementId, target, duration = 2000) {
     }
 
     // 重置数字为 0
-    element.textContent = '0';
+    element.innerHTML = '0<sup style="font-size: 0.5em; font-weight: normal; margin-left: 2px;">+</sup>';
     const startTime = performance.now();
 
     function update(now) {
         const elapsed = now - startTime;
         let progress = Math.min(1, elapsed / duration);
         let current = Math.floor(progress * target);
-        element.textContent = current.toLocaleString();
+        element.innerHTML = current.toLocaleString() + '<sup style="font-size: 0.5em; font-weight: normal; margin-left: 2px;">+</sup>';
         if (progress < 1) {
             animationIds[elementId] = requestAnimationFrame(update);
         } else {
-            element.textContent = target.toLocaleString();
+            element.innerHTML = target.toLocaleString() + '<sup style="font-size: 0.5em; font-weight: normal; margin-left: 2px;">+</sup>';
             delete animationIds[elementId];
         }
     }
@@ -1173,36 +1067,12 @@ if (page1 && 'IntersectionObserver' in window) {
     window.addEventListener('load', triggerStatsAnimation);
 }
 
-    // 通用 HTML 转义工具
     function escapeHtml(str) {
         if (str === null || str === undefined) return '';
         return String(str).replace(/[&<>"']/g, function (m) {
             return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[m];
         });
     }
-
-    // ========== 统计动画 ==========
-
-    function animateNumber(element, target, duration = 2000) {
-        if (!element) return;
-        const startTime = performance.now();
-
-        function update(now) {
-            const elapsed = now - startTime;
-            let progress = Math.min(1, elapsed / duration);
-            let current = Math.floor(progress * target);
-            element.innerText = current.toLocaleString();
-            if (progress < 1) requestAnimationFrame(update); else element.innerText = target.toLocaleString();
-        }
-
-        requestAnimationFrame(update);
-    }
-
-    window.addEventListener('load', () => {
-        animateNumber(document.getElementById('statProjects'), 1560, 1800);
-        animateNumber(document.getElementById('statNational'), 1557, 1800);
-        animateNumber(document.getElementById('statNodes'), 1680, 1800);
-    });
 
 
     // ========== 3D 圆环轮播（支持鼠标/触摸拖拽旋转） ==========
@@ -1216,13 +1086,13 @@ if (page1 && 'IntersectionObserver' in window) {
             {nameKey: "hotItem4Name", img: "static/img/gaojiaxi.jpeg", descKey: "hotItem4Desc"}
 
         ];
-        let currentAngle = 0, targetAngle = 0, animFrameId = null, autoTimer = null, radius = 520, cards = [];
+        let currentAngle = 0, targetAngle = 0, animFrameId = null, autoTimer = null, radius = 390, cards = [];
         let isDragging = false, dragStartX = 0, dragStartAngle = 0;
         const cardCount = hotItems.length, angleStep = 360 / cardCount;
 
         function updateRadius() {
-            const containerWidth = document.querySelector('.carousel-section')?.offsetWidth || 1400;
-            radius = Math.min(containerWidth * 0.45, 600);
+            const containerWidth = document.querySelector('.carousel-section')?.offsetWidth || 1050;
+            radius = Math.min(containerWidth * 0.45, 450);
         }
 
         function updateCardsPosition() {
@@ -1872,5 +1742,6 @@ if (page1 && 'IntersectionObserver' in window) {
 <script src="static/js/password-utils.js"></script>
 <script src="static/js/auth.js"></script>
 <script src="static/js/navbar.js"></script>
+<script src="static/js/components.js"></script>
 </body>
 </html>

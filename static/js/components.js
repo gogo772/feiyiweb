@@ -49,6 +49,13 @@ class ComponentLoader {
       }
 
       container.innerHTML = result;
+
+      // 触发 i18n 更新
+      if (window.i18n && typeof window.i18n.updateAll === 'function') {
+        window.i18n.updateAll();
+      } else if (window.dispatchEvent) {
+        window.dispatchEvent(new CustomEvent('lang:changed'));
+      }
     } catch (err) {
       console.error(`[ComponentLoader] 加载组件失败: ${url}`, err);
       this.renderError(container);
