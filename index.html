@@ -1173,17 +1173,6 @@ if (page1 && 'IntersectionObserver' in window) {
     window.addEventListener('load', triggerStatsAnimation);
 }
 
-// 初次加载时也触发一次（如果页面可见，observer 会立即触发，但以防万一）
-if (document.readyState === 'complete') {
-    // 如果已经加载完成，但 observer 可能还没开始，手动触发一次（但避免重复）
-    // 这里我们依赖 observer，但如果 observer 未触发，可用定时器保底
-    setTimeout(triggerStatsAnimation, 500);
-} else {
-    window.addEventListener('load', () => {
-        setTimeout(triggerStatsAnimation, 500);
-    });
-}
-=======
     // 通用 HTML 转义工具
     function escapeHtml(str) {
         if (str === null || str === undefined) return '';
@@ -1193,11 +1182,6 @@ if (document.readyState === 'complete') {
     }
 
     // ========== 统计动画 ==========
-    const backBtn = document.getElementById('backToTopBtn');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) backBtn.classList.add('show'); else backBtn.classList.remove('show');
-    });
-    backBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
 
     function animateNumber(element, target, duration = 2000) {
         if (!element) return;
@@ -1556,71 +1540,6 @@ if (document.readyState === 'complete') {
             updateDots();
             startAuto();
         }
-    (function initTimelineWithHot() {
-        const listContainer = document.getElementById('timelineList');
-        const panelImage = document.getElementById('panelImage');
-        const panelPlaceholder = document.getElementById('panelPlaceholder');
-        if (!listContainer) return;
-
-        const timelineEvents = [
-            {
-                date: "2026-06-10",
-                title: "高甲戏《连升三级》",
-                place: "福建泉州梨园古典剧院",
-                price: "¥180起",
-                link: "product.html?id=2&type=performance",
-                img: "static/img/gaojiaxi.jpeg",
-                hot: true
-            },
-            {
-                date: "2026-06-15",
-                title: "皮影戏《西游记》专场",
-                place: "北京皮影剧团",
-                price: "¥120起",
-                link: "product.html?id=4&type=performance",
-                img: "static/img/piying01.jpg",
-                hot: false
-            },
-            {
-                date: "2026-06-20",
-                title: "昆曲《牡丹亭》",
-                place: "上海大剧院",
-                price: "¥280起",
-                link: "product.html?id=1&type=performance",
-                img: "static/img/kunqu1.jpg",
-                hot: true
-            },
-            {
-                date: "2026-07-01",
-                title: "非遗综合展演",
-                place: "广州大剧院",
-                price: "¥260起",
-                link: "product.html?id=5&type=performance",
-                img: "static/img/performances-img/4.jpg",
-                hot: false
-            },
-            {
-                date: "2026-07-10",
-                title: "京剧《贵妃醉酒》",
-                place: "国家大剧院",
-                price: "¥380起",
-                link: "product.html?id=0&type=performance",
-                img: "static/img/guifeizuijiu.jpg",
-                hot: true
-            },
-            {
-                date: "2026-07-18",
-                title: "剪纸艺术大师工作坊",
-                place: "南京非遗馆",
-                price: "免费预约",
-                link: "product.html?id=21&type=merchandise",
-                img: "static/img/jianzhi01.jpg",
-                hot: false
-            }
-        ];
-        timelineEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-=======
 
         function startAuto() {
             if (autoTimer) clearInterval(autoTimer);
@@ -1673,7 +1592,6 @@ if (document.readyState === 'complete') {
         }
 
         init();
-        // 暴露重渲函数给 lang:changed 使用
         window.__ichRebuildRecommend = () => {
             currentIndex = 0;
             isTransitioning = false;

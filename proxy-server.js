@@ -16,7 +16,9 @@ const DOUBAO_API_KEY = process.env.DOUBAO_API_KEY;
 const DOUBAO_IMAGE_API_URL = 'https://ark.cn-beijing.volces.com/api/v3/images/generations';
 const IMAGE_MODEL = 'doubao-seedream-5-0-lite-260128';
 
-const PORT = process.env.PORT || 3000;
+const START_PORT = parseInt(process.env.PORT) || 3000;
+let PORT = START_PORT;
+const MAX_PORT_RETRY = 10; // 最大尝试10个端口
 
 // ==================== CORS 域名白名单 ====================
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000')
@@ -465,9 +467,48 @@ function validateConfig() {
 
 validateConfig();
 
-// ========== 启动服务器 ==========
-server.listen(PORT, () => {
-    console.log(`🚀 华夏非遗服务器运行在 http://localhost:${PORT}`);
-    console.log('   DeepSeek + 豆包图片生成已集成');
-    console.log('   CORS 白名单 | 路径遍历防护 | AI 输入过滤 已启用');
-});
+// ========== 启动服务器（带端口回退） ==========
+function tryStartServer(port) {
+    return new Promise((resolve, reject) => {
+        server.listen(port, () => {
+            console.log(`🚀 华夏非遗服务器运行在 http://localhost:${port}`);
+            console.log('   DeepSeek + 豆包图片生成已集成');
+            console.log('   CORS 白名单 | 路径遍历防护 | AI 输入过滤 已启用');
+            PORT = port;
+            resolve();
+        });
+
+        server.once('error', (err) => {
+            if (err.code === 'EADDRINUSE') {
+                reject(err);
+            } else {
+                console.error('服务器启动失败:', err.message);
+                process.exit(1);
+            }
+        });
+    });
+}
+
+async function startWithFallback() {
+    for (let offset = 0; offset <= MAX_PORT_RETRY; offset++) {
+        const port = START_PORT + offset;
+        try {
+            await tryStartServer(port);
+            return; // 成功启动
+        } catch (err) {
+            server.removeAllListeners('error');
+            if (offset < MAX_PORT_RETRY) {
+                console.log(`⚠️  端口 ${port} 已被占用，尝试端口 ${port + 1}...`);
+            } else {
+                console.error(`❌ 已尝试 ${MAX_PORT_RETRY + 1} 个端口（${START_PORT}-${START_PORT + MAX_PORT_RETRY}），全部被占用。`);
+                console.error('   请手动关闭占用端口的程序，或设置 PORT 环境变量指定其他端口：');
+                console.error('   Windows PowerShell: $env:PORT=4000; node proxy-server.js');
+                console.error('   查看占用端口的进程: netstat -ano | findstr :<端口号>');
+                console.error('   终止进程: taskkill /PID <进程ID> /F');
+                process.exit(1);
+            }
+        }
+    }
+}
+
+startWithFallback();
