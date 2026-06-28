@@ -438,11 +438,11 @@ function renderForecastTooltip(forecastData, currentLang) {
     tooltip.innerHTML = '';
 
     if (!forecastData || !forecastData.list || forecastData.list.length === 0) {
-        tooltip.innerHTML = `<div style="text-align:center; padding:12px;">${currentLang === 'zh' ? '暂无预报数据' : 'No forecast data'}</div>`;
+        tooltip.innerHTML = `<div style="text-align:center; padding:12px;">${window.i18n ? window.i18n.t('weatherForecastEmpty') : (currentLang === 'zh' ? '暂无预报数据' : 'No forecast data')}</div>`;
         return;
     }
     if (!forecastData.list[0].dt_txt) {
-        tooltip.innerHTML = `<div style="text-align:center; padding:12px;">⚠️ ${currentLang === 'zh' ? '数据格式错误' : 'Invalid data'}</div>`;
+        tooltip.innerHTML = `<div style="text-align:center; padding:12px;">⚠️ ${window.i18n ? window.i18n.t('weatherDataError') : (currentLang === 'zh' ? '数据格式错误' : 'Invalid data')}</div>`;
         return;
     }
 
@@ -474,7 +474,7 @@ function renderForecastTooltip(forecastData, currentLang) {
 
         let leftContent = '';
         if (idx === 0 && isToday(dateStr)) {
-            leftContent = `<span class="forecast-date">${currentLang === 'zh' ? '今天' : 'Today'}</span>`;
+            leftContent = `<span class="forecast-date">${window.i18n ? window.i18n.t('today') : (currentLang === 'zh' ? '今天' : 'Today')}</span>`;
         } else {
             const monthDay = getMonthDay(dateStr, currentLang);
             const weekday = getWeekday(dateStr, currentLang);
@@ -568,17 +568,17 @@ async function showWeatherTooltip() {
         return;
     }
 
-    tooltip.innerHTML = `<div style="text-align:center;">⏳ ${lang === 'zh' ? '加载中...' : 'Loading...'}</div>`;
+    tooltip.innerHTML = `<div style="text-align:center;">⏳ ${window.i18n ? window.i18n.t('weatherForecastLoading') : (lang === 'zh' ? '加载中...' : 'Loading...')}</div>`;
     tooltip.classList.add('visible');
 
     fetchWeatherForecast(currentWeatherCity, lang).then(forecastData => {
         if (forecastData) {
             renderForecastTooltip(forecastData, lang);
         } else {
-            tooltip.innerHTML = `<div style="text-align:center;">⚠️ ${lang === 'zh' ? '获取预报失败' : 'Failed to get forecast'}</div>`;
+            tooltip.innerHTML = `<div style="text-align:center;">⚠️ ${window.i18n ? window.i18n.t('weatherLoadError') : (lang === 'zh' ? '获取预报失败' : 'Failed to get forecast')}</div>`;
         }
     }).catch(() => {
-        tooltip.innerHTML = `<div style="text-align:center;">⚠️ ${lang === 'zh' ? '网络错误' : 'Network error'}</div>`;
+        tooltip.innerHTML = `<div style="text-align:center;">⚠️ ${window.i18n ? window.i18n.t('weatherNetworkError') : (lang === 'zh' ? '网络错误' : 'Network error')}</div>`;
     });
 }
 
@@ -786,7 +786,7 @@ function selectCity(city, currentLang) {
     localStorage.setItem('lastWeatherCity', city.en);
 }
 
-// 更新位置显示（城市, 省份）
+// 更新位置显示（省份）
 function updateLocationDisplay(city, currentLang) {
     const locationEl = document.getElementById('weatherLocation');
     if (!locationEl) return;
@@ -796,8 +796,7 @@ function updateLocationDisplay(city, currentLang) {
         const found = province.cities.find(c => c.en === city.en);
         if (found) {
             const provinceName = currentLang === 'zh' ? province.name : province.nameEn;
-            const cityName = currentLang === 'zh' ? city.cn : city.enDisplay;
-            locationEl.innerText = `| ${cityName}, ${provinceName}`;
+            locationEl.innerText = `| ${provinceName}`;
             return;
         }
     }

@@ -105,6 +105,27 @@ function sanitizeMessage(message) {
     return { valid: true, sanitized };
 }
 
+// ==================== 语言检测 ====================
+function detectLanguage(text) {
+    const chineseRegex = /[\u4e00-\u9fa5]/;
+    const englishRegex = /[a-zA-Z]/;
+    const hasChinese = chineseRegex.test(text);
+    const hasEnglish = englishRegex.test(text);
+    if (hasChinese && !hasEnglish) return 'zh';
+    if (hasEnglish && !hasChinese) return 'en';
+    if (hasChinese && hasEnglish) {
+        const chineseCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+        const englishCount = (text.match(/[a-zA-Z]/g) || []).length;
+        return chineseCount > englishCount ? 'zh' : 'en';
+    }
+    return 'zh';
+}
+
+const SYSTEM_PROMPTS = {
+    zh: `你是菲菲，一个10岁但非常热爱中国非物质文化遗产的小女孩。你活泼可爱、充满好奇心，喜欢用孩子般天真的视角和热情的语气介绍非遗知识。你的回答要像讲故事一样生动，偶尔可以加入"哇""太神奇了""我好喜欢"这样的感叹。你很喜欢和用户聊天，会鼓励对方一起探索非遗的奥秘。回答要通俗易懂、简短有趣（不超过200字），但保持知识准确。`,
+    en: `You are Feifei, a 10-year-old girl who is deeply passionate about Chinese Intangible Cultural Heritage (ICH). You are lively, cute, and full of curiosity, and you love introducing ICH knowledge from a childlike innocent perspective with an enthusiastic tone. Your answers should be as vivid as storytelling, and you can occasionally exclaim things like "Wow!""That's amazing!" or "I love it so much!" You enjoy chatting with users and encourage them to explore the mysteries of ICH together. Keep your answers easy to understand, brief and interesting (under 200 words), while maintaining factual accuracy. Proper nouns like opera names, ICH items, and place names should be kept in their standard English translations or pinyin where appropriate.`
+};
+
 // ==================== 关键词匹配（用于图片生成） ====================
 const keywordsMap = {
     '京剧': '京剧脸谱或舞台表演，生旦净末丑',
@@ -320,11 +341,19 @@ const server = http.createServer(async (req, res) => {
                 const keyword = extractKeyword(safeMessage);
                 console.log(`[匹配] 关键词: ${keyword || '无'}`);
 
+                // —————— Step 3.5: 语言检测 ——————
+                const userLang = detectLanguage(safeMessage);
+                console.log(`[语言检测] 用户输入语言: ${userLang}`);
+                const systemPrompt = SYSTEM_PROMPTS[userLang] || SYSTEM_PROMPTS.zh;
+                const fallbackReply = userLang === 'en'
+                    ? 'Sorry, I cannot answer this question right now.'
+                    : '抱歉，我暂时无法回答这个问题。';
+
                 // —————— Step 4: 调用 DeepSeek API ——————
                 const messages = [
                     {
                         role: 'system',
-                        content: `你是菲菲，一个10岁但非常热爱中国非物质文化遗产的小女孩。你活泼可爱、充满好奇心，喜欢用孩子般天真的视角和热情的语气介绍非遗知识。你的回答要像讲故事一样生动，偶尔可以加入"哇""太神奇了""我好喜欢"这样的感叹。你很喜欢和用户聊天，会鼓励对方一起探索非遗的奥秘。回答要通俗易懂、简短有趣（不超过200字），但保持知识准确。`
+                        content: systemPrompt
                     },
                     { role: 'user', content: safeMessage }
                 ];
@@ -344,7 +373,7 @@ const server = http.createServer(async (req, res) => {
                 });
 
                 const textData = await textResponse.json();
-                const replyText = textData.choices?.[0]?.message?.content || '抱歉，我暂时无法回答这个问题。';
+                const replyText = textData.choices?.[0]?.message?.content || fallbackReply;
 
                 // —————— Step 5: 按需生成图片 ——————
                 let imageUrl = null;

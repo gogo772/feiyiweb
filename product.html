@@ -11,7 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>产品详情 - 华夏非遗</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
+  <script src="static/js/i18n.js"></script>
+  <style>
         html, body {
     height: 100%;
     scroll-snap-type: y mandatory;
@@ -487,63 +488,63 @@ body::-webkit-scrollbar {
       <div id="navbarMount"></div>
 
         <div id="productContainer" class="product-card">
-            <div style="text-align: center; padding: 80px;">加载中...</div>
+            <div style="text-align: center; padding: 80px;" data-i18n="loadingData">加载中...</div>
         </div>
     </div>
 
  <footer class="site-footer">
     <div class="footer-grid">
         <div class="footer-col">
-            <h4>华夏非遗 · 薪火相传</h4>
-            <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
+            <h4 data-i18n="ichBranding">华夏非遗 · 薪火相传</h4>
+            <p style="font-size:0.85rem;color:#a09880;" data-i18n="ichBrandingDesc">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
         </div>
         <div class="footer-col">
-            <h4>快捷导航</h4>
+            <h4 data-i18n="quickNav">快捷导航</h4>
             <ul>
-                <li><a href="index.html">首页</a></li>
-                <li><a href="performances.html">票务演出</a></li>
-                <li><a href="merchandise.html">文创周边</a></li>
-                <li><a href="travel.html">去旅游</a></li>
-                <li><a href="history.html">浏览记录</a></li>
-                 <li><a href="knowledge-graph.html" >非遗图谱✨</a></li>
-                    <li><a href="whereami.html">云旅游✨</a></li>
+                <li><a href="index.html" data-i18n="navHome">首页</a></li>
+                <li><a href="performances.html" data-i18n="performances">票务演出</a></li>
+                <li><a href="merchandise.html" data-i18n="merchandiseShop">文创周边</a></li>
+                <li><a href="travel.html" data-i18n="travel">去旅游</a></li>
+                <li><a href="history.html" data-i18n="history">浏览记录</a></li>
+                 <li><a href="knowledge-graph.html" data-i18n="ichGraph">非遗图谱✨</a></li>
+                    <li><a href="whereami.html" data-i18n="cloudTravel">云旅游✨</a></li>
             </ul>
         </div>
         <div class="footer-col">
-            <h4>联系方式</h4>
-            <p style="font-size:0.85rem;">📧 ich@culture.cn</p>
-            <p style="font-size:0.85rem;">📞 400-668-0808</p>
-            <p style="font-size:0.85rem;">📍 安徽新华学院</p>
+            <h4 data-i18n="contact">联系方式</h4>
+            <p style="font-size:0.85rem;" data-i18n="email">📧 ich@culture.cn</p>
+            <p style="font-size:0.85rem;" data-i18n="phone">📞 400-668-0808</p>
+            <p style="font-size:0.85rem;" data-i18n="address">📍 安徽新华学院</p>
         </div>
         <div class="footer-col">
-            <h4>友情链接</h4>
+            <h4 data-i18n="friendLinks">友情链接</h4>
             <ul>
-                <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
-                <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
-                <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
+                <li><a href="https://www.mct.gov.cn" target="_blank" data-i18n="mct">文化和旅游部</a></li>
+                <li><a href="http://www.ncha.gov.cn" target="_blank" data-i18n="ncha">国家文物局</a></li>
+                <li><a href="https://www.ihchina.cn" target="_blank" data-i18n="ihchina">中国非物质文化遗产网</a></li>
             </ul>
         </div>
     </div>
     <div class="friend-links">
-        <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
+        <span style="color:var(--chinese-gold);letter-spacing:2px;" data-i18n="partners">合作伙伴：</span>
         <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
                     <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
                     <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
     </div>
     <div class="footer-bottom">
-        <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+        <p data-i18n="copyright">© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
     </div>
 </footer>
 
     <!-- 支付弹窗（扫码） -->
     <div id="paymentModal" class="payment-modal">
         <div class="modal-content">
-            <h3><i class="fas fa-qrcode"></i> 扫码支付</h3>
+            <h3 id="scanToPayTitle"><i class="fas fa-qrcode"></i> <span data-i18n="scanToPay">扫码支付</span></h3>
             <img id="qrCodeImg" src="static/img/11111.jpg" alt="支付二维码" onerror="this.src='https://picsum.photos/id/1/200/200'">
-            <p>请使用微信/支付宝扫码支付</p>
+            <p id="scanTip" data-i18n="scanTip">请使用微信/支付宝扫码支付</p>
             <div class="modal-amount">¥<span id="modalAmount">0</span></div>
-            <button id="confirmPayBtn" class="pay-btn">我已支付</button>
-            <button id="cancelPayBtn" class="pay-btn cancel-btn">取消</button>
+            <button id="confirmPayBtn" class="pay-btn" data-i18n="paidConfirm">我已支付</button>
+            <button id="cancelPayBtn" class="pay-btn cancel-btn" data-i18n="cancel">取消</button>
         </div>
     </div>
 
@@ -551,22 +552,22 @@ body::-webkit-scrollbar {
     <div id="successModal" class="success-modal">
         <div class="modal-content">
             <i class="fas fa-check-circle"></i>
-            <h3>支付成功！</h3>
-            <p>订单已添加到个人中心</p>
-            <button id="closeSuccessBtn" class="pay-btn" style="background: #2c5f2d;">返回</button>
+            <h3 id="paySuccessTitle" data-i18n="paySuccess">支付成功！</h3>
+            <p id="orderAddedTip" data-i18n="orderAdded">订单已添加到个人中心</p>
+            <button id="closeSuccessBtn" class="pay-btn" style="background: #2c5f2d;" data-i18n="back">返回</button>
         </div>
     </div>
 
     <!-- AI 聊天窗口 -->
     <div id="aiChatWindow" class="ai-chat-window">
-        <div class="chat-header"><span><i class="fas fa-robot"></i> DeepSeek 非遗助手</span><span class="close-chat" id="closeChat">&times;</span></div>
-        <div class="chat-body" id="chatBody"><div>您好！我是非遗小助手，有任何戏曲、演出、非遗的问题都可以问我～</div></div>
-        <div class="chat-input-area"><input type="text" id="chatInput" placeholder="例如：京剧有什么特点？"><button id="sendChat">发送</button></div>
+        <div class="chat-header"><span><i class="fas fa-robot"></i> <span id="aiAssistantTitle" data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span><span class="close-chat" id="closeChat">&times;</span></div>
+        <div class="chat-body" id="chatBody"><div id="aiWelcomeMsg" data-i18n="aiWelcome">您好！我是非遗小助手，有任何戏曲、演出、非遗的问题都可以问我～</div></div>
+        <div class="chat-input-area"><input type="text" id="chatInput" data-i18n-placeholder="chatInput" placeholder="例如：京剧有什么特点？"><button id="sendChat" data-i18n="send">发送</button></div>
     </div>
 
     <!-- 浏览记录悬浮窗 -->
     <div id="historyPreview">
-        <div class="preview-title">最近浏览</div>
+        <div class="preview-title" id="recentBrowseTitle" data-i18n="recentBrowse">最近浏览</div>
         <div id="previewList"></div>
     </div>
 
@@ -591,7 +592,8 @@ body::-webkit-scrollbar {
             const history = JSON.parse(localStorage.getItem('browsing_history')) || [];
             const previewList = document.getElementById('previewList');
             if(history.length === 0) {
-                previewList.innerHTML = '<div style="color:#999;">暂无浏览记录</div>';
+                const t = window.i18n ? window.i18n.t('noHistory') : '暂无浏览记录';
+                previewList.innerHTML = `<div style="color:#999;">${t}</div>`;
             } else {
                 const latest = history.slice(0, 3);
                 previewList.innerHTML = latest.map(item => `<div>📖 ${item.name}</div>`).join('');
@@ -770,9 +772,9 @@ function renderProduct() {
     if (!product) {
         container.innerHTML = `
             <div style="text-align:center; padding:80px;">
-                <h2>产品不存在或已下架</h2>
-                <p>产品ID: ${productId}, 类型: ${productType}</p>
-                <a href="javascript:history.back()" style="color:#b22234; font-size:18px;">返回上一页</a>
+                <h2>${window.i18n?.t('productNotExist') || '产品不存在或已下架'}</h2>
+                <p>${window.i18n?.t('productId') || '产品ID'}: ${productId}, ${window.i18n?.t('productType') || '类型'}: ${productType}</p>
+                <a href="javascript:history.back()" style="color:#b22234; font-size:18px;">${window.i18n?.t('backPrevPage') || '返回上一页'}</a>
             </div>
         `;
         return;
@@ -786,51 +788,51 @@ function renderProduct() {
                 <span class="info-tag"><i class="fas fa-map-marker-alt"></i> ${product.address}</span>
             </div>
             <div class="info-row">
-                <span class="info-tag"><i class="fas fa-ticket-alt"></i> 演出时长约120分钟</span>
-                <span class="info-tag"><i class="fas fa-mask"></i> 戏曲类</span>
+                <span class="info-tag"><i class="fas fa-ticket-alt"></i> ${window.i18n?.t('duration') || '演出时长约120分钟'}</span>
+                <span class="info-tag"><i class="fas fa-mask"></i> ${window.i18n?.t('operaType') || '戏曲类'}</span>
             </div>
         `;
     } else if (productType === 'merchandise') {
         infoHtml = `
             <div class="info-row">
-                <span class="info-tag"><i class="fas fa-box"></i> 库存充足</span>
-                <span class="info-tag"><i class="fas fa-shipping-fast"></i> 全国包邮</span>
+                <span class="info-tag"><i class="fas fa-box"></i> ${window.i18n?.t('inStock') || '库存充足'}</span>
+                <span class="info-tag"><i class="fas fa-shipping-fast"></i> ${window.i18n?.t('freeShipping') || '全国包邮'}</span>
             </div>
             <div class="info-row">
-                <span class="info-tag">${product.specs || '规格: 标准版'}</span>
+                <span class="info-tag">${product.specs || (window.i18n?.t('specs') || '规格') + ': ' + (window.i18n?.t('standardEdition') || '标准版')}</span>
             </div>
         `;
     } else if (productType === 'travel') {
         infoHtml = `
             <div class="info-row">
-                <span class="info-tag"><i class="fas fa-clock"></i> ${product.days}天${product.days-1}晚</span>
+                <span class="info-tag"><i class="fas fa-clock"></i> ${product.days}${window.i18n?.t('day') || '天'}${product.days-1}${window.i18n?.t('nights') || '晚'}</span>
                 <span class="info-tag"><i class="fas fa-users"></i> ${product.groupSize}</span>
-                <span class="info-tag"><i class="fas fa-fire"></i> 已售 ${product.sold}+</span>
+                <span class="info-tag"><i class="fas fa-fire"></i> ${window.i18n?.t('sold') || '已售'} ${product.sold}+</span>
             </div>
             <div class="info-row">
-                <span class="info-tag"><i class="fas fa-star"></i> 纯玩0购物</span>
-                <span class="info-tag"><i class="fas fa-hotel"></i> 星级住宿</span>
+                <span class="info-tag"><i class="fas fa-star"></i> ${window.i18n?.t('purePlay') || '纯玩0购物'}</span>
+                <span class="info-tag"><i class="fas fa-hotel"></i> ${window.i18n?.t('starHotel') || '星级住宿'}</span>
             </div>
         `;
     }
 
     container.innerHTML = `
-        <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> 返回</a>
+        <a href="javascript:history.back()" class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> <span id="backText">返回</span></a>
         <div class="product-main">
             <div class="product-gallery">
                 <img src="${product.img}" alt="${product.name}" onerror="this.src='https://picsum.photos/id/1/600/400'">
             </div>
             <div class="product-info">
                 <div class="product-title">${product.name}</div>
-                <div class="price">¥${product.price}<small> ${productType === 'travel' ? '/人' : ''}</small></div>
+                <div class="price">¥${product.price}<small> ${productType === 'travel' ? (window.i18n?.t('perPerson') || '/人') : ''}</small></div>
                 ${infoHtml}
-                <button class="btn-buy" id="buyNowBtn">立即购买</button>
+                <button class="btn-buy" id="buyNowBtn">${window.i18n?.t('buyNow') || '立即购买'}</button>
             </div>
         </div>
-        <div class="detail-section">
-            <h3>详情</h3>
+        <div class="product-desc" id="productDescSection">
+            <h3 id="productDetailTitle"><i class="fas fa-info-circle"></i> ${window.i18n?.t('productDetail') || '产品详情'}</h3>
             <p>${product.desc}</p>
-            ${product.highlight ? `<p style="margin-top:20px;"><strong>✨ 行程亮点：</strong> ${product.highlight}</p>` : ''}
+            ${product.highlight ? `<div class="product-highlight"><i class="fas fa-star"></i> ${product.highlight}</div>` : ''}
         </div>
     `;
 
@@ -885,17 +887,19 @@ function renderProduct() {
                 const msg = input.value.trim();
                 if (!msg) return;
                 const body = document.getElementById('chatBody');
-                body.innerHTML += `<div><strong>您:</strong> ${escapeHtml(msg)}</div>`;
+                body.innerHTML += `<div><strong>${window.i18n ? window.i18n.t('you') : '您'}:</strong> ${escapeHtml(msg)}</div>`;
                 const aiDiv = document.createElement('div');
-                aiDiv.innerHTML = '<strong>非遗小助手:</strong> 思考中...';
+                aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${window.i18n ? window.i18n.t('thinking') : '思考中...'}`;
                 body.appendChild(aiDiv);
                 body.scrollTop = body.scrollHeight;
                 try {
                     const res = await fetch('http://localhost:3000/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg }) });
                     const data = await res.json();
-                    aiDiv.innerHTML = `<strong>非遗小助手:</strong> ${escapeHtml(data.success ? data.reply : '服务暂时不可用')}`;
+                    const fallback = window.i18n ? window.i18n.t('serviceUnavailable') : '服务暂时不可用';
+                    aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${escapeHtml(data.success ? data.reply : fallback)}`;
                 } catch(e) {
-                    aiDiv.innerHTML = `<strong>非遗小助手:</strong> 网络错误，请确保代理服务器已启动（node proxy-server.js）`;
+                    const errMsg = window.i18n ? window.i18n.t('chatError') : '网络错误，请确保代理服务器已启动（node proxy-server.js）';
+                    aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${errMsg}`;
                 }
                 input.value = '';
                 body.scrollTop = body.scrollHeight;
@@ -906,6 +910,60 @@ function renderProduct() {
             div.textContent = str;
             return div.innerHTML;
         }
+        
+        // 语言切换翻译更新
+        function applyPageLang() {
+            if (!window.i18n) return;
+            const t = window.i18n.t;
+            
+            // 支付弹窗
+            const scanTitle = document.getElementById('scanToPayTitle');
+            if (scanTitle) scanTitle.innerHTML = `<i class="fas fa-qrcode"></i> ${t('scanToPay')}`;
+            const scanTip = document.getElementById('scanTip');
+            if (scanTip) scanTip.textContent = t('scanTip');
+            const paidBtn = document.getElementById('paidConfirmBtn');
+            if (paidBtn) paidBtn.textContent = t('paidConfirm');
+            const cancelBtn = document.getElementById('cancelBtn');
+            if (cancelBtn) cancelBtn.textContent = t('cancel');
+            
+            // 成功弹窗
+            const successTitle = document.getElementById('paySuccessTitle');
+            if (successTitle) successTitle.textContent = t('paySuccess');
+            const orderAddedTip = document.getElementById('orderAddedTip');
+            if (orderAddedTip) orderAddedTip.textContent = t('orderAdded');
+            const backBtn2 = document.getElementById('backBtn');
+            if (backBtn2) backBtn2.textContent = t('back');
+            
+            // AI 助手
+            const aiTitle = document.getElementById('aiAssistantTitle');
+            if (aiTitle) aiTitle.textContent = t('aiAssistant');
+            const aiWelcome = document.getElementById('aiWelcomeMsg');
+            if (aiWelcome) aiWelcome.textContent = t('aiWelcome');
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) chatInput.placeholder = t('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) sendBtn.textContent = t('send');
+            
+            // 浏览记录
+            const recentBrowse = document.getElementById('recentBrowseTitle');
+            if (recentBrowse) recentBrowse.textContent = t('recentBrowse');
+            
+            // 产品详情页
+            const backText = document.getElementById('backText');
+            if (backText) backText.textContent = t('back');
+            const buyNow = document.getElementById('buyNowBtn');
+            if (buyNow) buyNow.textContent = t('buyNow');
+            const detailTitle = document.getElementById('productDetailTitle');
+            if (detailTitle) detailTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${t('productDetail')}`;
+        }
+        
+        // 页面加载时和语言切换时应用翻译
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyPageLang);
+        } else {
+            applyPageLang();
+        }
+        document.addEventListener('lang:changed', applyPageLang);
     </script>
 <script src="static/js/sidebar.js"></script>
 <script src="static/js/chat.js"></script>

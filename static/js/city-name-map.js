@@ -103,7 +103,7 @@
         if (lang === 'zh' || !zhName) return zhName || '';
         const map = CITY_NAME_MAP[provinceCode];
         if (map && map[zhName]) return map[zhName];
-        // 降级：去除"市/自治州/林区/地区"后缀原样返回（避免破坏地图）
+        console.warn('[city-name-map] Missing English name for:', zhName, 'in province', provinceCode);
         return zhName;
     }
 

@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>去旅游 · 非遗主题游 | 华夏非遗</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="static/js/i18n.js"></script>
     <style>
         html, body {
             height: 100%;
@@ -104,30 +105,79 @@
             gap: 10px;
             padding: 14px 24px;
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(0, 212, 255, 0.15));
-            color: #e0d6ff;
+            background: linear-gradient(135deg, #fbbf24 0%, #8B3A3A 50%, #1a0a2e 100%);
+            color: #fff;
             font-size: 0.9rem;
             font-weight: 500;
             text-decoration: none;
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.05);
-            transition: all 0.3s;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            box-shadow: 0 4px 15px rgba(139, 58, 58, 0.4);
+            transition: all 0.3s ease;
             cursor: pointer;
-            backdrop-filter: blur(4px);
             z-index: 998;
+            overflow: hidden;
+        }
+        .back-to-starmap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.25) 40%,
+                rgba(255, 255, 255, 0.4) 50%,
+                rgba(255, 255, 255, 0.25) 60%,
+                transparent 100%
+            );
+            transition: none;
+            pointer-events: none;
+        }
+        .back-to-starmap:hover::before {
+            animation: waveFlow 0.8s ease-out forwards;
+        }
+        @keyframes waveFlow {
+            0% {
+                left: -100%;
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                left: 100%;
+                opacity: 0;
+            }
         }
         .back-to-starmap:hover {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(0, 212, 255, 0.25));
-            border-color: #a855f7;
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.15);
+            background: linear-gradient(135deg, #fcd34d 0%, #a04040 50%, #2d1b4e 100%);
+            border-color: rgba(251, 191, 36, 0.5);
+            box-shadow: 0 6px 25px rgba(139, 58, 58, 0.55);
             transform: translateY(-2px);
             color: #fff;
         }
+        .back-to-starmap:active {
+            background: linear-gradient(135deg, #f59e0b 0%, #6b2626 50%, #0f0520 100%);
+            box-shadow: 0 2px 10px rgba(139, 58, 58, 0.4);
+            transform: translateY(0);
+        }
         .back-to-starmap .cta-arrow {
             transition: transform 0.25s;
+            position: relative;
+            z-index: 1;
         }
         .back-to-starmap:hover .cta-arrow {
             transform: translateX(4px);
+        }
+        .back-to-starmap span {
+            position: relative;
+            z-index: 1;
+        }
+        .back-to-starmap i {
+            position: relative;
+            z-index: 1;
         }
         @media (max-width: 768px) {
             .back-to-starmap {
@@ -501,9 +551,9 @@
 </div>
 
 <!-- 返回星图悬浮按钮 -->
-<a href="starmap.html" class="back-to-starmap" title="返回皖韵星图">
+<a href="starmap.html" class="back-to-starmap" data-i18n-title="backToStarmap" title="返回皖韵星图">
     <i class="fas fa-arrow-left cta-arrow-icon" aria-hidden="true"></i>
-    <span>返回星图</span>
+    <span data-i18n="backToStarmap">返回星图</span>
 </a>
 
 <div class="container">
@@ -513,24 +563,14 @@
 
     <!-- 横幅 -->
     <div class="hero-travel">
-        <h1>去旅行 · 发现非遗之美</h1>
-        <p>沉浸式体验 | 非遗主题深度游 | 品质纯玩团</p>
+        <h1 data-i18n="travelHeroTitle">去旅行 · 发现非遗之美</h1>
+        <p data-i18n="travelHeroSub">沉浸式体验 | 非遗主题深度游 | 品质纯玩团</p>
     </div>
 
     <!-- 筛选栏 -->
     <div class="filter-bar">
-        <div class="filter-tabs" id="filterTabs">
-            <div class="filter-tab active" data-filter="all">全部推荐</div>
-            <div class="filter-tab" data-filter="云南">彩云之南</div>
-            <div class="filter-tab" data-filter="贵州">多彩贵州</div>
-            <div class="filter-tab" data-filter="四川">天府四川</div>
-        </div>
-        <select class="sort-select" id="sortSelect">
-            <option value="default">默认排序</option>
-            <option value="price_asc">价格从低到高</option>
-            <option value="price_desc">价格从高到低</option>
-            <option value="sold_desc">销量最高</option>
-        </select>
+        <div class="filter-tabs" id="filterTabs"></div>
+        <select class="sort-select" id="sortSelect"></select>
     </div>
 
     <!-- 旅游卡片容器 -->
@@ -541,68 +581,68 @@
 <footer class="site-footer">
     <div class="footer-grid">
         <div class="footer-col">
-            <h4>华夏非遗 · 薪火相传</h4>
-            <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
+            <h4 data-i18n="ichBranding">华夏非遗 · 薪火相传</h4>
+            <p style="font-size:0.85rem;color:#a09880;" data-i18n="ichBrandingDesc">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
         </div>
         <div class="footer-col">
-            <h4>快捷导航</h4>
+            <h4 data-i18n="quickNav">快捷导航</h4>
             <ul>
-                <li><a href="index.html">首页</a></li>
-                <li><a href="performances.html">票务演出</a></li>
-                <li><a href="merchandise.html">文创周边</a></li>
-                <li><a href="starmap.html">去旅游</a></li>
-                <li><a href="history.html">浏览记录</a></li>
-                <li><a href="knowledge-graph.html">非遗图谱✨</a></li>
-                <li><a href="whereami.html">云旅游✨</a></li>
+                <li><a href="index.html" data-i18n="navHome">首页</a></li>
+                <li><a href="performances.html" data-i18n="navPerformances">票务演出</a></li>
+                <li><a href="merchandise.html" data-i18n="navMerchandise">文创周边</a></li>
+                <li><a href="starmap.html" data-i18n="navTravel">去旅游</a></li>
+                <li><a href="history.html" data-i18n="history">浏览记录</a></li>
+                <li><a href="knowledge-graph.html" data-i18n="ichGraph">非遗图谱✨</a></li>
+                <li><a href="whereami.html" data-i18n="cloudTravel">云旅游✨</a></li>
             </ul>
         </div>
         <div class="footer-col">
-            <h4>联系方式</h4>
-            <p>📧 ich@culture.cn</p>
-            <p>📞 400-668-0808</p>
-            <p>📍 安徽新华学院</p>
+            <h4 data-i18n="contact">联系方式</h4>
+            <p data-i18n="email">📧 ich@culture.cn</p>
+            <p data-i18n="phone">📞 400-668-0808</p>
+            <p data-i18n="address">📍 安徽新华学院</p>
         </div>
         <div class="footer-col">
-            <h4>友情链接</h4>
+            <h4 data-i18n="friendLinks">友情链接</h4>
             <ul>
-                <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
-                <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
-                <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
+                <li><a href="https://www.mct.gov.cn" target="_blank" data-i18n="mct">文化和旅游部</a></li>
+                <li><a href="http://www.ncha.gov.cn" target="_blank" data-i18n="ncha">国家文物局</a></li>
+                <li><a href="https://www.ihchina.cn" target="_blank" data-i18n="ihchina">中国非物质文化遗产网</a></li>
             </ul>
         </div>
     </div>
     <div class="friend-links">
-        <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
-        <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
-        <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
-        <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
+        <span style="color:var(--chinese-gold);letter-spacing:2px;" data-i18n="partners">合作伙伴：</span>
+        <a href="https://www.zgysyjy.org.cn" target="_blank" data-i18n="partner1">中国艺术研究院</a>
+        <a href="https://www.dpm.org.cn" target="_blank" data-i18n="partner2">故宫博物院</a>
+        <a href="https://www.nlc.cn" target="_blank" data-i18n="partner3">国家图书馆</a>
     </div>
     <div class="footer-bottom">
-        <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+        <p data-i18n="copyright">© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
     </div>
 </footer>
 
 <!-- AI 聊天窗口 (菲菲非遗小助手，无头像版) -->
 <div id="aiChatWindow" class="ai-chat-window">
     <div class="chat-header">
-        <span><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span>
+        <span data-i18n="aiAssistant"><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span>
         <span class="close-chat" id="closeChat">&times;</span>
     </div>
     <div class="chat-body" id="chatBody">
         <div class="chat-message ai">
-            <div class="message-sender">菲菲</div>
-            <div class="message-bubble">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
+            <div class="message-sender" data-i18n="aiSender">菲菲</div>
+            <div class="message-bubble" data-i18n="aiWelcome">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
         </div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="例如：京剧有什么特点？">
+        <input type="text" id="chatInput" data-i18n-placeholder="chatInput" placeholder="例如：京剧有什么特点？">
         <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
 <!-- 浏览记录悬浮窗 -->
 <div id="historyPreview">
-    <div class="preview-title">最近浏览</div>
+    <div class="preview-title" data-i18n="recentBrowse">最近浏览</div>
     <div id="previewList"></div>
 </div>
 
@@ -672,188 +712,74 @@
         previewDiv.addEventListener('mouseleave', hidePreview);
     }
 
+    // ========== i18n 支持 ==========
+    // 地区分类配置
+    const regionConfig = [
+        { filterValue: 'all', i18nKey: 'filterAllTravel' },
+        { filterValue: 'regionYunnan', i18nKey: 'regionYunnan' },
+        { filterValue: 'regionGuizhou', i18nKey: 'regionGuizhou' },
+        { filterValue: 'regionSichuan', i18nKey: 'regionSichuan' }
+    ];
+
+    // 排序选项配置
+    const sortConfig = [
+        { value: 'default', i18nKey: 'sortDefault' },
+        { value: 'price_asc', i18nKey: 'sortPriceAsc' },
+        { value: 'price_desc', i18nKey: 'sortPriceDesc' },
+        { value: 'sold_desc', i18nKey: 'sortSoldDesc' }
+    ];
+
+    function renderFilterTabs() {
+        const container = document.getElementById('filterTabs');
+        container.innerHTML = regionConfig.map(reg => `
+            <div class="filter-tab${reg.filterValue === currentFilter ? ' active' : ''}" data-filter="${reg.filterValue}">${window.i18n ? window.i18n.t(reg.i18nKey) : reg.i18nKey}</div>
+        `).join('');
+        bindFilterEvents();
+    }
+
+    function renderSortOptions() {
+        const select = document.getElementById('sortSelect');
+        select.innerHTML = sortConfig.map(opt => `
+            <option value="${opt.value}"${opt.value === currentSort ? ' selected' : ''}>${window.i18n ? window.i18n.t(opt.i18nKey) : opt.i18nKey}</option>
+        `).join('');
+    }
+
+    function bindFilterEvents() {
+        const tabs = document.querySelectorAll('.filter-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.filter;
+                currentPage = 1;
+                renderTours();
+            });
+        });
+        const sortSelect = document.getElementById('sortSelect');
+        sortSelect.addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            currentPage = 1;
+            renderTours();
+        });
+    }
+
     // 旅游数据
     const toursData = [
-        {
-            id: 1,
-            name: "【秘境云南】丽江·大理·泸沽湖7日深度非遗之旅",
-            region: "云南",
-            days: 7,
-            price: 3280,
-            groupSize: "2-8人小团",
-            sold: 1280,
-            img: "static/img/travel-img/1.jpg",
-            desc: "漫步丽江古城，体验东巴造纸，摩梭家访，非遗扎染",
-            highlight: "东巴文化体验 + 摩梭篝火晚会"
-        },
-        {
-            id: 2,
-            name: "【多彩贵州】黄果树·千户苗寨·荔波小七孔5日纯玩",
-            region: "贵州",
-            days: 5,
-            price: 2680,
-            groupSize: "4-12人",
-            sold: 2450,
-            img: "static/img/travel-img/2.jpg",
-            desc: "观黄果树瀑布，住苗寨观夜景，体验苗族蜡染",
-            highlight: "苗族蜡染DIY + 长桌宴"
-        },
-        {
-            id: 3,
-            name: "【佛国禅韵】峨眉山·乐山大佛·非遗武术4日体验",
-            region: "四川",
-            days: 4,
-            price: 1980,
-            groupSize: "2-6人",
-            sold: 862,
-            img: "static/img/travel-img/3.jpg",
-            desc: "学习峨眉武术，品尝素斋，观金顶云海",
-            highlight: "峨眉武术体验 + 禅修课程"
-        },
-        {
-            id: 4,
-            name: "【风花雪月】大理·洱海·沙溪古镇5日轻奢旅拍",
-            region: "云南",
-            days: 5,
-            price: 3580,
-            groupSize: "2-4人",
-            sold: 734,
-            img: "static/img/travel-img/4.jpg",
-            desc: "洱海S湾骑行，白族三道茶体验，沙溪茶马古道",
-            highlight: "旅拍服务 + 白族扎染"
-        },
-        {
-            id: 5,
-            name: "【黔东南秘境】肇兴侗寨·堂安梯田·非遗侗族大歌4日",
-            region: "贵州",
-            days: 4,
-            price: 2280,
-            groupSize: "4-10人",
-            sold: 591,
-            img: "static/img/travel-img/5.jpg",
-            desc: "聆听侗族大歌，学唱侗族琵琶歌，体验蜡染",
-            highlight: "侗族大歌教学 + 梯田徒步"
-        },
-        {
-            id: 6,
-            name: "【蜀道三国】成都·武侯祠·阆中古城·非遗皮影6日",
-            region: "四川",
-            days: 6,
-            price: 3180,
-            groupSize: "2-8人",
-            sold: 412,
-            img: "static/img/travel-img/6.jpg",
-            desc: "观川剧变脸，体验皮影制作，漫步三国古道",
-            highlight: "皮影戏体验 + 三国文化"
-        },
-        {
-            id: 7,
-            name: "【香格里拉】丽江·虎跳峡·普达措·松赞林寺6日",
-            region: "云南",
-            days: 6,
-            price: 3980,
-            groupSize: "2-6人",
-            sold: 1560,
-            img: "static/img/travel-img/7.jpg",
-            desc: "探秘藏族非遗唐卡，藏民家访，徒步秘境",
-            highlight: "唐卡绘制体验 + 藏式家访"
-        },
-        {
-            id: 8,
-            name: "【贵州全景】梵净山·镇远古城·西江苗寨8日",
-            region: "贵州",
-            days: 8,
-            price: 4380,
-            groupSize: "6-15人",
-            sold: 2030,
-            img: "static/img/travel-img/8.jpg",
-            desc: "登梵净山云顶，体验苗族银饰锻造，夜游镇远",
-            highlight: "银饰锻造 + 古城夜游"
-        },
-        {
-            id: 9,
-            name: "【成都慢生活】熊猫基地·都江堰·青城山4日",
-            region: "四川",
-            days: 4,
-            price: 2480,
-            groupSize: "2-8人",
-            sold: 984,
-            img: "static/img/travel-img/9.jpg",
-            desc: "熊猫义工体验，学习青城太极，品盖碗茶",
-            highlight: "熊猫义工 + 太极体验"
-        },
-        {
-            id: 10,
-            name: "【云南全景】昆明·大理·丽江·香格里拉9日",
-            region: "云南",
-            days: 9,
-            price: 5280,
-            groupSize: "4-12人",
-            sold: 2120,
-            img: "static/img/travel-img/10.jpg",
-            desc: "一次玩遍滇西，体验纳西古乐、藏族锅庄",
-            highlight: "纳西古乐 + 藏族锅庄舞"
-        },
-        {
-            id: 11,
-            name: "【黔北风情】赤水丹霞·茅台古镇·非遗晒醋4日",
-            region: "贵州",
-            days: 4,
-            price: 1980,
-            groupSize: "2-6人",
-            sold: 367,
-            img: "static/img/travel-img/11.jpg",
-            desc: "探秘赤水竹编，参观茅台酒厂，体验晒醋工艺",
-            highlight: "晒醋体验 + 茅台文化"
-        },
-        {
-            id: 12,
-            name: "【川西秘境】四姑娘山·丹巴藏寨·甲居5日",
-            region: "四川",
-            days: 5,
-            price: 3680,
-            groupSize: "2-4人",
-            sold: 521,
-            img: "static/img/travel-img/12.jpg",
-            desc: "嘉绒藏族非遗刺绣体验，藏式家访，雪山徒步",
-            highlight: "藏绣体验 + 雪山徒步"
-        },
-        {
-            id: 13,
-            name: "【版纳风情】西双版纳·傣族园·雨林穿越5日",
-            region: "云南",
-            days: 5,
-            price: 2980,
-            groupSize: "2-6人",
-            sold: 1670,
-            img: "static/img/travel-img/13.jpg",
-            desc: "傣族泼水节体验，学习傣陶制作，夜探雨林",
-            highlight: "傣陶制作 + 泼水狂欢"
-        },
-        {
-            id: 14,
-            name: "【贵州苗年】凯里·雷山·苗族非遗深度7日",
-            region: "贵州",
-            days: 7,
-            price: 4280,
-            groupSize: "4-12人",
-            sold: 886,
-            img: "static/img/travel-img/14.jpg",
-            desc: "参与苗年盛典，学习苗绣、苗族银饰锻造",
-            highlight: "苗年盛典 + 苗绣体验"
-        },
-        {
-            id: 15,
-            name: "【天府非遗】绵竹年画·蜀锦·川菜博物馆3日",
-            region: "四川",
-            days: 3,
-            price: 1680,
-            groupSize: "2-8人",
-            sold: 432,
-            img: "static/img/travel-img/15.jpg",
-            desc: "体验绵竹年画绘制，参观蜀锦织造，学做川菜",
-            highlight: "年画绘制 + 川菜教学"
-        }
+        { id: 0, nameKey: 'tour_name_0', regionKey: 'regionYunnan', days: 7, price: 3280, sold: 1280, img: 'static/img/travel-img/1.jpg', descKey: 'tour_desc_0', highlightKey: 'tour_highlight_0' },
+        { id: 1, nameKey: 'tour_name_1', regionKey: 'regionGuizhou', days: 5, price: 2680, sold: 2450, img: 'static/img/travel-img/2.jpg', descKey: 'tour_desc_1', highlightKey: 'tour_highlight_1' },
+        { id: 2, nameKey: 'tour_name_2', regionKey: 'regionSichuan', days: 4, price: 1980, sold: 862, img: 'static/img/travel-img/3.jpg', descKey: 'tour_desc_2', highlightKey: 'tour_highlight_2' },
+        { id: 3, nameKey: 'tour_name_3', regionKey: 'regionYunnan', days: 5, price: 3580, sold: 734, img: 'static/img/travel-img/4.jpg', descKey: 'tour_desc_3', highlightKey: 'tour_highlight_3' },
+        { id: 4, nameKey: 'tour_name_4', regionKey: 'regionGuizhou', days: 4, price: 2280, sold: 591, img: 'static/img/travel-img/5.jpg', descKey: 'tour_desc_4', highlightKey: 'tour_highlight_4' },
+        { id: 5, nameKey: 'tour_name_5', regionKey: 'regionSichuan', days: 6, price: 3180, sold: 412, img: 'static/img/travel-img/6.jpg', descKey: 'tour_desc_5', highlightKey: 'tour_highlight_5' },
+        { id: 6, nameKey: 'tour_name_6', regionKey: 'regionYunnan', days: 6, price: 3980, sold: 1560, img: 'static/img/travel-img/7.jpg', descKey: 'tour_desc_6', highlightKey: 'tour_highlight_6' },
+        { id: 7, nameKey: 'tour_name_7', regionKey: 'regionGuizhou', days: 8, price: 4380, sold: 2030, img: 'static/img/travel-img/8.jpg', descKey: 'tour_desc_7', highlightKey: 'tour_highlight_7' },
+        { id: 8, nameKey: 'tour_name_8', regionKey: 'regionSichuan', days: 4, price: 2480, sold: 984, img: 'static/img/travel-img/9.jpg', descKey: 'tour_desc_8', highlightKey: 'tour_highlight_8' },
+        { id: 9, nameKey: 'tour_name_9', regionKey: 'regionYunnan', days: 9, price: 5280, sold: 2120, img: 'static/img/travel-img/10.jpg', descKey: 'tour_desc_9', highlightKey: 'tour_highlight_9' },
+        { id: 10, nameKey: 'tour_name_10', regionKey: 'regionGuizhou', days: 4, price: 1980, sold: 367, img: 'static/img/travel-img/11.jpg', descKey: 'tour_desc_10', highlightKey: 'tour_highlight_10' },
+        { id: 11, nameKey: 'tour_name_11', regionKey: 'regionSichuan', days: 5, price: 3680, sold: 521, img: 'static/img/travel-img/12.jpg', descKey: 'tour_desc_11', highlightKey: 'tour_highlight_11' },
+        { id: 12, nameKey: 'tour_name_12', regionKey: 'regionYunnan', days: 5, price: 2980, sold: 1670, img: 'static/img/travel-img/13.jpg', descKey: 'tour_desc_12', highlightKey: 'tour_highlight_12' },
+        { id: 13, nameKey: 'tour_name_13', regionKey: 'regionGuizhou', days: 7, price: 4280, sold: 886, img: 'static/img/travel-img/14.jpg', descKey: 'tour_desc_13', highlightKey: 'tour_highlight_13' },
+        { id: 14, nameKey: 'tour_name_14', regionKey: 'regionSichuan', days: 3, price: 1680, sold: 432, img: 'static/img/travel-img/15.jpg', descKey: 'tour_desc_14', highlightKey: 'tour_highlight_14' }
     ];
 
     let currentFilter = "all";
@@ -862,7 +788,7 @@
     const itemsPerPage = 6;
 
     function getFilteredAndSorted() {
-        let filtered = toursData.filter(t => currentFilter === "all" || t.region === currentFilter);
+        let filtered = toursData.filter(t => currentFilter === "all" || t.regionKey === currentFilter);
         if (currentSort === "price_asc") filtered.sort((a, b) => a.price - b.price);
         else if (currentSort === "price_desc") filtered.sort((a, b) => b.price - a.price);
         else if (currentSort === "sold_desc") filtered.sort((a, b) => b.sold - a.sold);
@@ -877,28 +803,40 @@
         const end = start + itemsPerPage;
         const pageData = filtered.slice(start, end);
         const grid = document.getElementById('tourGrid');
+        const i18n = window.i18n || {};
+        const t = i18n.t || ((k) => k);
+        const noToursText = t('noFilteredTours');
+        const soldPrefix = t('soldPrefix');
+        const perPerson = t('perPerson');
+        const bookNow = t('bookNow');
         if (pageData.length === 0) {
-            grid.innerHTML = '<div style="text-align:center; padding:60px; color:#666;">暂无符合条件的旅游产品</div>';
+            grid.innerHTML = '<div style="text-align:center; padding:60px; color:#666;">' + noToursText + '</div>';
             return;
         }
-        grid.innerHTML = pageData.map(tour => `
+        grid.innerHTML = pageData.map(tour => {
+            const name = t(tour.nameKey);
+            const desc = t(tour.descKey);
+            const daysNights = t('daysNights', { days: tour.days, nights: tour.days - 1 });
+            const regionLabel = t(tour.regionKey);
+            return `
                 <div class="tour-card" data-id="${tour.id}">
-                    <img class="card-img" src="${tour.img}" alt="${tour.name}" loading="lazy" onerror="this.src='https://picsum.photos/id/15/400/260'">
+                    <img class="card-img" src="${tour.img}" alt="${name}" loading="lazy" onerror="this.src='https://picsum.photos/id/15/400/260'">
                     <div class="card-content">
-                        <div class="card-title">${tour.name}</div>
+                        <div class="card-title">${name}</div>
                         <div class="tags">
-                            <span class="tag"><i class="fas fa-calendar-alt"></i> ${tour.days}天${tour.days - 1}晚</span>
-                            <span class="tag"><i class="fas fa-users"></i> ${tour.groupSize}</span>
+                            <span class="tag"><i class="fas fa-calendar-alt"></i> ${daysNights}</span>
+                            <span class="tag"><i class="fas fa-map-marker-alt"></i> ${regionLabel}</span>
                         </div>
                         <div class="info-row">
-                            <span class="price">¥${tour.price}<small>/人</small></span>
-                            <span class="sold"><i class="fas fa-fire"></i> 已售 ${tour.sold}+</span>
+                            <span class="price">¥${tour.price}<small>${perPerson}</small></span>
+                            <span class="sold"><i class="fas fa-fire"></i> ${soldPrefix} ${tour.sold}+</span>
                         </div>
-                        <p style="color:#666; font-size:14px; margin: 8px 0;">${tour.desc}</p>
-                        <button class="btn-book" data-id="${tour.id}">立即预订</button>
+                        <p style="color:#666; font-size:14px; margin: 8px 0;">${desc}</p>
+                        <button class="btn-book" data-id="${tour.id}">${bookNow}</button>
                     </div>
                 </div>
-            `).join('');
+            `;
+        }).join('');
         // 绑定预订事件
         document.querySelectorAll('.btn-book').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -933,27 +871,20 @@
         });
     }
 
-    function bindFilters() {
-        const tabs = document.querySelectorAll('.filter-tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentFilter = tab.dataset.filter;
-                currentPage = 1;
-                renderTours();
-            });
-        });
-        const sortSelect = document.getElementById('sortSelect');
-        sortSelect.addEventListener('change', (e) => {
-            currentSort = e.target.value;
-            currentPage = 1;
-            renderTours();
-        });
+    function initPage() {
+        renderFilterTabs();
+        renderSortOptions();
+        renderTours();
     }
 
-    renderTours();
-    bindFilters();
+    initPage();
+
+    // 语言切换时重新渲染
+    document.addEventListener('lang:changed', () => {
+        renderFilterTabs();
+        renderSortOptions();
+        renderTours();
+    });
 
     function escapeHtml(str) {
         const div = document.createElement('div');

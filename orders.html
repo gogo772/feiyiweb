@@ -9,7 +9,8 @@
     <meta charset="UTF-8">
     <title>我的订单 · 华夏非遗</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
+  <script src="static/js/i18n.js"></script>
+  <style>
         html, body {
     height: 100%;
     scroll-snap-type: y mandatory;
@@ -334,69 +335,68 @@ body::-webkit-scrollbar {
        <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
       <div id="navbarMount"></div>
         <div class="dashboard">
-            <h2><i class="fas fa-ticket-alt"></i> 我的订单</h2>
-            <div id="orderList" class="order-grid">加载中...</div>
+            <h2 id="orderTitle"><i class="fas fa-ticket-alt"></i> <span data-i18n="ordersTitle">我的订单</span></h2>
+            <div id="orderList" class="order-grid" data-i18n="loadingData">加载中...</div>
             <div class="action-buttons">
-                <a href="user.html" class="action-btn"><i class="fas fa-arrow-left"></i> 返回个人中心</a>
-                <a href="index.html" class="action-btn"><i class="fas fa-home"></i> 返回首页</a>
+                <a href="user.html" class="action-btn" id="backToProfileBtn"><i class="fas fa-arrow-left"></i> <span data-i18n="backToProfile">返回个人中心</span></a>
+                <a href="index.html" class="action-btn" id="backToHomeBtn"><i class="fas fa-home"></i> <span data-i18n="backToHome">返回首页</span></a>
             </div>
         </div>
     </div>
 <footer class="site-footer">
     <div class="footer-grid">
         <div class="footer-col">
-            <h4>华夏非遗 · 薪火相传</h4>
-            <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
+            <h4 data-i18n="ichBranding">华夏非遗 · 薪火相传</h4>
+            <p style="font-size:0.85rem;color:#a09880;" data-i18n="ichBrandingDesc">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
         </div>
         <div class="footer-col">
-            <h4>快捷导航</h4>
+            <h4 data-i18n="quickNav">快捷导航</h4>
             <ul>
-                <li><a href="index.html">首页</a></li>
-                <li><a href="performances.html">票务演出</a></li>
-                <li><a href="merchandise.html">文创周边</a></li>
-                <li><a href="travel.html">去旅游</a></li>
-                <li><a href="history.html">浏览记录</a></li>
-                <li><a href="knowledge-graph.html" style="color:#ffd966;">非遗图谱✨</a></li>
-                <li><a href="whereami.html" style="color:#ffd966;">云旅游✨</a></li>
-
+                <li><a href="index.html" data-i18n="navHome">首页</a></li>
+                <li><a href="performances.html" data-i18n="navPerformances">票务演出</a></li>
+                <li><a href="merchandise.html" data-i18n="navMerchandise">文创周边</a></li>
+                <li><a href="travel.html" data-i18n="navTravel">去旅游</a></li>
+                <li><a href="history.html" data-i18n="history">浏览记录</a></li>
+                <li><a href="knowledge-graph.html" style="color:#ffd966;" data-i18n="ichGraph">非遗图谱✨</a></li>
+                <li><a href="whereami.html" style="color:#ffd966;" data-i18n="cloudTravel">云旅游✨</a></li>
             </ul>
         </div>
         <div class="footer-col">
-            <h4>联系方式</h4>
-            <p style="font-size:0.85rem;">📧 ich@culture.cn</p>
-            <p style="font-size:0.85rem;">📞 400-668-0808</p>
-            <p style="font-size:0.85rem;">📍 安徽新华学院</p>
+            <h4 data-i18n="contact">联系方式</h4>
+            <p style="font-size:0.85rem;" data-i18n="email">📧 ich@culture.cn</p>
+            <p style="font-size:0.85rem;" data-i18n="phone">📞 400-668-0808</p>
+            <p style="font-size:0.85rem;" data-i18n="address">📍 安徽新华学院</p>
         </div>
         <div class="footer-col">
-            <h4>友情链接</h4>
+            <h4 data-i18n="friendLinks">友情链接</h4>
             <ul>
-                <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
-                <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
-                <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
+                <li><a href="https://www.mct.gov.cn" target="_blank" data-i18n="mct">文化和旅游部</a></li>
+                <li><a href="http://www.ncha.gov.cn" target="_blank" data-i18n="ncha">国家文物局</a></li>
+                <li><a href="https://www.ihchina.cn" target="_blank" data-i18n="ihchina">中国非物质文化遗产网</a></li>
             </ul>
         </div>
     </div>
     <div class="friend-links">
-        <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
-        <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
-                    <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
-                    <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
+        <span style="color:var(--chinese-gold);letter-spacing:2px;" data-i18n="partners">合作伙伴：</span>
+        <a href="https://www.zgysyjy.org.cn" target="_blank" data-i18n="partner1">中国艺术研究院</a>
+        <a href="https://www.dpm.org.cn" target="_blank" data-i18n="partner2">故宫博物院</a>
+        <a href="https://www.nlc.cn" target="_blank" data-i18n="partner3">国家图书馆</a>
     </div>
     <div class="footer-bottom">
-        <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+        <p data-i18n="copyright">© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
     </div>
 </footer>
 
     <!-- AI 聊天窗口 -->
     <div id="aiChatWindow" class="ai-chat-window">
-        <div class="chat-header"><span><i class="fas fa-robot"></i> DeepSeek 非遗助手</span><span class="close-chat" id="closeChat">&times;</span></div>
-        <div class="chat-body" id="chatBody"><div>您好！我是非遗小助手，有任何戏曲、演出、非遗的问题都可以问我～</div></div>
-        <div class="chat-input-area"><input type="text" id="chatInput" placeholder="例如：京剧有什么特点？"><button id="sendChat">发送</button></div>
+        <div class="chat-header"><span><i class="fas fa-robot"></i> <span data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span><span class="close-chat" id="closeChat">&times;</span></div>
+        <div class="chat-body" id="chatBody"><div data-i18n="aiWelcome">您好！我是非遗小助手，有任何戏曲、演出、非遗的问题都可以问我～</div></div>
+        <div class="chat-input-area"><input type="text" id="chatInput" data-i18n-placeholder="chatInput" placeholder="例如：京剧有什么特点？"><button id="sendChat" data-i18n="send">发送</button></div>
     </div>
 
     <!-- 浏览记录悬浮窗 -->
     <div id="historyPreview">
-        <div class="preview-title">最近浏览</div>
+        <div class="preview-title" data-i18n="recentBrowse">最近浏览</div>
         <div id="previewList"></div>
     </div>
 
@@ -421,7 +421,8 @@ body::-webkit-scrollbar {
             const history = JSON.parse(localStorage.getItem('browsing_history')) || [];
             const previewList = document.getElementById('previewList');
             if(history.length === 0) {
-                previewList.innerHTML = '<div style="color:#999;">暂无浏览记录</div>';
+                const t = window.i18n ? window.i18n.t('noHistory') : '暂无浏览记录';
+                previewList.innerHTML = `<div style="color:#999;">${t}</div>`;
             } else {
                 const latest = history.slice(0, 3);
                 previewList.innerHTML = latest.map(item => `<div>📖 ${item.name}</div>`).join('');
@@ -447,17 +448,21 @@ body::-webkit-scrollbar {
         function renderOrders() {
             const container = document.getElementById('orderList');
             if(orders.length === 0) {
-                container.innerHTML = '<div class="empty-tip">暂无订单</div>';
+                const t = window.i18n ? window.i18n.t('noOrders') : '暂无订单';
+                container.innerHTML = `<div class="empty-tip">${t}</div>`;
                 return;
             }
+            const priceLabel = window.i18n ? window.i18n.t('price') : '金额';
+            const timeLabel = window.i18n ? window.i18n.t('time') : '时间';
+            const locLabel = window.i18n ? window.i18n.t('location') : '地点';
             container.innerHTML = orders.map((order, index) => `
                 <div class="card">
                     <img src="${order.img}" alt="${order.name}" onerror="this.src='https://picsum.photos/id/1/300/200'">
                     <div class="card-body">
                         <strong>${order.name}</strong><br>
-                        金额: ¥${order.price}<br>
-                        时间: ${order.date}<br>
-                        地点: ${order.place}
+                        <span class="order-price">${priceLabel}: ¥${order.price}</span><br>
+                        <span class="order-time">${timeLabel}: ${order.date}</span><br>
+                        <span class="order-location">${locLabel}: ${order.place}</span>
                     </div>
                     <button class="delete-btn" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
                 </div>
@@ -465,7 +470,7 @@ body::-webkit-scrollbar {
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const idx = parseInt(btn.dataset.index);
-                    if(confirm('确定删除此订单吗？')) {
+                    if(confirm(window.i18n?.t('confirmDelete') || '确定删除此订单吗？')) {
                         orders.splice(idx, 1);
                         localStorage.setItem('user_orders', JSON.stringify(orders));
                         renderOrders();
@@ -485,18 +490,20 @@ body::-webkit-scrollbar {
             const msg = input.value.trim();
             if (!msg) return;
             const body = document.getElementById('chatBody');
-            body.innerHTML += `<div><strong>您:</strong> ${escapeHtml(msg)}</div>`;
-            const aiDiv = document.createElement('div');
-            aiDiv.innerHTML = '<strong>非遗小助手:</strong> 思考中...';
-            body.appendChild(aiDiv);
-            body.scrollTop = body.scrollHeight;
-            try {
-                const res = await fetch('http://localhost:3000/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg }) });
-                const data = await res.json();
-                aiDiv.innerHTML = `<strong>非遗小助手:</strong> ${escapeHtml(data.success ? data.reply : '服务暂时不可用')}`;
-            } catch(e) {
-                aiDiv.innerHTML = `<strong>非遗小助手:</strong> 网络错误，请确保代理服务器已启动（node proxy-server.js）`;
-            }
+                body.innerHTML += `<div><strong>${window.i18n ? window.i18n.t('you') : '您'}:</strong> ${escapeHtml(msg)}</div>`;
+                const aiDiv = document.createElement('div');
+                aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${window.i18n ? window.i18n.t('thinking') : '思考中...'}`;
+                body.appendChild(aiDiv);
+                body.scrollTop = body.scrollHeight;
+                try {
+                    const res = await fetch('http://localhost:3000/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg }) });
+                    const data = await res.json();
+                    const fallback = window.i18n ? window.i18n.t('serviceUnavailable') : '服务暂时不可用';
+                    aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${escapeHtml(data.success ? data.reply : fallback)}`;
+                } catch(e) {
+                    const errMsg = window.i18n ? window.i18n.t('chatError') : '网络错误，请确保代理服务器已启动（node proxy-server.js）';
+                    aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${errMsg}`;
+                }
             input.value = '';
             body.scrollTop = body.scrollHeight;
         };
@@ -505,6 +512,30 @@ body::-webkit-scrollbar {
             div.textContent = str;
             return div.innerHTML;
         }
+        
+        function applyPageLang() {
+            if (window.i18n) {
+                const titleEl = document.getElementById('orderTitle');
+                if (titleEl) {
+                    titleEl.innerHTML = `<i class="fas fa-ticket-alt"></i> ${window.i18n.t('ordersTab')}`;
+                }
+                const backProfile = document.getElementById('backToProfileBtn');
+                if (backProfile) {
+                    backProfile.innerHTML = `<i class="fas fa-arrow-left"></i> ${window.i18n.t('backToProfile')}`;
+                }
+                const backHome = document.getElementById('backToHomeBtn');
+                if (backHome) {
+                    backHome.innerHTML = `<i class="fas fa-home"></i> ${window.i18n.t('navHome')}`;
+                }
+            }
+            renderOrders();
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyPageLang);
+        } else {
+            applyPageLang();
+        }
+        document.addEventListener('lang:changed', applyPageLang);
     </script>
 <script src="static/js/sidebar.js"></script>
 <script src="static/js/chat.js"></script>

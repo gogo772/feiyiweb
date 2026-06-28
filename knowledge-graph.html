@@ -6,10 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>华夏非遗 · 知识图谱</title>
-    <!-- 引入 D3.js 核心库 -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- 引入 D3.js 核心库（本地文件） -->
+    <script src="static/lib/d3.v7.min.js"></script>
     <!-- 引入 Font Awesome 图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="static/js/i18n.js"></script>
     <!-- 引入聊天组件样式（菲菲助手） -->
     <link rel="stylesheet" href="static/css/chat.css">
     <link rel="stylesheet" href="static/css/auth.css">
@@ -207,27 +208,27 @@ body::-webkit-scrollbar {
         <div class="graph-tooltip" id="graphTooltip"></div>
         <div class="graph-legend" id="graphLegend"></div>
         <div class="graph-reset-btn" id="graphResetBtn">
-            <i class="fas fa-sync-alt"></i> 重置视角
+            <i class="fas fa-sync-alt"></i> <span data-i18n="resetView">重置视角</span>
         </div>
         <div class="loading-message" id="loadingMsg">
-            <i class="fas fa-spinner fa-pulse"></i> 正在加载非遗数据...
+            <i class="fas fa-spinner fa-pulse"></i> <span data-i18n="loadingKnowledge">正在加载非遗数据...</span>
         </div>
     </div>
 
    <!-- AI 聊天窗口（菲菲无头像版） -->
 <div id="aiChatWindow" class="ai-chat-window">
     <div class="chat-header">
-        <span><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span>
+        <span><i class="fas fa-child" style="color: #ffaa66;"></i> <span data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span>
         <span class="close-chat" id="closeChat">&times;</span>
     </div>
     <div class="chat-body" id="chatBody">
         <div class="chat-message ai">
-            <div class="message-sender">菲菲</div>
-            <div class="message-bubble">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
+            <div class="message-sender" data-i18n="aiSender">菲菲</div>
+            <div class="message-bubble" data-i18n="aiWelcome">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
         </div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="例如：京剧有什么特点？">
+        <input type="text" id="chatInput" data-i18n="chatInput" placeholder="例如：京剧有什么特点？">
         <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
@@ -239,7 +240,6 @@ body::-webkit-scrollbar {
     <!-- 知识图谱核心脚本 -->
     <script>
         (function initKnowledgeGraph() {
-            // ----- 颜色配置（10大类别）-----
             const COLORS = {
                 '民间文学': '#FF6B6B',
                 '传统音乐': '#FF9F43',
@@ -250,7 +250,17 @@ body::-webkit-scrollbar {
                 '传统美术': '#55E6C1',
                 '传统技艺': '#FD79A8',
                 '传统医药': '#00CEC9',
-                '民俗': '#6C5CE7'
+                '民俗': '#6C5CE7',
+                'Folk Literature': '#FF6B6B',
+                'Traditional Music': '#FF9F43',
+                'Traditional Dance': '#FECA57',
+                'Traditional Drama': '#48DBFB',
+                'Quyi': '#FF6FB7',
+                'Traditional Sports, Recreational Activities and Acrobatics': '#A29BFE',
+                'Traditional Fine Arts': '#55E6C1',
+                'Traditional Crafts': '#FD79A8',
+                'Traditional Medicine': '#00CEC9',
+                'Folk Customs': '#6C5CE7'
             };
             const ROOT_COLOR = '#f0c060';
             const ROOT_R = 26;
@@ -269,12 +279,10 @@ body::-webkit-scrollbar {
             const nodeG = gRoot.append('g');
             const labelG = gRoot.append('g');
 
-            // 缩放交互，初始缩放调整为 0.85，确保所有类别节点可见
             const zoom = d3.zoom()
                 .scaleExtent([0.2, 4])
                 .on('zoom', (e) => gRoot.attr('transform', e.transform));
             svg.call(zoom);
-            // 初始变换：居中并缩放至 0.85
             svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85));
 
             svg.on('dblclick.zoom', function(e) {
@@ -287,38 +295,47 @@ body::-webkit-scrollbar {
 
             let simulation, allNodes, allLinks, visibleIds, rootY;
 
+            function getCurrentLang() {
+                return window.i18n?.getLang?.() || (window.currentLang || 'zh');
+            }
+
             function buildGraph(data) {
                 const nodes = [], links = [], map = new Map();
                 const rootId = '__root__';
+                const lang = getCurrentLang();
                 nodes.push({
                     id: rootId,
-                    name: '非物质文化遗产',
+                    name: lang === 'en' ? (data.name_en || data.name) : data.name,
                     depth: 0,
                     isRoot: true,
                     isCategory: false,
                     isItem: false,
                     color: ROOT_COLOR,
-                    radius: ROOT_R
+                    radius: ROOT_R,
+                    origName: data.name
                 });
                 map.set(rootId, nodes[0]);
 
                 let catCounts = {}, cats = [];
                 for (const cat of data.children) {
                     const catName = cat.name;
-                    if (!COLORS[catName]) continue;
-                    cats.push(catName);
+                    const catNameEn = cat.name_en || catName;
+                    const displayCatName = lang === 'en' ? catNameEn : catName;
+                    if (!COLORS[catName] && !COLORS[catNameEn]) continue;
+                    cats.push(displayCatName);
                     const limited = cat.children.slice(0, MAX_ITEMS_PER_CAT);
                     const catId = 'cat::' + catName;
                     const catNode = {
                         id: catId,
-                        name: catName,
+                        name: displayCatName,
                         depth: 1,
                         isRoot: false,
                         isCategory: true,
                         isItem: false,
-                        color: COLORS[catName],
+                        color: COLORS[catName] || COLORS[catNameEn] || '#999',
                         radius: CAT_R,
-                        itemCount: limited.length
+                        itemCount: limited.length,
+                        origName: catName
                     };
                     nodes.push(catNode);
                     map.set(catId, catNode);
@@ -326,9 +343,10 @@ body::-webkit-scrollbar {
 
                     for (const item of limited) {
                         const itemId = 'item::' + catName + '::' + item.name;
+                        const itemNameEn = item.name_en || item.name;
                         const itemNode = {
                             id: itemId,
-                            name: item.name,
+                            name: lang === 'en' ? itemNameEn : item.name,
                             depth: 2,
                             isRoot: false,
                             isCategory: false,
@@ -336,13 +354,14 @@ body::-webkit-scrollbar {
                             color: catNode.color,
                             radius: ITEM_R,
                             records: item.records || [],
-                            category: catName
+                            category: displayCatName,
+                            origCategory: catName
                         };
                         nodes.push(itemNode);
                         map.set(itemId, itemNode);
                         links.push({ source: catId, target: itemId, depth: 1 });
                     }
-                    catCounts[catName] = limited.length;
+                    catCounts[displayCatName] = limited.length;
                 }
                 return { nodes, links, map, catCounts, cats };
             }
@@ -466,7 +485,7 @@ body::-webkit-scrollbar {
                 }
 
                 function toggleCategory(catNode) {
-                    const children = allNodes.filter(n => n.isItem && n.category === catNode.name).map(n => n.id);
+                    const children = allNodes.filter(n => n.isItem && n.origCategory === catNode.origName).map(n => n.id);
                     const expanded = children.some(id => visibleIds.has(id));
                     if (expanded) children.forEach(id => visibleIds.delete(id));
                     else children.forEach(id => visibleIds.add(id));
@@ -482,15 +501,26 @@ body::-webkit-scrollbar {
                 function showTooltip(ev, d) {
                     if (!d.records || d.records.length === 0) return;
                     const tooltipDiv = document.getElementById('graphTooltip');
+                    const t = window.i18n?.t || function(k) { return k; };
+                    const lang = getCurrentLang();
                     let html = `<div class="tt-title">${escapeHtml(d.name)}</div>
                                 <span class="tt-category" style="background:${d.color}">${escapeHtml(d.category)}</span>`;
                     d.records.forEach(r => {
                         html += `<table>`;
-                        if (r['公布时间']) html += `<tr><th>公布时间</th><td>${escapeHtml(r['公布时间'])}</td></tr>`;
-                        if (r['申报地区或单位']) html += `<tr><th>申报地区</th><td>${escapeHtml(r['申报地区或单位'])}</td></tr>`;
-                        if (r['保护单位']) html += `<tr><th>保护单位</th><td>${escapeHtml(r['保护单位'])}</td></tr>`;
+                        if (lang === 'en' && r.records_en) {
+                            for (const [key, value] of Object.entries(r.records_en)) {
+                                html += `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value)}</td></tr>`;
+                            }
+                        } else {
+                            if (r['公布时间']) html += `<tr><th>${t('publishTime')}</th><td>${escapeHtml(r['公布时间'])}${t('tooltipCNTag')}</td></tr>`;
+                            if (r['申报地区或单位']) html += `<tr><th>${t('applyRegion')}</th><td>${escapeHtml(r['申报地区或单位'])}${t('tooltipCNTag')}</td></tr>`;
+                            if (r['保护单位']) html += `<tr><th>${t('protectUnit')}</th><td>${escapeHtml(r['保护单位'])}${t('tooltipCNTag')}</td></tr>`;
+                        }
                         html += `</table>`;
                     });
+                    if (lang === 'zh' || d.records.some(r => !r.records_en)) {
+                        html += `<div style="margin-top:8px;font-size:0.7rem;color:#aaa;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px">${t('tooltipPartialCN')}</div>`;
+                    }
                     tooltipDiv.innerHTML = html;
                     tooltipDiv.classList.add('visible');
 
@@ -513,7 +543,7 @@ body::-webkit-scrollbar {
                 for (let cat of gd.cats) {
                     const item = document.createElement('div');
                     item.className = 'graph-legend-item';
-                    item.innerHTML = `<span class="graph-legend-dot" style="background:${COLORS[cat]}"></span>
+                    item.innerHTML = `<span class="graph-legend-dot" style="background:${COLORS[cat] || '#999'}"></span>
                                       <span>${cat}</span>
                                       <span class="graph-legend-count">(${gd.catCounts[cat] || 0})</span>`;
                     item.addEventListener('click', () => {
@@ -535,28 +565,45 @@ body::-webkit-scrollbar {
                 });
             }
 
-            const loadingMsg = document.getElementById('loadingMsg');
-            fetch('static/data/intangible_heritage_data.json')
-                .then(res => {
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                    return res.json();
-                })
-                .then(data => {
-                    const graphData = buildGraph(data);
-                    render(graphData);
-                    if (loadingMsg) loadingMsg.style.display = 'none';
-                })
-                .catch(err => {
-                    console.error('非遗数据加载失败:', err);
-                    if (loadingMsg) loadingMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 数据加载失败，请检查文件路径或网络';
-                    svg.append('text')
-                        .attr('x', '50%')
-                        .attr('y', '45%')
-                        .attr('text-anchor', 'middle')
-                        .attr('fill', '#ff8a6f')
-                        .style('font-size', '1.2rem')
-                        .text('❌ 非遗数据加载失败，请确保 intangible_heritage_data.json 存在');
-                });
+            function loadGraphData() {
+                const lang = getCurrentLang();
+                const filePath = lang === 'en' 
+                    ? 'static/data/intangible_heritage_data_en.json' 
+                    : 'static/data/intangible_heritage_data.json';
+                const loadingMsg = document.getElementById('loadingMsg');
+                
+                if (loadingMsg) loadingMsg.style.display = 'block';
+                
+                linkG.selectAll('*').remove();
+                nodeG.selectAll('*').remove();
+                labelG.selectAll('*').remove();
+                if (simulation) simulation.stop();
+
+                fetch(filePath)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        return res.json();
+                    })
+                    .then(data => {
+                        const graphData = buildGraph(data);
+                        render(graphData);
+                        if (loadingMsg) loadingMsg.style.display = 'none';
+                    })
+                    .catch(err => {
+                        console.error('非遗数据加载失败:', err);
+                        if (loadingMsg) loadingMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (window.i18n?.t('knowledgeLoadError') || '数据加载失败');
+                        svg.append('text')
+                            .attr('x', '50%')
+                            .attr('y', '45%')
+                            .attr('text-anchor', 'middle')
+                            .attr('fill', '#ff8a6f')
+                            .style('font-size', '1.2rem')
+                            .text(window.i18n?.t('knowledgeLoadFailed') || '❌ 非遗数据加载失败');
+                    });
+            }
+
+            document.addEventListener('lang:changed', loadGraphData);
+            loadGraphData();
         })();
     </script>
 

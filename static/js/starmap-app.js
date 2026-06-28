@@ -7,14 +7,32 @@
    - 用户上次选择的省份持久化到 localStorage('appProvince')
    ============================================================= */
 (function () {
+    let _appStarted = false;
+
     // ==================== 立即初始化加载文字（避免闪烁） ====================
     const savedLang0 = typeof localStorage !== 'undefined' ? localStorage.getItem('appLang') : null;
     {
         const loadingSpan = document.getElementById('loadingText');
         if (loadingSpan) {
             loadingSpan.innerText = savedLang0 === 'en'
-                ? "✨ Drawing Starmap · Huizhou Charm ✨"
-                : "✨ 星图绘制中 · 多省联动 ✨";
+                ? (window.i18n ? window.i18n.t('starmapLoading') : "✨ Drawing Starmap · Multi-Province ✨")
+                : (window.i18n ? window.i18n.t('starmapLoading') : "✨ 星图绘制中 · 多省联动 ✨");
+        }
+    }
+
+    // ==================== 加载遮罩隐藏函数（多重保险） ====================
+    function hideLoadingOverlay() {
+        try {
+            const el = document.getElementById('loadingOverlay');
+            if (!el) return;
+            el.classList.add('hide');
+            setTimeout(() => {
+                try {
+                    el.style.display = 'none';
+                } catch (e) { /* ignore */ }
+            }, 500);
+        } catch (e) {
+            console.warn('[starmap] hideLoadingOverlay failed:', e.message);
         }
     }
 
@@ -104,67 +122,9 @@ function pickHighMatches(spotsWithScore, rule) {
     return sorted.slice(0, limit);
 }
 
-    // ==================== 国际化文本 ====================
-    const i18n = {
-        zh: {
-            loading: "✨ 星图绘制中 · 多省联动 ✨",
-            mainTitleDefault: "华夏星图 · 文旅雷达",
-            subTitleDefault: "调整偏好 · 星辰共鸣 · 灵感流光",
-            legendNatural: "自然风光",
-            legendHistoric: "人文古迹",
-            legendIntangible: "非遗体验",
-            legendFood: "美食打卡",
-            legendHighMatch: "高匹配",
-            filterAll: "全部星点",
-            filterNatural: "自然风光",
-            filterHistoric: "人文古迹",
-            filterIntangible: "非遗体验",
-            filterFood: "美食打卡",
-            cult: "文化厚重感",
-            scenery: "风景出片率",
-            food: "美食浓度",
-            intangible: "非遗互动度",
-            leisure: "休闲指数",
-            defaultInfo: "✨ 灵感星语：点击任意景点，获取专属冷知识<br>调节雷达滑块，高匹配景点涟漪闪烁，并生成流光旅程~<br>左下角可分类筛选景区。",
-            radarSeriesName: "当前偏好",
-            switcherLabel: "🗺️ 省份",
-            statusReady: "就绪",
-            statusLoading: "加载中…",
-            statusCached: "已缓存",
-            statusError: "加载失败"
-        },
-        en: {
-            loading: "✨ Drawing Starmap · Multi-Province ✨",
-            mainTitleDefault: "China Starmap · Cultural Radar",
-            subTitleDefault: "Adjust Preferences · Star Resonance · Inspiration Flow",
-            legendNatural: "Nature",
-            legendHistoric: "Heritage",
-            legendIntangible: "ICH",
-            legendFood: "Food",
-            legendHighMatch: "High Match",
-            filterAll: "All Spots",
-            filterNatural: "Nature",
-            filterHistoric: "Heritage",
-            filterIntangible: "ICH",
-            filterFood: "Food",
-            cult: "Cultural Depth",
-            scenery: "Scenic View",
-            food: "Food Scene",
-            intangible: "ICH Experience",
-            leisure: "Relaxation",
-            defaultInfo: "✨ Inspiration: Click any spot for exclusive trivia.<br>Adjust sliders to see high-match spots ripple and create light trails.<br>Filter attractions by category at bottom left.",
-            radarSeriesName: "Current Preference",
-            switcherLabel: "🗺️ Province",
-            statusReady: "Ready",
-            statusLoading: "Loading…",
-            statusCached: "Cached",
-            statusError: "Failed"
-        }
-    };
-
     // ==================== 全局状态 ====================
-    let currentLang = 'zh';
     let myMapChart = null, myRadarChart = null;
+    let currentLang = window.i18n ? window.i18n.getLang() : 'zh';
     let currentPreference = {cultural: 68, scenery: 82, food: 55, intangible: 70, leisure: 80};
     let currentTypeFilter = 'all';
     let currentProvinceCode = null;          // 当前选中的省份 adcode
@@ -276,7 +236,16 @@ function pickHighMatches(spotsWithScore, rule) {
 
     function updateRadarChart() {
         if (!myRadarChart) return;
-        const t = i18n[currentLang];
+        const t = window.i18n ? {
+            cult: window.i18n.t('cult'),
+            scenery: window.i18n.t('scenery'),
+            food: window.i18n.t('food'),
+            intangible: window.i18n.t('intangible'),
+            leisure: window.i18n.t('leisure'),
+            radarSeriesName: window.i18n.t('radarSeriesName')
+        } : {
+            cult: '文化厚重感', scenery: '风景出片率', food: '美食浓度', intangible: '非遗互动度', leisure: '休闲指数', radarSeriesName: '当前偏好'
+        };
         myRadarChart.setOption({
             radar: {
                 indicator: [
@@ -715,7 +684,10 @@ function pickHighMatches(spotsWithScore, rule) {
                 tooltip: {
                     formatter: (p) => {
                         const s = getSpotByName(p.name);
-                        return `<strong>${p.name}</strong><br/>Match: ${s?.matchScore?.toFixed(0) || '--'}%<br/>Click for trivia`;
+                        const score = s?.matchScore?.toFixed(0) || '--';
+                        const tip = window.i18n ? window.i18n.t('spotClickTip') : 'Click for trivia';
+                        const matchTip = window.i18n ? window.i18n.t('spotMatchTip', { score }) : `Match: ${score}%`;
+                        return `<strong>${p.name}</strong><br/>${matchTip}<br/>${tip}`;
                     }
                 }
             },
@@ -732,7 +704,7 @@ function pickHighMatches(spotsWithScore, rule) {
                 },
                 emphasis: {focus: 'self'},
                 tooltip: {
-                    formatter: (p) => `${p.name} · High Match Recommendation, click for trivia`
+                    formatter: (p) => window.i18n ? window.i18n.t('highMatchTip') : 'High Match Recommendation, click for trivia'
                 }
             }
         ];
@@ -806,16 +778,9 @@ function pickHighMatches(spotsWithScore, rule) {
 
     function refreshMapGeoConfig() {
         if (!myMapChart || !currentProvince) return;
-        let currentOption = null;
-        try {
-            currentOption = myMapChart.getOption();
-        } catch (e) {
-        }
-        const series = (currentOption && Array.isArray(currentOption.series)) ? currentOption.series : [];
         myMapChart.setOption({
-            geo: getGeoConfig(currentProvince),
-            series: series
-        }, false);
+            geo: getGeoConfig(currentProvince)
+        }, true);
     }
 
     // ==================== 地图点击交互 ====================
@@ -837,8 +802,8 @@ function pickHighMatches(spotsWithScore, rule) {
                         routeStartSpot = routeStartSpot && routeStartSpot.name === spot.name ? null : spot;
                         refreshAll();
                         const msg = routeStartSpot
-                            ? (currentLang === 'zh' ? `已将「${spot.name}」设为路线起点` : `Set "${spot.name}" as route start`)
-                            : (currentLang === 'zh' ? '已取消路线起点' : 'Route start cleared');
+                            ? (window.i18n ? window.i18n.t('setRouteStart', { name: spot.name }) : `已将「${spot.name}」设为路线起点`)
+                            : (window.i18n ? window.i18n.t('clearRouteStart') : '已取消路线起点');
                         const coldInfoEl = document.getElementById('coldInfo');
                         if (coldInfoEl) coldInfoEl.innerHTML = `<p><strong>${msg}</strong></p>`;
                     } else {
@@ -863,8 +828,8 @@ function pickHighMatches(spotsWithScore, rule) {
                         routeStartSpot = null;
                         refreshAll();
                         const cold = currentLang === 'zh' ? spot.coldKnowledge : (spot.coldEn || spot.coldKnowledge);
-                        const title = currentLang === 'zh' ? '冷知识' : 'Trivia';
-                        const tail = currentLang === 'zh' ? '雷达已同步，专属灵感路线已更新~' : 'Radar synced, inspiration route updated~';
+                        const title = window.i18n ? window.i18n.t('trivia') : '冷知识';
+                        const tail = window.i18n ? window.i18n.t('radarSynced') : '雷达已同步，专属灵感路线已更新~';
                         const coldInfoEl = document.getElementById('coldInfo');
                         if (coldInfoEl) coldInfoEl.innerHTML = `<p><strong>「${spot.name}」· ${title}</strong><br>${cold}<br>${tail}</p>`;
                     }
@@ -996,9 +961,7 @@ function pickHighMatches(spotsWithScore, rule) {
                 if (valSpan) valSpan.innerText = newVal;
                 const draft = Object.assign({}, currentPreference);
                 draft[key] = newVal;
-                const tip = currentLang === 'zh'
-                    ? '✨ 灵感星语：雷达偏好已变，星光连线重新织就。<br>匹配度高的景点发出涟漪，分类筛选依旧生效~'
-                    : '✨ Sliders adjusted, starlight connections renewed.<br>High-match spots ripple, filters still active~';
+                const tip = window.i18n ? window.i18n.t('inspirationTip') : '✨ 灵感星语：雷达偏好已变，星光连线重新织就。<br>匹配度高的景点发出涟漪，分类筛选依旧生效~';
                 updatePreference(draft, {
                     source: 'slider',
                     tip,
@@ -1052,9 +1015,7 @@ function pickHighMatches(spotsWithScore, rule) {
                     // 仅在偏好预设同步滑块时，silent + onApply 合并使用：
                     //   - 先 silent 写数据 + 同步滑块 UI（updateRadarChart / updateMapByPreference 由本函数末尾统一触发）
                     //   - onApply 不再二次刷新
-                    const tip = currentLang === 'zh'
-                        ? `🎯 已应用「${btn.innerText}」偏好预设：五维权重已同步到滑块与雷达。`
-                        : `🎯 Preset "${btn.innerText}" applied: weights synced to sliders & radar.`;
+                    const tip = window.i18n ? window.i18n.t('presetApplied', { name: btn.innerText }) : `🎯 已应用「${btn.innerText}」偏好预设：五维权重已同步到滑块与雷达。`;
                     updatePreference(preset, {tip, silent: true});
                 }
                 // 6) 类型筛选变化或偏好预设应用 → 清除路线起点并统一触发一次重绘
@@ -1064,9 +1025,7 @@ function pickHighMatches(spotsWithScore, rule) {
                 }
                 // 7) 兜底冷知识文案（无预设时）
                 if (!preset) {
-                    const tip = currentLang === 'zh'
-                        ? `🔍 当前筛选: ${btn.innerText}<br>已展示省内相关景点，可继续调节雷达获得专属匹配路线。`
-                        : `🔍 Filter: ${btn.innerText}<br>Showing relevant spots, adjust radar for custom matching.`;
+                    const tip = window.i18n ? window.i18n.t('currentFilterTip', { name: btn.innerText }) : `🔍 当前筛选: ${btn.innerText}<br>已展示省内相关景点，可继续调节雷达获得专属匹配路线。`;
                     const el = document.getElementById('coldInfo');
                     if (el) el.innerHTML = `<p>${tip}</p>`;
                     refreshAll();
@@ -1079,11 +1038,59 @@ function pickHighMatches(spotsWithScore, rule) {
 
     // ==================== 语言切换 ====================
     function applyLanguage() {
-        const t = i18n[currentLang];
+        const t = window.i18n ? {
+            loading: window.i18n.t('starmapLoading'),
+            drawingStarmap: window.i18n.t('drawingStarmap'),
+            subTitleDefault: window.i18n.t('subTitleDefault'),
+            mainTitleDefault: window.i18n.t('mainTitleDefault'),
+            legendNatural: window.i18n.t('legendNatural'),
+            legendHistoric: window.i18n.t('legendHistoric'),
+            legendIntangible: window.i18n.t('legendIntangible'),
+            legendFood: window.i18n.t('legendFood'),
+            legendHighMatch: window.i18n.t('legendHighMatch'),
+            filterAll: window.i18n.t('filterAll'),
+            filterNatural: window.i18n.t('filterNatural'),
+            filterHistoric: window.i18n.t('filterHistoric'),
+            filterIntangible: window.i18n.t('filterIntangible'),
+            filterFood: window.i18n.t('filterFood'),
+            cult: window.i18n.t('cult'),
+            scenery: window.i18n.t('scenery'),
+            food: window.i18n.t('food'),
+            intangible: window.i18n.t('intangible'),
+            leisure: window.i18n.t('leisure'),
+            defaultInfo: window.i18n.t('defaultInfo'),
+            switcherLabel: window.i18n.t('switcherLabel')
+        } : {
+            loading: "✨ 星图绘制中 · 多省联动 ✨",
+            drawingStarmap: "✨ 星图绘制中 ✨",
+            subTitleDefault: "调整偏好 · 星辰共鸣 · 灵感流光",
+            mainTitleDefault: "华夏星图 · 文旅雷达",
+            legendNatural: "自然风光",
+            legendHistoric: "人文古迹",
+            legendIntangible: "非遗体验",
+            legendFood: "美食打卡",
+            legendHighMatch: "高匹配",
+            filterAll: "全部星点",
+            filterNatural: "自然风光",
+            filterHistoric: "人文古迹",
+            filterIntangible: "非遗体验",
+            filterFood: "美食打卡",
+            cult: "文化厚重感",
+            scenery: "风景出片率",
+            food: "美食浓度",
+            intangible: "非遗互动度",
+            leisure: "休闲指数",
+            defaultInfo: "✨ 灵感星语：点击任意景点，获取专属冷知识<br>调节雷达滑块，高匹配景点涟漪闪烁，并生成流光旅程~<br>左下角可分类筛选景区。",
+            switcherLabel: "省份"
+        };
+        const currentLang = window.i18n ? window.i18n.getLang() : 'zh';
         const loadingSpan = document.getElementById('loadingText');
         if (loadingSpan) loadingSpan.innerText = t.loading;
         if (currentProvince) {
-            document.getElementById('mainTitle').innerText = (currentProvince.name || (currentLang === 'zh' ? '华夏星图' : 'China Starmap')) + ' · ' + (currentLang === 'zh' ? '文旅雷达' : 'Cultural Radar');
+            const starmap = (window.i18n ? window.i18n.t('chinaStarmap') : '华夏星图');
+            const radar = (window.i18n ? window.i18n.t('culturalRadar') : '文旅雷达');
+            const provinceName = currentLang === 'zh' ? currentProvince.name : (currentProvince.nameEn || currentProvince.name);
+            document.getElementById('mainTitle').innerText = provinceName + ' · ' + radar;
             document.getElementById('subTitle').innerText = t.subTitleDefault;
         } else {
             document.getElementById('mainTitle').innerText = t.mainTitleDefault;
@@ -1108,6 +1115,8 @@ function pickHighMatches(spotsWithScore, rule) {
         if (coldInfoEl) coldInfoEl.innerHTML = `<p>${t.defaultInfo}</p>`;
         const sl = document.querySelector('.province-switcher .switcher-label');
         if (sl) sl.innerText = t.switcherLabel;
+        const mapLoadingTextEl = document.getElementById('mapLoadingText');
+        if (mapLoadingTextEl) mapLoadingTextEl.innerText = t.drawingStarmap;
 
         updateRadarChart();
         updateMapByPreference();
@@ -1121,22 +1130,6 @@ function pickHighMatches(spotsWithScore, rule) {
         if (!cfg) return;
         const list = currentLang === 'en' ? cfg.spotsEn : cfg.spotsZh;
         if (Array.isArray(list)) currentSpotsData = list;
-    }
-
-    function switchLanguage() {
-        currentLang = currentLang === 'zh' ? 'en' : 'zh';
-        window.currentLang = currentLang;
-        storage.set('appLang', currentLang);
-        routeStartSpot = null;
-        refreshSpotsByLang();
-        renderProvinceOptions();
-        applyLanguage();
-        refreshMapGeoConfig();
-        refreshAll();
-        // 同步刷新天气组件语言
-        if (typeof window.refreshWeatherLanguage === 'function') {
-            window.refreshWeatherLanguage(currentLang);
-        }
     }
 
     // ==================== 核心：省份按需加载 + 缓存 ====================
@@ -1160,7 +1153,7 @@ function pickHighMatches(spotsWithScore, rule) {
         if (show) {
             el.classList.remove('hide');
             const t = document.getElementById('mapLoadingText');
-            if (t) t.innerText = msg || (currentLang === 'en' ? '✨ Drawing starmap… ✨' : '✨ 星图绘制中 ✨');
+            if (t) t.innerText = msg || (window.i18n ? window.i18n.t('drawingStarmap') : '✨ 星图绘制中 ✨');
         } else {
             el.classList.add('hide');
         }
@@ -1257,7 +1250,7 @@ function pickHighMatches(spotsWithScore, rule) {
             // 完善错误处理：区分网络错误和其他错误
             if (err.name === 'TypeError' && err.message.includes('fetch')) {
                 console.error(`[starmap] Network error loading GeoJSON: ${url}`, err);
-                throw new Error(`网络连接失败，请检查网络设置: ${url}`);
+                throw new Error(window.i18n ? window.i18n.t('networkErrorLoad', { url }) : `网络连接失败，请检查网络设置: ${url}`);
             }
             console.error(`[starmap] Failed to load GeoJSON: ${url}`, err);
             throw err;
@@ -1291,9 +1284,10 @@ function pickHighMatches(spotsWithScore, rule) {
 
         // 状态：loading / cached
         setSelectDisabled(true);
-        const t = i18n[currentLang];
+        const statusCached = window.i18n ? window.i18n.t('statusCached') : '已缓存';
+        const statusLoading = window.i18n ? window.i18n.t('statusLoading') : '加载中…';
         const isCached = registeredMaps.has(cfg.mapName) || GeoJsonCache.has(provinceCode);
-        setStatus(isCached ? t.statusCached : t.statusLoading, isCached ? 'cached' : 'loading');
+        setStatus(isCached ? statusCached : statusLoading, isCached ? 'cached' : 'loading');
         // 未命中缓存时显示地图内层 loading（避免白屏）
         setMapLoading(!isCached);
         setMapEmpty(false);
@@ -1322,7 +1316,8 @@ function pickHighMatches(spotsWithScore, rule) {
                 center: cfg.center,
                 zoom: cfg.zoom
             };
-            const spotList = currentLang === 'en' ? cfg.spotsEn : cfg.spotsZh;
+            const latestLang = window.i18n ? window.i18n.getLang() : 'zh';
+            const spotList = latestLang === 'en' ? cfg.spotsEn : cfg.spotsZh;
             currentSpotsData = Array.isArray(spotList) ? spotList : [];
             // 切换省份时清空抖动缓存，避免不同省份的同名景点产生混淆的偏移量
             jitterCache.clear();
@@ -1374,9 +1369,24 @@ function pickHighMatches(spotsWithScore, rule) {
             }
 
             // === 阶段 4：联动刷新右侧雷达 + 标题 + 状态 + 筛选 + 持久化 ===
+            const starmapName = (window.i18n ? window.i18n.t('chinaStarmap') : '华夏星图');
+            const radarName = (window.i18n ? window.i18n.t('culturalRadar') : '文旅雷达');
+            const finalLang = window.i18n ? window.i18n.getLang() : 'zh';
             document.getElementById('mainTitle').innerText =
-                (currentLang === 'zh' ? cfg.name : cfg.nameEn) + ' · ' +
-                (currentLang === 'zh' ? '文旅雷达' : 'Cultural Radar');
+                (finalLang === 'zh' ? cfg.name : cfg.nameEn) + ' · ' +
+                radarName;
+            if (finalLang !== latestLang) {
+                currentLang = finalLang;
+                window.currentLang = finalLang;
+                const newSpotList = finalLang === 'en' ? cfg.spotsEn : cfg.spotsZh;
+                if (Array.isArray(newSpotList)) currentSpotsData = newSpotList;
+                jitterCache.clear();
+                if (myMapChart) {
+                    myMapChart.setOption({
+                        series: getMapSeries(currentSpotsData, currentPreference, myMapChart)
+                    }, false);
+                }
+            }
             updateRadarChart(currentPreference);
             // 注：根据新需求"切省份后筛选分类状态保持不变"，此处不再调用 resetFilterTags()
             // 仅在 HTML 上确保"全部星点"默认 active（已在 DOM 中标注）
@@ -1388,10 +1398,15 @@ function pickHighMatches(spotsWithScore, rule) {
             // 联动天气组件切换到对应省份
             window.currentProvinceCode = provinceCode;
             if (typeof window.syncWeatherToMapProvince === 'function') {
-                window.syncWeatherToMapProvince(provinceCode);
+                try {
+                    window.syncWeatherToMapProvince(provinceCode);
+                } catch (e) {
+                    console.warn('[starmap] syncWeatherToMapProvince failed:', e.message);
+                }
             }
 
-            setStatus(t.statusReady, '');
+            const statusReady = window.i18n ? window.i18n.t('statusReady') : '就绪';
+            setStatus(statusReady, '');
             setMapLoading(false);
             // 景点数据缺失兜底：显示空状态卡片，不触发报错
             if (currentSpotsData.length === 0) {
@@ -1399,22 +1414,28 @@ function pickHighMatches(spotsWithScore, rule) {
             } else {
                 setMapEmpty(false);
             }
+            refreshAll();
             setTimeout(() => {
-                setStatus(t.statusReady, '');
+                const statusReady2 = window.i18n ? window.i18n.t('statusReady') : '就绪';
+                setStatus(statusReady2, '');
             }, 1500);
         } catch (err) {
             console.error('省份切换失败:', err);
-            setStatus(t.statusError, 'error');
+            const statusError = window.i18n ? window.i18n.t('statusError') : '加载失败';
+            setStatus(statusError, 'error');
             setMapLoading(false);
             // 错误兜底：下拉框回退到上一个有效省份
             const sel = document.getElementById('provinceSelect');
             const fallback = currentProvinceCode || (provinceListFallback[0] && provinceListFallback[0].code);
             if (sel && fallback) sel.value = fallback;
             const coldInfoEl = document.getElementById('coldInfo');
-            if (coldInfoEl) coldInfoEl.innerHTML =
-                `<p>⚠️ ${provinceCode} 地图数据加载失败，请检查 /${cfg.geoPath} 是否存在。<br>错误：${err.message}</p>`;
+            if (coldInfoEl) {
+                const errMsg = window.i18n ? window.i18n.t('mapLoadFailed', { code: provinceCode, path: cfg.geoPath, msg: err.message }) : `⚠️ ${provinceCode} 地图数据加载失败，请检查 /${cfg.geoPath} 是否存在。<br>错误：${err.message}`;
+                coldInfoEl.innerHTML = `<p>⚠️ ${errMsg}</p>`;
+            }
         } finally {
             setSelectDisabled(false);
+            hideLoadingOverlay();
         }
     }
 
@@ -1427,8 +1448,10 @@ function pickHighMatches(spotsWithScore, rule) {
             : provinceListFallback;
         if (!list || !list.length) return;
         const prev = currentProvinceCode || sel.value;
+        const fmt = window.i18n ? window.i18n.t('provinceCountFormat') : '{{name}} ({{count}})';
         sel.innerHTML = list.map(p => {
-            const label = currentLang === 'zh' ? `${p.name} (${p.count})` : `${p.nameEn} (${p.count})`;
+            const name = currentLang === 'zh' ? p.name : p.nameEn;
+            const label = fmt.replace('{{name}}', name).replace('{{count}}', p.count);
             return `<option value="${p.code}">${label}</option>`;
         }).join('');
         // 还原当前选中（避免重新填充后丢失）
@@ -1522,12 +1545,24 @@ function pickHighMatches(spotsWithScore, rule) {
     }
 
     function initLang() {
-        // 修复：使用安全的storage对象读取语言设置
-        const savedLang = storage.get('appLang');
-        currentLang = savedLang === 'en' ? 'en' : 'zh';
+        currentLang = window.i18n ? window.i18n.getLang() : 'zh';
         window.currentLang = currentLang;
         applyLanguage();
-        document.getElementById('langSwitchBtn').addEventListener('click', switchLanguage);
+        document.addEventListener('lang:changed', handleLangChanged);
+    }
+    
+    function handleLangChanged() {
+        currentLang = window.i18n ? window.i18n.getLang() : 'zh';
+        window.currentLang = currentLang;
+        routeStartSpot = null;
+        refreshSpotsByLang();
+        renderProvinceOptions();
+        applyLanguage();
+        refreshMapGeoConfig();
+        refreshAll();
+        if (typeof window.refreshWeatherLanguage === 'function') {
+            window.refreshWeatherLanguage(currentLang);
+        }
     }
 
     // ==================== 任务六：初始化 all 预设 ====================
@@ -1553,27 +1588,33 @@ function pickHighMatches(spotsWithScore, rule) {
         activeCategory = 'all';
     }
 
-    function startApp() {
-        initLang();
-        initRadar();
-        initMapChart();
-        bindSliders();
-        bindFilterButtons();
-        bindProvinceSwitcher();   // 内部会触发第一次 switchProvince
-        // 任务六：页面加载完成 → 默认应用 all 预设，保证按钮/滑块/雷达/地图初始一致
-        // 注意：必须在 initMapChart 之后调用，确保 radar/myMapChart 实例已就绪
-        applyAllPreset();
-        // 隐藏 loading（即便 GeoJSON 还在异步加载也不影响雷达/筛选）
-        document.getElementById('loadingOverlay').classList.add('hide');
-        setTimeout(() => {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }, 500);
+    async function startApp() {
+        if (_appStarted) return;
+        _appStarted = true;
+
+        setTimeout(hideLoadingOverlay, 600);
+        setTimeout(hideLoadingOverlay, 1500);
+
+        try {
+            initLang();
+            initRadar();
+            initMapChart();
+            bindSliders();
+            bindFilterButtons();
+            await bindProvinceSwitcher();
+            applyAllPreset();
+        } catch (e) {
+            console.error('[starmap] startApp error:', e.message);
+        } finally {
+            hideLoadingOverlay();
+        }
     }
 
     // ==================== ECharts 加载检测（优化轮询机制） ====================
     // 修复：使用更高效的加载检测方式，避免不必要的轮询
     
     function checkEChartsAndStart() {
+        if (_appStarted) return false;
         if (typeof echarts !== 'undefined') {
             startApp();
             return true;
@@ -1605,6 +1646,7 @@ function pickHighMatches(spotsWithScore, rule) {
             }
             if (attempts >= maxAttempts) {
                 console.error('[starmap] ECharts loading timeout');
+                hideLoadingOverlay();
                 return;
             }
             // 指数退避：100ms, 200ms, 400ms, 800ms... 最多2秒

@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>云旅游 · 景区AI合影</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="static/js/i18n.js"></script>
     <style>
         html, body {
     height: 100%;
@@ -234,11 +235,11 @@ body::-webkit-scrollbar {
     <div class="container">
         <!-- 卡片1：上传人物照 -->
         <div class="card">
-            <h2><i class="fas fa-user"></i> 1. 上传你的照片</h2>
+            <h2><i class="fas fa-user"></i> <span data-i18n="step1">1. 上传你的照片</span></h2>
             <div class="upload-row">
                 <div class="upload-box">
                     <div id="noPersonHint" style="color:#888;"></div>
-                    <label for="personUpload" class="file-label"><i class="fas fa-user-plus"></i> 选择人物照</label>
+                    <label for="personUpload" class="file-label" data-i18n="selectScene"><i class="fas fa-user-plus"></i> 选择人物照</label>
                     <input type="file" id="personUpload" accept="image/*" style="display:none">
                     <img id="personPreview" src="" style="display:none;">
                 </div>
@@ -247,37 +248,30 @@ body::-webkit-scrollbar {
 
         <!-- 卡片2：选择景区 + 风景图片选择 + 额外描述（整合） -->
         <div class="card">
-            <h2><i class="fas fa-map-marker-alt"></i> 2. 选择你想“去”的景区</h2>
+            <h2><i class="fas fa-map-marker-alt"></i> <span data-i18n="step2">2. 选择你想“去”的景区</span></h2>
             <div class="location-section">
-                <select id="locationSelect" class="location-select">
-                    <option value="">-- 请选择景区 --</option>
-                    <option value="黄山">黄山</option>
-                    <option value="景德镇">景德镇</option>
-                    <option value="故宫">故宫</option>
-                    <option value="西湖">西湖</option>
-                    <option value="丽江古城">丽江古城</option>
-                </select>
+                <select id="locationSelect" class="location-select"></select>
             </div>
 
             <!-- 景区图片网格，动态生成 -->
             <div id="sceneGridContainer" style="display: none;">
-                <h3 style="font-size: 1.2rem; margin-bottom: 12px;"><i class="fas fa-images"></i> 选择心仪的风景照</h3>
+                <h3 style="font-size: 1.2rem; margin-bottom: 12px;" data-i18n="selectSceneImg"><i class="fas fa-images"></i> 选择心仪的风景照</h3>
                 <div id="sceneGrid" class="scene-grid"></div>
-                <p style="font-size: 0.8rem; color: #8b3c1c; margin-top: 8px;">点击图片即可选中作为背景</p>
+                <p style="font-size: 0.8rem; color: #8b3c1c; margin-top: 8px;" data-i18n="selectSceneImgTip">点击图片即可选中作为背景</p>
             </div>
 
             <!-- 可选效果描述 -->
-            <textarea id="promptInput" class="prompt-textarea" placeholder="✨ 额外效果描述（可选）例如：让人物站在左边一点，光影柔和，不要遮挡脸部，保持真实感"></textarea>
+            <textarea id="promptInput" class="prompt-textarea" data-i18n-placeholder="optionalPrompt" placeholder="✨ 额外效果描述（可选）例如：让人物站在左边一点，光影柔和，不要遮挡脸部，保持真实感"></textarea>
         </div>
 
         <!-- 卡片3：生成按钮 + 结果展示 -->
         <div class="card" style="text-align: center;">
-            <button class="btn-generate" id="generateBtn" disabled><i class="fas fa-magic"></i> ✨ 融合生成 ✨</button>
-            <div id="loadingDiv" class="loading"><i class="fas fa-spinner fa-pulse"></i> AI合成中，大约20-40秒...</div>
+            <button class="btn-generate" id="generateBtn" disabled><i class="fas fa-magic"></i> <span data-i18n="generateBtn">✨ 融合生成 ✨</span></button>
+            <div id="loadingDiv" class="loading" data-i18n="generating"><i class="fas fa-spinner fa-pulse"></i> AI合成中，大约20-40秒...</div>
         </div>
 
         <div class="card" id="resultCard" style="display: none;">
-            <h2><i class="fas fa-camera-retro"></i> 3. 合成结果</h2>
+            <h2><i class="fas fa-camera-retro"></i> <span data-i18n="step3">3. 合成结果</span></h2>
             <img id="resultImg" class="result-img" style="max-width:100%; border-radius:32px;">
         </div>
     </div>
@@ -285,61 +279,61 @@ body::-webkit-scrollbar {
     <footer class="site-footer">
         <div class="footer-grid">
             <div class="footer-col">
-                <h4>华夏非遗 · 薪火相传</h4>
-                <p style="font-size:0.85rem;color:#a09880;">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
-            </div>
-            <div class="footer-col">
-                <h4>快捷导航</h4>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="performances.html">票务演出</a></li>
-                    <li><a href="merchandise.html">文创周边</a></li>
-                    <li><a href="travel.html">去旅游</a></li>
-                    <li><a href="history.html">浏览记录</a></li>
-                    <li><a href="knowledge-graph.html" >非遗图谱✨</a></li>
-                    <li><a href="whereami.html">云旅游✨</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>联系方式</h4>
-                <p>📧 ich@culture.cn</p>
-                <p>📞 400-668-0808</p>
-                <p>📍 安徽新华学院</p>
-            </div>
-            <div class="footer-col">
-                <h4>友情链接</h4>
-                <ul>
-                    <li><a href="https://www.mct.gov.cn" target="_blank">文化和旅游部</a></li>
-                    <li><a href="http://www.ncha.gov.cn" target="_blank">国家文物局</a></li>
-                    <li><a href="https://www.ihchina.cn" target="_blank">中国非物质文化遗产网</a></li>
-                </ul>
-            </div>
+                <h4 data-i18n="ichBranding">华夏非遗 · 薪火相传</h4>
+            <p style="font-size:0.85rem;color:#a09880;" data-i18n="ichBrandingDesc">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
         </div>
-        <div class="friend-links">
-            <span style="color:var(--chinese-gold);letter-spacing:2px;">合作伙伴：</span>
-            <a href="https://www.zgysyjy.org.cn" target="_blank">中国艺术研究院</a>
-            <a href="https://www.dpm.org.cn" target="_blank">故宫博物院</a>
-            <a href="https://www.nlc.cn" target="_blank">国家图书馆</a>
+        <div class="footer-col">
+            <h4 data-i18n="quickNav">快捷导航</h4>
+            <ul>
+                <li><a href="index.html" data-i18n="navHome">首页</a></li>
+                <li><a href="performances.html" data-i18n="navPerformances">票务演出</a></li>
+                <li><a href="merchandise.html" data-i18n="navMerchandise">文创周边</a></li>
+                <li><a href="travel.html" data-i18n="navTravel">去旅游</a></li>
+                <li><a href="history.html" data-i18n="history">浏览记录</a></li>
+                <li><a href="knowledge-graph.html" data-i18n="ichGraph">非遗图谱✨</a></li>
+                <li><a href="whereami.html" data-i18n="cloudTravel">云旅游✨</a></li>
+            </ul>
         </div>
-        <div class="footer-bottom">
-            <p>© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+        <div class="footer-col">
+            <h4 data-i18n="contact">联系方式</h4>
+            <p data-i18n="email">📧 ich@culture.cn</p>
+            <p data-i18n="phone">📞 400-668-0808</p>
+            <p data-i18n="address">📍 安徽新华学院</p>
         </div>
+        <div class="footer-col">
+            <h4 data-i18n="friendLinks">友情链接</h4>
+            <ul>
+                <li><a href="https://www.mct.gov.cn" target="_blank" data-i18n="mct">文化和旅游部</a></li>
+                <li><a href="http://www.ncha.gov.cn" target="_blank" data-i18n="ncha">国家文物局</a></li>
+                <li><a href="https://www.ihchina.cn" target="_blank" data-i18n="ihchina">中国非物质文化遗产网</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="friend-links">
+        <span style="color:var(--chinese-gold);letter-spacing:2px;" data-i18n="partners">合作伙伴：</span>
+        <a href="https://www.zgysyjy.org.cn" target="_blank" data-i18n="partner1">中国艺术研究院</a>
+        <a href="https://www.dpm.org.cn" target="_blank" data-i18n="partner2">故宫博物院</a>
+        <a href="https://www.nlc.cn" target="_blank" data-i18n="partner3">国家图书馆</a>
+    </div>
+    <div class="footer-bottom">
+        <p data-i18n="copyright">© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+    </div>
     </footer>
 
     <!-- AI 聊天窗口 (菲菲非遗小助手，无头像版) -->
 <div id="aiChatWindow" class="ai-chat-window">
     <div class="chat-header">
-        <span><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span>
+        <span data-i18n="aiAssistant"><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span>
         <span class="close-chat" id="closeChat">&times;</span>
     </div>
     <div class="chat-body" id="chatBody">
         <div class="chat-message ai">
-            <div class="message-sender">菲菲</div>
-            <div class="message-bubble">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
+            <div class="message-sender" data-i18n="aiSender">菲菲</div>
+            <div class="message-bubble" data-i18n="aiWelcome">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
         </div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="例如：京剧有什么特点？">
+        <input type="text" id="chatInput" data-i18n-placeholder="chatInput" placeholder="例如：京剧有什么特点？">
         <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
@@ -379,6 +373,76 @@ body::-webkit-scrollbar {
             ]
         };
 
+        const locationKeyMap = {
+            '黄山': 'scenic_huangshan',
+            '景德镇': 'scenic_jingdezhen',
+            '故宫': 'scenic_gugong',
+            '西湖': 'scenic_xihu',
+            '丽江古城': 'scenic_lijiang'
+        };
+
+        function renderLocationOptions() {
+            const select = document.getElementById('locationSelect');
+            const i18n = window.i18n || {};
+            const t = i18n.t || ((k) => k);
+            const pleaseSelect = t('pleaseSelectScene');
+            let html = `<option value="">${pleaseSelect}</option>`;
+            Object.keys(locationKeyMap).forEach(val => {
+                const key = locationKeyMap[val];
+                const text = t(key);
+                html += `<option value="${val}">${text}</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        function renderScenes(location) {
+            if (!location || !sceneImages[location]) {
+                sceneGridContainer.style.display = 'none';
+                selectedSceneFile = null;
+                selectedSceneUrl = null;
+                checkReady();
+                return;
+            }
+            sceneGridContainer.style.display = 'block';
+            const imageUrls = sceneImages[location];
+            const i18n = window.i18n || {};
+            const t = i18n.t || ((k) => k);
+            const locationKey = locationKeyMap[location];
+            const locationName = t(locationKey) || location;
+            sceneGrid.innerHTML = imageUrls.map((url, idx) => `
+                <div class="scene-card" data-url="${url}" data-index="${idx}">
+                    <img src="${url}" alt="${locationName} scene" loading="lazy">
+                    <div class="scene-name">${locationName} · ${idx+1}</div>
+                </div>
+            `).join('');
+
+            const cards = document.querySelectorAll('.scene-card');
+            cards.forEach(card => {
+                card.addEventListener('click', async () => {
+                    cards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    const imgUrl = card.dataset.url;
+                    selectedSceneUrl = imgUrl;
+                    try {
+                        const response = await fetch(imgUrl);
+                        const blob = await response.blob();
+                        const file = new File([blob], `${location}_scene.jpg`, { type: 'image/jpeg' });
+                        selectedSceneFile = file;
+                    } catch (err) {
+                        console.error('加载风景图片失败', err);
+                        const i18n = window.i18n || {};
+                        const t = i18n.t || ((k) => k);
+                        alert(t('imageLoadFailed'));
+                        selectedSceneFile = null;
+                    }
+                    checkReady();
+                });
+            });
+            selectedSceneFile = null;
+            selectedSceneUrl = null;
+            checkReady();
+        }
+
         // DOM 元素
         const personInput = document.getElementById('personUpload');
         const personPreview = document.getElementById('personPreview');
@@ -411,7 +475,9 @@ body::-webkit-scrollbar {
                 };
                 reader.readAsDataURL(file);
             } else if (file) {
-                alert('请选择图片文件');
+                const i18n = window.i18n || {};
+                const t = i18n.t || ((k) => k);
+                alert(t('pleaseSelectImageFile'));
             }
             checkReady();
         });
@@ -419,45 +485,7 @@ body::-webkit-scrollbar {
         // 地点切换：动态生成图片网格
         locationSelect.addEventListener('change', async () => {
             const location = locationSelect.value;
-            if (!location || !sceneImages[location]) {
-                sceneGridContainer.style.display = 'none';
-                selectedSceneFile = null;
-                selectedSceneUrl = null;
-                checkReady();
-                return;
-            }
-            sceneGridContainer.style.display = 'block';
-            const imageUrls = sceneImages[location];
-            sceneGrid.innerHTML = imageUrls.map((url, idx) => `
-                <div class="scene-card" data-url="${url}" data-index="${idx}">
-                    <img src="${url}" alt="${location}风景图" loading="lazy">
-                    <div class="scene-name">${location} · ${idx+1}</div>
-                </div>
-            `).join('');
-
-            const cards = document.querySelectorAll('.scene-card');
-            cards.forEach(card => {
-                card.addEventListener('click', async () => {
-                    cards.forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                    const imgUrl = card.dataset.url;
-                    selectedSceneUrl = imgUrl;
-                    try {
-                        const response = await fetch(imgUrl);
-                        const blob = await response.blob();
-                        const file = new File([blob], `${location}_scene.jpg`, { type: 'image/jpeg' });
-                        selectedSceneFile = file;
-                    } catch (err) {
-                        console.error('加载风景图片失败', err);
-                        alert('无法加载该图片，请重试');
-                        selectedSceneFile = null;
-                    }
-                    checkReady();
-                });
-            });
-            selectedSceneFile = null;
-            selectedSceneUrl = null;
-            checkReady();
+            renderScenes(location);
         });
 
         function checkReady() {
@@ -469,7 +497,9 @@ body::-webkit-scrollbar {
         // 生成合成图片
         generateBtn.onclick = async () => {
             if (!personFile || !selectedSceneFile) {
-                alert('请先上传人物照并选择一张风景图');
+                const i18n = window.i18n || {};
+                const t = i18n.t || ((k) => k);
+                alert(t('pleaseSelectBothImages'));
                 return;
             }
 
@@ -480,7 +510,9 @@ body::-webkit-scrollbar {
             formData.append('personImage', personFile);
             formData.append('sceneImage', selectedSceneFile);
             const promptText = promptInput.value.trim();
-            const finalPrompt = promptText ? promptText : "将人物自然融合到风景中，保持真实感，光影协调。";
+            const i18n = window.i18n || {};
+            const t = i18n.t || ((k) => k);
+            const finalPrompt = promptText ? promptText : t('defaultPrompt');
             formData.append('prompt', finalPrompt);
 
             try {
@@ -495,11 +527,11 @@ body::-webkit-scrollbar {
                     resultCard.style.display = 'block';
                     saveToHistory(locationSelect.value, finalPrompt, data.imageUrl);
                 } else {
-                    alert('合成失败：' + (data.error || '未知错误'));
+                    alert(t('mergeFailed') + (data.error || t('mergeUnknown')));
                 }
             } catch (err) {
                 console.error(err);
-                alert('请求失败，请确保后端服务已启动 (node seedream-api.js)');
+                alert(t('mergeRequestFailed'));
             } finally {
                 loadingDiv.style.display = 'none';
                 generateBtn.disabled = false;
@@ -519,22 +551,45 @@ body::-webkit-scrollbar {
                 a.click();
                 URL.revokeObjectURL(url);
             } catch (e) {
-                alert('保存失败，可以右键图片另存');
+                const i18n = window.i18n || {};
+                const t = i18n.t || ((k) => k);
+                alert(t('saveFailed'));
             }
         };
 
         function saveToHistory(location, prompt, imgUrl) {
+            const i18n = window.i18n || {};
+            const t = i18n.t || ((k) => k);
             let history = JSON.parse(localStorage.getItem('browsing_history') || '[]');
+            const locationKey = locationKeyMap[location];
+            const locationName = t(locationKey) || location;
             history.unshift({
-                name: `AI合影 · ${location}`,
+                name: `${t('aiTravelPrefix')} · ${locationName}`,
                 img: imgUrl,
-                type: 'AI融合',
+                type: t('aiMergeType'),
                 desc: prompt.substring(0, 50)
             });
             localStorage.setItem('browsing_history', JSON.stringify(history.slice(0, 20)));
         }
 
+        // 初始化
+        renderLocationOptions();
         checkReady();
+
+        // 语言切换时重新渲染
+        document.addEventListener('lang:changed', () => {
+            const currentVal = locationSelect.value;
+            renderLocationOptions();
+            if (currentVal && sceneImages[currentVal]) {
+                locationSelect.value = currentVal;
+                renderScenes(currentVal);
+            } else {
+                sceneGridContainer.style.display = 'none';
+                selectedSceneFile = null;
+                selectedSceneUrl = null;
+                checkReady();
+            }
+        });
     </script>
     <script src="static/js/sidebar.js"></script>
     <script src="static/js/chat.js"></script>
