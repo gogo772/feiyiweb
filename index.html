@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>华夏非遗 · 首页</title>
     <script src="static/lib/echarts.min.js"></script>
+    <script src="static/js/i18n.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="static/lib/d3.v7.min.js"></script>
     <style>
@@ -565,7 +566,92 @@
             }
         }
 
-        /* 页脚样式已迁移至 static/css/common.css */
+        /* 底部样式 */
+        .site-footer {
+            background: #1a1510;
+            color: #c4b89a;
+            padding: 50px 30px 30px;
+            border-top: 3px solid var(--chinese-gold);
+            margin-top: 80px;
+            border-radius: 30px 30px 0 0;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col h4 {
+            color: var(--chinese-gold);
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            font-size: 1rem;
+        }
+
+        .footer-col p {
+            font-size: 0.85rem;
+            line-height: 2.5;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-col ul li a {
+            color: #a09880;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--chinese-gold);
+        }
+
+        .friend-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .friend-links a {
+
+            color: #a09880;
+            font-size: 1rem;
+            padding: 40px;
+        }
+
+        .friend-links a:hover {
+            border-color: var(--chinese-gold);
+            color: var(--chinese-gold);
+            background: rgba(201, 169, 110, 0.08);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(201, 169, 110, 0.2);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        :root {
+            --chinese-gold: #C9A96E;
+        }
+
 
         .back-to-top {
             position: fixed;
@@ -872,44 +958,14 @@
         }
 
         .section-title {
-            font-weight: 700;
             font-size: 2rem;
-            margin-bottom: 50px;
-            margin-top: 83px;
+            margin-bottom: 20px;
             color: #ffefcf;
             letter-spacing: 2px;
+            border-left: 5px solid #c9a96e;
             padding-left: 20px;
         }
-        /* 方法一：给“非遗动态”的标题增加上外边距 */
-.page-3 .section-title:nth-of-type(2) {
-    margin-top: 60px;  /* 调整此数值控制间距大小，默认约 20px 左右 */
-}
-/* ===== 3D 圆环轮播缩小（桌面端缩放至 70%） ===== */
-@media (min-width: 769px) {
-    .carousel-wrapper {
-        height: 420px;            /* 原 600px，按 0.7 比例缩小 */
-        transform: scale(0.7);    /* 整体等比缩小 */
-        transform-origin: center center; /* 确保从中心缩放，保持居中 */
-    }
 
-    /* （可选）让第二页更紧凑，减少多余空白 */
-    .page-2 {
-        min-height: 80vh;         /* 原 100vh，适当降低高度 */
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-
-    /* （可选）让左右切换按钮也稍微缩小一点，比例更协调 */
-    .carousel-wrapper .carousel-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-    }
-}/* 第三页的第一个标题（非遗推荐）—— 上边距减小，靠近顶部 */
-.page-3 .section-title:first-of-type {
-    margin-top: 20px;   /* 原来是 83px，改为 20px，更紧凑 */
-    margin-bottom: 50px; /* 适当缩小与下方轮播的间距 */
-}
     </style>
 </head>
 <body>
@@ -927,10 +983,9 @@
             <div class="orbit-dot dot3"></div>
             <div class="orbit-dot dot4"></div>
         </div>
-        <div class="loading-text">
-            <span>薪</span><span>火</span><span>相</span><span>传</span><span>·</span><span>非</span><span>遗</span><span>典</span><span>藏</span>
-        </div>
-        <div class="loading-sub">唤醒千年文脉...</div>
+        <div class="loading-text" data-i18n="loadingText">薪火相传 · 非遗典藏</div>
+        <div class="loading-sub" data-i18n="loadingSub">唤醒千年文脉...</div>
+
     </div>
 </div>
 <div class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></div>
@@ -942,27 +997,22 @@
         <div id="navbarMount"></div>
     </div>
     <div class="title-wrapper">
-        <div class="hero-title"><h1>守护千年文脉</h1>
-            <p>---让非遗活在当下，走向世界---</p></div>
+        <div class="hero-title"><h1 data-i18n="heroTitle">守护千年文脉</h1>
+            <p data-i18n="heroSubtitle">---让非遗活在当下，走向世界---</p></div>
         <div class="stats-container">
             <div class="stat-card">
-    <div class="stat-number">
-        <span id="statProjects">0</span><sup>+</sup>
-    </div>
-    <div class="stat-label">收录非遗项目</div>
-</div>
-<div class="stat-card">
-    <div class="stat-number">
-        <span id="statNational">0</span><sup>+</sup>
-    </div>
-    <div class="stat-label">国家级名录</div>
-</div>
-<div class="stat-card">
-    <div class="stat-number">
-        <span id="statNodes">0</span><sup>+</sup>
-    </div>
-    <div class="stat-label">知识图谱节点</div>
-</div>
+                <div class="stat-number" id="statProjects">0</div>
+                <div class="stat-label" data-i18n="statProjects">收录非遗项目</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statNational">0</div>
+                <div class="stat-label" data-i18n="statNational">国家级名录</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statNodes">0</div>
+                <div class="stat-label" data-i18n="statNodes">知识图谱节点</div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -980,44 +1030,84 @@
 <!-- 第三页：非遗推荐 + 动态时间轴（带HOT标签） -->
 <div class="page-section page-3">
     <div class="container" style="width:100%">
-        <div class="section-title"  style="text-align: center;"><i class="fas fa-heart"></i> 非遗推荐</div>
+        <div class="section-title"><i class="fas fa-heart"></i> <span data-i18n="recommend">非遗推荐</span></div>
+
         <div class="performance-slider" id="performanceSlider">
             <div class="performance-track" id="performanceTrack"></div>
         </div>
         <div class="carousel-dots" id="carouselDots"></div>
-        <div class="section-title" style="text-align: center;" ><i class="fas fa-calendar-alt"></i> 非遗动态</div>
+        <div class="section-title"><i class="fas fa-calendar-alt"></i> <span data-i18n="news">非遗动态</span></div>
+
         <div class="timeline-container">
             <div class="timeline-list" id="timelineList"></div>
             <div class="timeline-image-panel" id="timelineImagePanel">
                 <div class="panel-placeholder" id="panelPlaceholder"></div>
                 <img id="panelImage" class="panel-image" alt="非遗图片" style="display: none;"></div>
         </div>
+        <footer class="site-footer">
+            <div class="footer-grid">
+                <div class="footer-col"><h4 data-i18n="siteTitle">华夏非遗 · 薪火相传</h4>
+                    <p data-i18n="ichBrandingDesc">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p></div>
+                <div class="footer-col"><h4 data-i18n="quickNav">快捷导航</h4>
+                    <ul>
+                        <li><a href="index.html" data-i18n="navHome">首页</a></li>
+                        <li><a href="performances.html" data-i18n="navPerformances">票务演出</a></li>
+                        <li><a href="merchandise.html" data-i18n="navMerchandise">文创周边</a></li>
+                        <li><a href="travel.html" data-i18n="navTravel">去旅游</a></li>
+                        <li><a href="history.html" data-i18n="historyTab">浏览记录</a></li>
+                        <li><a href="knowledge-graph.html" data-i18n="navKnowledge">非遗图谱✨</a></li>
+                        <li><a href="whereami.html" data-i18n="navWhereami">云旅游✨</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col"><h4 data-i18n="contact">联系方式</h4>
+                    <p data-i18n="email">📧 ich@culture.cn</p>
+                    <p data-i18n="phone">📞 400-668-0808</p>
+                    <p data-i18n="address">📍 安徽新华学院</p></div>
+                <div class="footer-col"><h4 data-i18n="friendLinks">友情链接</h4>
+                    <ul>
+                        <li><a href="https://www.mct.gov.cn" target="_blank" data-i18n="mct">文化和旅游部</a></li>
+                        <li><a href="http://www.ncha.gov.cn" target="_blank" data-i18n="ncha">国家文物局</a></li>
+                        <li><a href="https://www.ihchina.cn" target="_blank"
+                               data-i18n="ihchina">中国非物质文化遗产网</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="friend-links"><span style="color:var(--chinese-gold);letter-spacing:2px;" data-i18n="partners">合作伙伴：</span><a
+                    href="https://www.zgysyjy.org.cn" target="_blank" data-i18n="partner1">中国艺术研究院</a><a
+                    href="https://www.dpm.org.cn" target="_blank" data-i18n="partner2">故宫博物院</a><a
+                    href="https://www.nlc.cn" target="_blank" data-i18n="partner3">国家图书馆</a></div>
+            <div class="footer-bottom"><p data-i18n="copyright">© 2026 华夏非遗保护工程 | 传承文明 利在千秋 |
+                第二十八届中国机器人及人工智能大赛</p></div>
+        </footer>
+
     </div>
     <div id="footerMount"></div>
 </div>
 
 <!-- AI聊天等辅助 -->
 <div id="aiChatWindow" class="ai-chat-window">
-    <div class="chat-header"><span><i class="fas fa-child" style="color: #ffaa66;"></i> 菲菲 · 非遗小助手</span><span
+    <div class="chat-header"><span><i class="fas fa-child" style="color: #ffaa66;"></i> <span data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span><span
             class="close-chat" id="closeChat">&times;</span></div>
     <div class="chat-body" id="chatBody">
         <div class="chat-message ai">
-            <div class="message-sender">菲菲</div>
-            <div class="message-bubble">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
+            <div class="message-sender" data-i18n="aiSender">菲菲</div>
+            <div class="message-bubble" data-i18n="aiWelcome">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
         </div>
     </div>
-    <div class="chat-input-area"><input type="text" id="chatInput" placeholder="例如：京剧有什么特点？">
+    <div class="chat-input-area"><input type="text" id="chatInput" data-i18n="chatInput"
+                                        placeholder="例如：京剧有什么特点？">
+
         <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 <div id="historyPreview"
      style="position: fixed; background: rgba(0,0,0,0.85); border-radius: 20px; width: 280px; padding: 12px; display: none; z-index: 1000; backdrop-filter: blur(8px);">
-    <div style="font-weight:bold; margin-bottom:8px; color:#fff;">最近浏览</div>
+    <div data-i18n="recentBrowse" style="font-weight:bold; margin-bottom:8px; color:#fff;">最近浏览</div>
+
     <div id="previewList" style="font-size:14px; color:#ddd;"></div>
 </div>
 
 <script>
-    // ========== 统计动画（滚动触发 + 取整到百位） ==========
 const backBtn = document.getElementById('backToTopBtn');
 window.addEventListener('scroll', () => {
     if (window.scrollY > 300) backBtn.classList.add('show'); else backBtn.classList.remove('show');
@@ -1093,16 +1183,54 @@ if (document.readyState === 'complete') {
         setTimeout(triggerStatsAnimation, 500);
     });
 }
+=======
+    // 通用 HTML 转义工具
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/[&<>"']/g, function (m) {
+            return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[m];
+        });
+    }
+
+    // ========== 统计动画 ==========
+    const backBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) backBtn.classList.add('show'); else backBtn.classList.remove('show');
+    });
+    backBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+
+    function animateNumber(element, target, duration = 2000) {
+        if (!element) return;
+        const startTime = performance.now();
+
+        function update(now) {
+            const elapsed = now - startTime;
+            let progress = Math.min(1, elapsed / duration);
+            let current = Math.floor(progress * target);
+            element.innerText = current.toLocaleString();
+            if (progress < 1) requestAnimationFrame(update); else element.innerText = target.toLocaleString();
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    window.addEventListener('load', () => {
+        animateNumber(document.getElementById('statProjects'), 1560, 1800);
+        animateNumber(document.getElementById('statNational'), 1557, 1800);
+        animateNumber(document.getElementById('statNodes'), 1680, 1800);
+    });
+
 
     // ========== 3D 圆环轮播（支持鼠标/触摸拖拽旋转） ==========
     (function init3DCarousel() {
         const wrapper = document.getElementById('carouselWrapper');
         if (!wrapper) return;
         const hotItems = [
-            {name: "太极拳", img: "static/img/taiji.jpg", desc: "刚柔并济"},
-            {name: "昆曲", img: "static/img/kunqu.jpg", desc: "百戏之祖，水磨腔"},
-            {name: "二十四节气", img: "static/img/24jie.jpg", desc: "时间智慧"},
-            {name: "高甲戏", img: "static/img/gaojiaxi.jpeg", desc: "泉州高甲戏，丑角艺术"}
+            {nameKey: "hotItem1Name", img: "static/img/taiji.jpg", descKey: "hotItem1Desc"},
+            {nameKey: "hotItem2Name", img: "static/img/kunqu.jpg", descKey: "hotItem2Desc"},
+            {nameKey: "hotItem3Name", img: "static/img/24jie.jpg", descKey: "hotItem3Desc"},
+            {nameKey: "hotItem4Name", img: "static/img/gaojiaxi.jpeg", descKey: "hotItem4Desc"}
+
         ];
         let currentAngle = 0, targetAngle = 0, animFrameId = null, autoTimer = null, radius = 520, cards = [];
         let isDragging = false, dragStartX = 0, dragStartAngle = 0;
@@ -1252,7 +1380,10 @@ if (document.readyState === 'complete') {
             hotItems.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'carousel-card';
-                card.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.onerror=null;this.src='static/img/placeholder.svg'"><div class="card-info"><h4>${item.name}</h4><p>${item.desc}</p></div>`;
+                const name = (window.i18n && window.i18n.t) ? window.i18n.t(item.nameKey) : item.nameKey;
+                const desc = (window.i18n && window.i18n.t) ? window.i18n.t(item.descKey) : item.descKey;
+                card.innerHTML = `<img src="${item.img}" alt="${escapeHtml(name)}" onerror="this.src='https://picsum.photos/id/100/460/320'"><div class="card-info"><h4>${escapeHtml(name)}</h4><p>${escapeHtml(desc)}</p></div>`;
+
                 wrapper.appendChild(card);
                 cards.push(card);
             });
@@ -1275,6 +1406,15 @@ if (document.readyState === 'complete') {
         wrapper.style.cursor = 'grab';
 
         startAutoSlide();
+
+        // 暴露重渲函数 + 工具给 lang:changed 使用
+        window.__ichRebuildHot3DCarousel = () => {
+            buildCards();
+            // 重置旋转与定时器，避免语言切换时停转
+            currentAngle = 0;
+            targetAngle = 0;
+            startAutoSlide();
+        };
     })();
 
     // ========== 非遗推荐卡片轮播（完整版） ==========
@@ -1284,52 +1424,53 @@ if (document.readyState === 'complete') {
         if (!track) return;
         const recommendItems = [
             {
-                name: "京剧《贵妃醉酒》",
+                nameKey: "recItem1Name",
                 img: "static/img/guifeizuijiu.jpg",
-                desc: "梅派经典，雍容华贵",
-                type: "戏曲",
+                descKey: "recItem1Desc",
+                typeKey: "recItem1Type",
                 link: "product.html?id=0&type=performance"
             },
             {
-                name: "昆曲《牡丹亭》",
+                nameKey: "recItem2Name",
                 img: "static/img/kunqu1.jpg",
-                desc: "情不知所起，一往而深",
-                type: "戏曲",
+                descKey: "recItem2Desc",
+                typeKey: "recItem2Type",
                 link: "product.html?id=1&type=performance"
             },
             {
-                name: "皮影戏《西游记》",
+                nameKey: "recItem3Name",
                 img: "static/img/piying01.jpg",
-                desc: "光影传奇，妙趣横生",
-                type: "传统戏剧",
+                descKey: "recItem3Desc",
+                typeKey: "recItem3Type",
                 link: "product.html?id=4&type=performance"
             },
             {
-                name: "剪纸艺术体验",
+                nameKey: "recItem4Name",
                 img: "static/img/jianzhi01.jpg",
-                desc: "指尖生花，传承匠心",
-                type: "传统美术",
+                descKey: "recItem4Desc",
+                typeKey: "recItem4Type",
                 link: "product.html?id=21&type=merchandise"
             },
             {
-                name: "古琴《高山流水》",
+                nameKey: "recItem5Name",
                 img: "static/img/guqing.jpg",
-                desc: "千年古韵，弦外之音",
-                type: "传统音乐",
+                descKey: "recItem5Desc",
+                typeKey: "recItem5Type",
                 link: "product.html?id=14&type=merchandise"
             },
             {
-                name: "太极拳养生课",
+                nameKey: "recItem6Name",
                 img: "static/img/taiji01.jpg",
-                desc: "刚柔并济，修身养性",
-                type: "传统体育",
+                descKey: "recItem6Desc",
+                typeKey: "recItem6Type",
                 link: "product.html?id=2&type=travel"
             },
             {
-                name: "蜡染围巾",
+                nameKey: "recItem7Name",
                 img: "static/img/laran.jpg",
-                desc: "苗族非遗，蓝白之美",
-                type: "文创",
+                descKey: "recItem7Desc",
+                typeKey: "recItem7Type",
+
                 link: "product.html?id=10&type=merchandise"
             }
         ];
@@ -1344,7 +1485,11 @@ if (document.readyState === 'complete') {
                 recommendItems.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'rec-card';
-                    card.innerHTML = `<img class="rec-card-img" src="${item.img}" alt="${item.name}" onerror="this.onerror=null;this.src='static/img/placeholder.svg'"><div class="rec-card-content"><div class="rec-card-title">${item.name}</div><div class="rec-card-desc">${item.desc}</div><div class="rec-card-tag">${item.type}</div></div>`;
+                    const name = window.i18n?.t(item.nameKey) || item.nameKey;
+                    const desc = window.i18n?.t(item.descKey) || item.descKey;
+                    const type = window.i18n?.t(item.typeKey) || item.typeKey;
+                    card.innerHTML = `<img class="rec-card-img" src="${item.img}" alt="${name}" onerror="this.onerror=null;this.src='https://picsum.photos/id/104/300/180'"><div class="rec-card-content"><div class="rec-card-title">${name}</div><div class="rec-card-desc">${desc}</div><div class="rec-card-tag">${type}</div></div>`;
+
                     card.addEventListener('click', (e) => {
                         e.stopPropagation();
                         window.location.href = item.link;
@@ -1411,60 +1556,6 @@ if (document.readyState === 'complete') {
             updateDots();
             startAuto();
         }
-
-        function startAuto() {
-            if (autoTimer) clearInterval(autoTimer);
-            autoTimer = setInterval(nextSlide, 3000);
-        }
-
-        function stopAuto() {
-            if (autoTimer) clearInterval(autoTimer);
-        }
-
-        function buildDots() {
-            if (!dotsContainer) return;
-            dotsContainer.innerHTML = '';
-            for (let i = 0; i < originalLen; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'dot';
-                if (i === currentIndex) dot.classList.add('active');
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
-            }
-        }
-
-        function init() {
-            buildTrack();
-            buildDots();
-            setTimeout(() => {
-                if (allCards.length && step === 0) {
-                    cardWidth = allCards[0].offsetWidth;
-                    step = cardWidth + gap;
-                    track.style.width = `${allCards.length * step}px`;
-                }
-                currentIndex = 0;
-                moveToIndex(false);
-                updateDots();
-                startAuto();
-            }, 200);
-            window.addEventListener('resize', () => {
-                if (allCards.length) {
-                    cardWidth = allCards[0].offsetWidth;
-                    step = cardWidth + gap;
-                    track.style.width = `${allCards.length * step}px`;
-                    moveToIndex(false);
-                }
-            });
-            const slider = document.getElementById('performanceSlider');
-            if (slider) {
-                slider.addEventListener('mouseenter', stopAuto);
-                slider.addEventListener('mouseleave', startAuto);
-            }
-        }
-
-        init();
-    })();
-    // ========== 非遗动态时间轴（带HOT徽章 + 轮播高亮） ==========
     (function initTimelineWithHot() {
         const listContainer = document.getElementById('timelineList');
         const panelImage = document.getElementById('panelImage');
@@ -1529,6 +1620,144 @@ if (document.readyState === 'complete') {
         ];
         timelineEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
+=======
+
+        function startAuto() {
+            if (autoTimer) clearInterval(autoTimer);
+            autoTimer = setInterval(nextSlide, 3000);
+        }
+
+        function stopAuto() {
+            if (autoTimer) clearInterval(autoTimer);
+        }
+
+        function buildDots() {
+            if (!dotsContainer) return;
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < originalLen; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (i === currentIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function init() {
+            buildTrack();
+            buildDots();
+            setTimeout(() => {
+                if (allCards.length && step === 0) {
+                    cardWidth = allCards[0].offsetWidth;
+                    step = cardWidth + gap;
+                    track.style.width = `${allCards.length * step}px`;
+                }
+                currentIndex = 0;
+                moveToIndex(false);
+                updateDots();
+                startAuto();
+            }, 200);
+            window.addEventListener('resize', () => {
+                if (allCards.length) {
+                    cardWidth = allCards[0].offsetWidth;
+                    step = cardWidth + gap;
+                    track.style.width = `${allCards.length * step}px`;
+                    moveToIndex(false);
+                }
+            });
+            const slider = document.getElementById('performanceSlider');
+            if (slider) {
+                slider.addEventListener('mouseenter', stopAuto);
+                slider.addEventListener('mouseleave', startAuto);
+            }
+        }
+
+        init();
+        // 暴露重渲函数给 lang:changed 使用
+        window.__ichRebuildRecommend = () => {
+            currentIndex = 0;
+            isTransitioning = false;
+            buildTrack();
+            buildDots();
+            setTimeout(() => {
+                if (allCards.length && step === 0) {
+                    cardWidth = allCards[0].offsetWidth;
+                    step = cardWidth + gap;
+                    track.style.width = `${allCards.length * step}px`;
+                }
+                currentIndex = 0;
+                moveToIndex(false);
+                updateDots();
+                startAuto();
+            }, 200);
+        };
+    })();
+    // ========== 非遗动态时间轴（带HOT徽章 + 轮播高亮） ==========
+    (function initTimelineWithHot() {
+        const listContainer = document.getElementById('timelineList');
+        const panelImage = document.getElementById('panelImage');
+        const panelPlaceholder = document.getElementById('panelPlaceholder');
+        if (!listContainer) return;
+
+        const timelineEvents = [
+            {
+                date: "2026-06-10",
+                titleKey: "timeline1Title",
+                placeKey: "timeline1Place",
+                price: "180",
+                link: "product.html?id=2&type=performance",
+                img: "static/img/gaojiaxi.jpeg",
+                hot: true
+            },
+            {
+                date: "2026-06-15",
+                titleKey: "timeline2Title",
+                placeKey: "timeline2Place",
+                price: "120",
+                link: "product.html?id=4&type=performance",
+                img: "static/img/piying01.jpg",
+                hot: false
+            },
+            {
+                date: "2026-06-20",
+                titleKey: "timeline3Title",
+                placeKey: "timeline3Place",
+                price: "280",
+                link: "product.html?id=1&type=performance",
+                img: "static/img/kunqu1.jpg",
+                hot: true
+            },
+            {
+                date: "2026-07-01",
+                titleKey: "timeline4Title",
+                placeKey: "timeline4Place",
+                price: "260",
+                link: "product.html?id=5&type=performance",
+                img: "static/img/performances-img/4.jpg",
+                hot: false
+            },
+            {
+                date: "2026-07-10",
+                titleKey: "timeline5Title",
+                placeKey: "timeline5Place",
+                price: "380",
+                link: "product.html?id=0&type=performance",
+                img: "static/img/guifeizuijiu.jpg",
+                hot: true
+            },
+            {
+                date: "2026-07-18",
+                titleKey: "timeline6Title",
+                placeKey: "timeline6Place",
+                price: "free",
+                link: "product.html?id=21&type=merchandise",
+                img: "static/img/jianzhi01.jpg",
+                hot: false
+            }
+        ];
+        timelineEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+
         let autoTimer = null, currentImgIndex = 0, imageUrls = [];
         let timelineItems = []; // 存储列表项DOM
 
@@ -1587,8 +1816,12 @@ if (document.readyState === 'complete') {
         imageUrls = [];
         timelineEvents.forEach((ev, idx) => {
             imageUrls.push(ev.img || '');
-            const hotBadge = ev.hot ? `<span class="hot-badge"><i class="fas fa-fire"></i> 热门推荐</span>` : '';
-            html += `<div class="timeline-item" data-img="${ev.img || ''}" data-link="${ev.link}" data-index="${idx}">${hotBadge}<div class="timeline-date">${ev.date}</div><div class="timeline-content"><div class="timeline-title">${ev.title}</div><div class="timeline-place"><span><i class="fas fa-map-marker-alt"></i> ${ev.place}</span><span><i class="fas fa-ticket-alt"></i> ${ev.price}</span></div></div></div>`;
+            const title = window.i18n?.t(ev.titleKey) || ev.titleKey;
+            const place = window.i18n?.t(ev.placeKey) || ev.placeKey;
+            const hotBadge = ev.hot ? `<span class="hot-badge"><i class="fas fa-fire"></i> ${window.i18n?.t('hotBadge') || '热门推荐'}</span>` : '';
+            const priceText = ev.price === 'free' ? (window.i18n?.t('freeTicket') || '免费预约') : (window.i18n?.t('priceFrom', {price: ev.price}) || `¥${ev.price}起`);
+            html += `<div class="timeline-item" data-img="${ev.img || ''}" data-link="${ev.link}" data-index="${idx}">${hotBadge}<div class="timeline-date">${ev.date}</div><div class="timeline-content"><div class="timeline-title">${title}</div><div class="timeline-place"><span><i class="fas fa-map-marker-alt"></i> ${place}</span><span><i class="fas fa-ticket-alt"></i> ${priceText}</span></div></div></div>`;
+
         });
         listContainer.innerHTML = html;
         timelineItems = document.querySelectorAll('.timeline-item');
@@ -1623,6 +1856,54 @@ if (document.readyState === 'complete') {
             panelImage.style.display = 'none';
             if (panelPlaceholder) panelPlaceholder.style.display = 'flex';
         }
+
+        // 暴露重渲函数给 lang:changed 使用
+        window.__ichRebuildTimeline = () => {
+            stopAutoPlay();
+            // 重置引用
+            listContainer.innerHTML = '';
+            timelineItems = [];
+            imageUrls = [];
+            currentImgIndex = 0;
+            // 重新构建列表与图片
+            let html = '';
+            imageUrls = [];
+            timelineEvents.forEach((ev, idx) => {
+                imageUrls.push(ev.img || '');
+                const title = (window.i18n && window.i18n.t) ? window.i18n.t(ev.titleKey) : ev.titleKey;
+                const place = (window.i18n && window.i18n.t) ? window.i18n.t(ev.placeKey) : ev.placeKey;
+                const hotBadge = ev.hot ? `<span class="hot-badge"><i class="fas fa-fire"></i> ${(window.i18n && window.i18n.t) ? window.i18n.t('hotBadge') : '热门推荐'}</span>` : '';
+                const priceText = ev.price === 'free' ? ((window.i18n && window.i18n.t) ? window.i18n.t('freeTicket') : '免费预约') : ((window.i18n && window.i18n.t) ? window.i18n.t('priceFrom', {price: ev.price}) : `¥${ev.price}起`);
+                html += `<div class="timeline-item" data-img="${ev.img || ''}" data-link="${ev.link}" data-index="${idx}">${hotBadge}<div class="timeline-date">${ev.date}</div><div class="timeline-content"><div class="timeline-title">${title}</div><div class="timeline-place"><span><i class="fas fa-map-marker-alt"></i> ${place}</span><span><i class="fas fa-ticket-alt"></i> ${priceText}</span></div></div></div>`;
+            });
+            listContainer.innerHTML = html;
+            timelineItems = listContainer.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, idx) => {
+                item.addEventListener('mouseenter', () => {
+                    stopAutoPlay();
+                    const img = item.getAttribute('data-img');
+                    updateImage(img, idx);
+                    currentImgIndex = idx;
+                });
+                item.addEventListener('click', () => {
+                    const link = item.getAttribute('data-link');
+                    if (link) window.location.href = link;
+                });
+            });
+            listContainer.addEventListener('mouseleave', () => {
+                startAutoPlay();
+                highlightItem(currentImgIndex);
+            });
+            if (imageUrls.length) {
+                updateImage(imageUrls[0], 0);
+                currentImgIndex = 0;
+                startAutoPlay();
+            } else {
+                panelImage.style.display = 'none';
+                if (panelPlaceholder) panelPlaceholder.style.display = 'flex';
+            }
+        };
+
     })();
     // 加载界面隐藏
     (function () {
@@ -1661,8 +1942,13 @@ if (document.readyState === 'complete') {
         } else {
             hidePreloader();
         }
-    })();</script>
-<script src="static/js/components.js"></script>
+    })();
+    document.addEventListener('lang:changed', function () {
+        if (typeof window.__ichRebuildHot3DCarousel === 'function') window.__ichRebuildHot3DCarousel();
+        if (typeof window.__ichRebuildRecommend === 'function') window.__ichRebuildRecommend();
+        if (typeof window.__ichRebuildTimeline === 'function') window.__ichRebuildTimeline();
+    });</script>
+
 <script src="static/js/sidebar.js"></script>
 <script src="static/js/chat.js"></script>
 <script src="static/js/password-utils.js"></script>

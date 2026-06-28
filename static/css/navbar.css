@@ -75,6 +75,27 @@
     align-items: center;
 }
 
+.top-bar .lang-switch-btn {
+    color: #ffecb3;
+    font-size: 0.9rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 6px 16px;
+    border-radius: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.top-bar .lang-switch-btn:hover {
+    color: #00d4ff;
+    background: rgba(0, 0, 0, 0.6);
+    text-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+    border-color: rgba(0, 212, 255, 0.5);
+}
+
 .top-bar .user-welcome {
     color: #ffecb3;
     font-size: 0.9rem;

@@ -51,21 +51,21 @@
                 </div>
             </div>
             <div class="province-switcher" id="provinceSwitcher">
-                <span class="switcher-label">🗺️ 省份</span>
-                <select id="provinceSelect" aria-label="省份切换"></select>
+                <span class="switcher-label">省份</span>
+                <select id="provinceSelect" aria-label="省份切换" data-i18n-aria="provinceSelectAria"></select>
                 <span class="switcher-status" id="switcherStatus">就绪</span>
             </div>
             <div id="mapChart"></div>
             <!-- 地图内层加载动画（覆盖在 mapChart 之上，初始隐藏） -->
             <div id="mapLoading" class="map-loading hide" aria-live="polite">
                 <div class="mini-spinner"></div>
-                <div class="mini-loading-text" id="mapLoadingText">✨ 星图绘制中 ✨</div>
+                <div class="mini-loading-text" id="mapLoadingText" data-i18n="drawingStarmap">✨ 星图绘制中 ✨</div>
             </div>
             <!-- 地图内层空状态（数据缺失兜底，初始隐藏） -->
             <div id="mapEmpty" class="map-empty hide" role="status">
                 <div class="empty-icon">🌌</div>
-                <div class="empty-title">该省份暂无景点数据</div>
-                <div class="empty-tip">请尝试切换至其他省份，或稍后再试</div>
+                <div class="empty-title" data-i18n="emptyTitle">该省份暂无景点数据</div>
+                <div class="empty-tip" data-i18n="emptyTip">请尝试切换至其他省份，或稍后再试</div>
             </div>
             <div class="map-legend" id="mapLegend">
                 <div class="legend-item"><div class="legend-badge circle" style="background:#FFD966;"></div><span id="legendNaturalText">自然风光</span></div>
@@ -73,7 +73,6 @@
                 <div class="legend-item"><div class="legend-badge" style="background:#FFA07A;"></div><span id="legendIntangibleText">非遗体验</span></div>
                 <div class="legend-item"><div class="legend-badge" style="background:#76E4B0;"></div><span id="legendFoodText">美食打卡</span></div>
                 <div class="legend-item"><div style="width:12px;height:12px;background:#FCE570;border-radius:50%;box-shadow:0 0 4px gold;"></div><span id="legendHighMatchText">高匹配</span></div>
-                <div class="lang-switch-btn" id="langSwitchBtn">🌐 中文 / EN</div>
             </div>
             <div class="filter-tags" id="typeFilterGroup">
                 <button type="button" class="tag-btn active" data-category="all" id="filterAll">全部星点</button>
@@ -102,14 +101,15 @@
                 <div class="slider-item"><label id="heritageLabel">非遗互动度</label><input type="range" id="heritageSlider" min="0" max="100" value="70"><span id="heritageValue" class="slider-value">70</span></div>
                 <div class="slider-item"><label id="leisureLabel">休闲指数</label><input type="range" id="leisureSlider" min="0" max="100" value="80"><span id="leisureValue" class="slider-value">80</span></div>
             </div>
-            <a href="travel.html" class="starmap-cta" id="starmapCta" title="开启非遗深度之旅">
+            <a href="travel.html" class="starmap-cta" id="starmapCta" title="开启非遗深度之旅" data-i18n-title="starmapCtaText">
                 <i class="fas fa-route"></i>
-                <span>开启非遗深度之旅</span>
+                <span data-i18n="starmapCtaText">开启非遗深度之旅</span>
                 <i class="fas fa-arrow-right cta-arrow-icon" aria-hidden="true"></i>
             </a>
         </div>
     </div>
 
+    <script src="static/js/i18n.js"></script>
     <script src="static/js/tianqi.js"></script>
     <script src="static/js/starmap-app.js"></script>
     <script src="static/js/navbar.js"></script>

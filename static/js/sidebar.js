@@ -1,22 +1,198 @@
-// ==================== 动态侧边栏（公告｜公众号｜DeepSeek｜回顶） ====================
 (function() {
     // ---------- 配置项 ----------
     const wechatQrUrl = 'static/img/11111.jpg';            // 微信公众号二维码图片路径
     const siteName = '华夏非遗 · 薪火相传';
+=======
+// ==================== 可复用侧边栏公共组件 ====================
+// 用法：
+//   1. 基础用法（自动初始化，使用默认配置）：
+//      <script src="static/js/sidebar.js"></script>
+//
+//   2. 自定义配置：
+//      <script src="static/js/sidebar.js"></script>
+//      <script>
+//        Sidebar.init({
+//          position: 'right',
+//          showNotice: true,
+//          showWechat: true,
+//          showDeepseek: true,
+//          showGoTop: true,
+//          wechatQrUrl: 'static/img/11111.jpg',
+//          wechatIcon: 'static/img/02.jpg',
+//          deepseekIcon: 'static/img/头像01.jpg',
+//          notices: [...],
+//          customButtons: [...],
+//          theme: {...}
+//        });
+//      </script>
+//
+//   3. 通过 data-* 属性配置（在 script 标签上）：
+//      <script src="static/js/sidebar.js" data-show-notice="true" data-position="right"></script>
 
-    // 公告通知中的演出数据（可自行修改或从已有数据中获取）
-    const noticePerformances = [
-        { id: 0, name: '京剧《贵妃醉酒》', time: '2025-05-01 19:30', place: '国家大剧院', price: 380 },
-        { id: 1, name: '昆曲《牡丹亭》', time: '2025-05-15 19:00', place: '上海大剧院', price: 280 },
-        { id: 2, name: '高甲戏《连升三级》', time: '2025-06-10 19:30', place: '福建泉州梨园古典剧院', price: 180 },
-        { id: 3, name: '皮影戏《西游记》专场', time: '2025-05-20 15:00', place: '北京皮影剧团', price: 120 },
-        { id: 4, name: '非遗综合展演', time: '2025-07-01 19:00', place: '广州大剧院', price: 260 }
-    ];
 
-    // ---------- 动态添加样式（毛玻璃侧边栏 + 悬浮展开 + 二维码浮层等） ----------
-    const style = document.createElement('style');
-    style.textContent = `
-    /* 侧边栏内自定义图标图片样式 —— 自动适配大小 */
+(function(global) {
+    'use strict';
+
+    // ========== 默认配置 ==========
+    const DEFAULTS = {
+        position: 'right',
+        top: '50%',
+        showNotice: true,
+        showWechat: true,
+        showDeepseek: true,
+        showGoTop: true,
+        autoInit: true,
+        siteName: '华夏非遗 · 薪火相传',
+        wechatQrUrl: 'static/img/11111.jpg',
+        wechatIcon: 'static/img/02.jpg',
+        deepseekIcon: 'static/img/头像01.jpg',
+        pulseAnimation: true,
+        bodyPadding: true,
+        notices: [
+            { id: 0, name: '京剧《贵妃醉酒》', time: '2025-05-01 19:30', place: '北京长安大戏院', price: 380 },
+            { id: 1, name: '昆曲《牡丹亭》', time: '2025-05-15 19:00', place: '上海大剧院', price: 280 },
+            { id: 2, name: '高甲戏《连升三级》', time: '2025-06-10 19:30', place: '广州粤剧院', price: 180 },
+            { id: 3, name: '黄梅戏《天仙配》', time: '2025-05-20 15:00', place: '南京紫金大戏院', price: 120 },
+            { id: 4, name: '越剧《梁祝》', time: '2025-07-01 19:00', place: '成都锦江剧场', price: 260 }
+        ],
+        customButtons: [],
+        theme: {
+            sidebarBg: 'rgba(22, 26, 36, 0.85)',
+            buttonBg: 'rgba(255,255,255,0.72)',
+            buttonHoverBg: 'rgba(255,255,255,0.94)',
+            buttonActiveBg: 'linear-gradient(135deg, #e34040, #c92a2a)',
+            textColor: '#1f2a36',
+            textHoverColor: '#b12222',
+            borderRadius: '24px'
+        },
+        i18n: {
+            notice: '公告通知',
+            wechat: '公众号',
+            deepseek: '菲菲助手',
+            goTop: '回顶部',
+            noticeTitle: '✨ 近期重要演出',
+            close: '关闭',
+            scanFollow: '扫码关注'
+        }
+    };
+
+    // ========== 组件状态 ==========
+    let instance = null;
+    let initialized = false;
+    let config = {};
+
+    // ========== i18n 集成 ==========
+    const I18N_KEYS = {
+        notice: 'sidebarNotice',
+        wechat: 'sidebarWechat',
+        deepseek: 'sidebarDeepseek',
+        goTop: 'sidebarGoTop',
+        noticeTitle: 'sidebarNoticeTitle',
+        close: 'sidebarClose',
+        scanFollow: 'sidebarScanFollow'
+    };
+
+    function getI18nText(key, fallback) {
+        if (global.i18n && typeof global.i18n.t === 'function') {
+            const translated = global.i18n.t(key);
+            if (translated && translated !== key) {
+                return translated;
+            }
+        }
+        return fallback;
+    }
+
+    function resolveI18n(cfg) {
+        const resolved = {};
+        for (const [key, fallback] of Object.entries(cfg.i18n)) {
+            const i18nKey = I18N_KEYS[key] || key;
+            resolved[key] = getI18nText(i18nKey, fallback);
+        }
+        return { ...cfg, i18n: resolved };
+    }
+
+    const NOTICE_I18N_KEY_MAP = {
+        name: 'perf_name',
+        place: 'perf_addr'
+    };
+
+    function getNoticeText(perf, key) {
+        const i18nPrefix = NOTICE_I18N_KEY_MAP[key] || `perf_${key}`;
+        const i18nKey = `${i18nPrefix}_${perf.id}`;
+        const translated = getI18nText(i18nKey, perf[key]);
+        return translated;
+    }
+
+    function updateNoticeList(cfg) {
+        const listContainer = document.querySelector('#noticeList');
+        if (!listContainer) return;
+
+        const currency = getI18nText('currencySymbol', '¥');
+        listContainer.innerHTML = cfg.notices.map(perf => {
+            const name = getNoticeText(perf, 'name');
+            const place = getNoticeText(perf, 'place');
+            return `
+                <div class="notice-item" data-id="${perf.id}" data-name="${name.replace(/['"]/g, '')}">
+                    <strong>🎭 ${name}</strong>
+                    <div class="detail">📅 ${perf.time} &nbsp;|&nbsp; 📍 ${place} &nbsp;|&nbsp; 💰 ${currency}${perf.price}</div>
+                </div>
+            `;
+        }).join('');
+
+        listContainer.querySelectorAll('.notice-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const id = item.dataset.id;
+                window.location.href = `product.html?id=${id}&type=performance`;
+            });
+        });
+    }
+
+    function updateSidebarTexts() {
+        if (!initialized) return;
+
+        const cfg = resolveI18n(config);
+        const i18n = cfg.i18n;
+
+        const noticeLabel = document.querySelector('#sidebarNoticeBtn .btn-label');
+        if (noticeLabel) noticeLabel.textContent = i18n.notice;
+
+        const wechatLabel = document.querySelector('#sidebarWechatBtn .btn-label');
+        if (wechatLabel) wechatLabel.textContent = i18n.wechat;
+
+        const wechatImg = document.querySelector('#sidebarWechatBtn .sidebar-icon');
+        if (wechatImg) wechatImg.alt = i18n.wechat;
+
+        const wechatScan = document.querySelector('#sidebarWechatBtn .wechat-qr-hover p');
+        if (wechatScan) wechatScan.textContent = i18n.scanFollow;
+
+        const deepseekLabel = document.querySelector('#sidebarDeepseekBtn .btn-label');
+        if (deepseekLabel) deepseekLabel.textContent = i18n.deepseek;
+
+        const goTopLabel = document.querySelector('#sidebarGoTopBtn .btn-label');
+        if (goTopLabel) goTopLabel.textContent = i18n.goTop;
+
+        const noticeTitle = document.querySelector('.notice-modal h3');
+        if (noticeTitle) noticeTitle.textContent = i18n.noticeTitle;
+
+        const closeBtn = document.querySelector('.notice-modal .close-modal');
+        if (closeBtn) closeBtn.textContent = i18n.close;
+
+        updateNoticeList(cfg);
+    }
+
+    function initI18nListener() {
+        document.addEventListener('lang:changed', () => {
+            updateSidebarTexts();
+        });
+    }
+
+    // ========== 样式注入 ==========
+    function injectStyles(cfg) {
+        if (document.getElementById('sidebar-component-styles')) return;
+
+        const style = document.createElement('style');
+        style.id = 'sidebar-component-styles';
+        style.textContent = `
     .sidebar-icon {
         width: 28px;
         height: 28px;
@@ -24,52 +200,40 @@
         display: block;
         transition: all 0.2s ease;
     }
-
-    /* 当侧边栏悬浮展开时，图标略微缩小，保持视觉平衡 */
     .dynamic-sidebar:hover .sidebar-icon {
         width: 24px;
         height: 24px;
     }
-
-    /* 移动端适配 */
     @media (max-width: 640px) {
-        .sidebar-icon {
-            width: 24px;
-            height: 24px;
-        }
-        .dynamic-sidebar:hover .sidebar-icon {
-            width: 20px;
-            height: 20px;
-        }
+        .sidebar-icon { width: 24px; height: 24px; }
+        .dynamic-sidebar:hover .sidebar-icon { width: 20px; height: 20px; }
     }
-
-    /* 确保图标在按钮内垂直居中 */
     .sidebar-btn .btn-emoji {
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
-    /* 预留右侧空间，避免侧边栏遮挡内容（自动添加） */
-    body {
+    body.sidebar-enabled {
         padding-right: 75px !important;
         transition: padding-right 0.2s;
     }
-    @media (max-width: 640px) {
-        body {
-            padding-right: 65px !important;
-        }
+    body.sidebar-enabled.sidebar-left {
+        padding-right: 0 !important;
+        padding-left: 75px !important;
     }
-
-    /* 侧边栏主容器 */
+    @media (max-width: 640px) {
+        body.sidebar-enabled { padding-right: 65px !important; }
+        body.sidebar-enabled.sidebar-left { padding-right: 0 !important; padding-left: 65px !important; }
+    }
     .dynamic-sidebar {
         position: fixed;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%) translateX(38px);
+        top: ${cfg.top};
+        right: ${cfg.position === 'right' ? '0' : 'auto'};
+        left: ${cfg.position === 'left' ? '0' : 'auto'};
+        transform: translateY(-50%) translateX(${cfg.position === 'right' ? '38px' : '-38px'});
         width: 68px;
         backdrop-filter: blur(14px);
-        border-radius: 28px 0 0 28px;
+        border-radius: ${cfg.position === 'right' ? '28px 0 0 28px' : '0 28px 28px 0'};
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -78,7 +242,7 @@
         z-index: 1000;
         box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.15);
         border: 1px solid rgba(255,255,255,0.25);
-        border-right: none;
+        border-${cfg.position === 'right' ? 'right' : 'left'}: none;
         transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         cursor: default;
         font-family: 'Segoe UI', 'Noto Sans CJK SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
@@ -86,26 +250,24 @@
     .dynamic-sidebar:hover {
         transform: translateY(-50%) translateX(0);
         width: 180px;
-        background: rgba(22, 26, 36, 0.85);
+        background: ${cfg.theme.sidebarBg};
         backdrop-filter: blur(20px);
         box-shadow: 0 20px 32px -12px rgba(0,0,0,0.3);
     }
-
-    /* 侧边栏按钮通用样式 */
     .sidebar-btn {
         width: 52px;
         min-height: 64px;
-        background: rgba(255,255,255,0.72);
+        background: ${cfg.theme.buttonBg};
         backdrop-filter: blur(4px);
         border: none;
-        border-radius: 24px;
+        border-radius: ${cfg.theme.borderRadius};
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 6px;
         cursor: pointer;
-        color: #1f2a36;
+        color: ${cfg.theme.textColor};
         font-size: 0.7rem;
         font-weight: 500;
         transition: all 0.2s ease;
@@ -119,7 +281,6 @@
         line-height: 1;
         filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
     }
-    /* ========== 增强字体样式 & 完美居中 ========== */
     .sidebar-btn .btn-label {
         font-size: 0.72rem;
         font-weight: 600;
@@ -136,29 +297,22 @@
         margin: 0 auto;
     }
     .sidebar-btn:hover:not(.active) {
-        background: rgba(255,255,255,0.94);
-        transform: translateX(-2px) scale(1.02);
-        color: #b12222;
+        background: ${cfg.theme.buttonHoverBg};
+        transform: translateX(${cfg.position === 'right' ? '-2px' : '2px'}) scale(1.02);
+        color: ${cfg.theme.textHoverColor};
     }
-    .sidebar-btn:active {
-        transform: scale(0.96);
-    }
-    /* 激活高亮（可选） */
+    .sidebar-btn:active { transform: scale(0.96); }
     .sidebar-btn.active {
-        background: linear-gradient(135deg, #e34040, #c92a2a);
+        background: ${cfg.theme.buttonActiveBg};
         color: white;
         box-shadow: 0 8px 16px -4px rgba(201,42,42,0.4);
     }
-    .sidebar-btn.active .btn-label {
-        color: white;
-    }
-
-    /* 悬浮展开后，显示额外文字或二维码区域 */
+    .sidebar-btn.active .btn-label { color: white; }
     .dynamic-sidebar:hover .sidebar-btn {
         width: 92%;
         flex-direction: row;
         justify-content: flex-start;
-        padding-left: 12px;
+        padding-${cfg.position === 'right' ? 'left' : 'right'}: 12px;
         gap: 12px;
         min-height: 52px;
     }
@@ -168,14 +322,10 @@
         text-align: left;
         letter-spacing: 0.5px;
     }
-    .dynamic-sidebar:hover .sidebar-btn .btn-emoji {
-        font-size: 1.4rem;
-    }
-
-    /* 微信二维码专用悬浮块（默认隐藏，悬浮时显示） */
+    .dynamic-sidebar:hover .sidebar-btn .btn-emoji { font-size: 1.4rem; }
     .wechat-qr-hover {
         position: absolute;
-        left: -120px;
+        ${cfg.position === 'right' ? 'left' : 'right'}: -120px;
         top: 50%;
         transform: translateY(-50%);
         width: 110px;
@@ -190,24 +340,10 @@
         pointer-events: none;
         z-index: 1001;
     }
-    .wechat-qr-hover img {
-        width: 100%;
-        border-radius: 8px;
-    }
-    .wechat-qr-hover p {
-        font-size: 12px;
-        margin: 6px 0 0;
-        color: #333;
-    }
-    .sidebar-btn.wechat-btn {
-        position: relative;
-    }
-    .sidebar-btn.wechat-btn:hover .wechat-qr-hover {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    /* 通知弹窗遮罩 */
+    .wechat-qr-hover img { width: 100%; border-radius: 8px; }
+    .wechat-qr-hover p { font-size: 12px; margin: 6px 0 0; color: #333; }
+    .sidebar-btn.wechat-btn { position: relative; }
+    .sidebar-btn.wechat-btn:hover .wechat-qr-hover { opacity: 1; visibility: visible; }
     .notice-modal {
         position: fixed;
         top: 0;
@@ -237,30 +373,16 @@
         border-left: 5px solid #c41e3a;
         padding-left: 15px;
     }
-    .notice-list {
-        max-height: 400px;
-        overflow-y: auto;
-    }
+    .notice-list { max-height: 400px; overflow-y: auto; }
     .notice-item {
         padding: 12px 0;
         border-bottom: 1px solid #f0e4d0;
         cursor: pointer;
         transition: 0.2s;
     }
-    .notice-item:hover {
-        background: #fef3e4;
-        padding-left: 10px;
-    }
-    .notice-item strong {
-        display: block;
-        font-size: 1rem;
-        color: #5a2e1a;
-    }
-    .notice-item .detail {
-        font-size: 0.8rem;
-        color: #888;
-        margin-top: 5px;
-    }
+    .notice-item:hover { background: #fef3e4; padding-left: 10px; }
+    .notice-item strong { display: block; font-size: 1rem; color: #5a2e1a; }
+    .notice-item .detail { font-size: 0.8rem; color: #888; margin-top: 5px; }
     .close-modal {
         background: #8b3c1c;
         color: white;
@@ -275,12 +397,10 @@
         from { opacity: 0; transform: translateY(30px);}
         to { opacity: 1; transform: translateY(0);}
     }
-
-    /* 右侧边缘指示光效 */
     .dynamic-sidebar::before {
         content: '';
         position: absolute;
-        left: -2px;
+        ${cfg.position === 'right' ? 'left' : 'right'}: -2px;
         top: 20%;
         height: 60%;
         width: 4px;
@@ -288,13 +408,11 @@
         border-radius: 4px;
         pointer-events: none;
     }
-    .dynamic-sidebar:hover::before {
-        opacity: 0;
-    }
+    .dynamic-sidebar:hover::before { opacity: 0; }
     .dynamic-sidebar::after {
         content: '';
         position: absolute;
-        right: 4px;
+        ${cfg.position === 'right' ? 'right' : 'left'}: 4px;
         top: 50%;
         width: 4px;
         height: 28px;
@@ -304,175 +422,324 @@
         transition: 0.2s;
         pointer-events: none;
     }
-    .dynamic-sidebar:hover::after {
-        opacity: 0;
-        width: 0;
-    }
-
+    .dynamic-sidebar:hover::after { opacity: 0; width: 0; }
     @media (max-width: 640px) {
-        .dynamic-sidebar {
-            width: 62px;
-            padding: 12px 6px;
-            gap: 8px;
-        }
-        .dynamic-sidebar:hover {
-            width: 160px;
-        }
-        .sidebar-btn {
-            width: 48px;
-            min-height: 56px;
-        }
-        .sidebar-btn .btn-label {
-            font-size: 0.68rem;
-            letter-spacing: 0.5px;
-        }
+        .dynamic-sidebar { width: 62px; padding: 12px 6px; gap: 8px; }
+        .dynamic-sidebar:hover { width: 160px; }
+        .sidebar-btn { width: 48px; min-height: 56px; }
+        .sidebar-btn .btn-label { font-size: 0.68rem; letter-spacing: 0.5px; }
     }
     `;
+        document.head.appendChild(style);
+    }
 
-    document.head.appendChild(style);
+    // ========== 构建按钮 HTML ==========
+    function buildButtons(cfg) {
+        const buttons = [];
 
-    // ---------- 创建侧边栏 DOM ----------
-    const sidebar = document.createElement('div');
-    sidebar.className = 'dynamic-sidebar';
-   sidebar.innerHTML = `
-    <button class="sidebar-btn" id="noticeBtn">
+        if (cfg.showNotice) {
+            buttons.push(`
+    <button class="sidebar-btn" id="sidebarNoticeBtn">
         <div class="btn-emoji">📢</div>
-        <span class="btn-label">公告通知</span>
-    </button>
-    <!-- 微信公众号：自定义图片 -->
-    <button class="sidebar-btn wechat-btn" id="wechatBtn">
-        <div class="btn-emoji">
-            <img src="static/img/02.jpg" alt="公众号" class="sidebar-icon">
-        </div>
-        <span class="btn-label">公众号</span>
-        <div class="wechat-qr-hover">
-            <img src="static/img/11111.jpg" alt="二维码">
-            <p>扫码关注</p>
-        </div>
-    </button>
-    <!-- DeepSeek 助手：自定义图片 -->
-    <button class="sidebar-btn" id="deepseekSidebarBtn">
-        <div class="btn-emoji">
-            <img src="static/img/头像01.jpg" alt="AI助手" class="sidebar-icon">
-        </div>
-        <span class="btn-label">菲菲助手</span>
-    </button>
-    <button class="sidebar-btn" id="goTopBtn">
-        <div class="btn-emoji">⬆️</div>
-        <span class="btn-label">回顶部</span>
-    </button>
-`;
-    document.body.appendChild(sidebar);
+        <span class="btn-label">${cfg.i18n.notice}</span>
+    </button>`);
+        }
 
-    // ---------- 通知弹窗内容 ----------
-    function showNoticeModal() {
-        // 创建模态框
+
+        if (cfg.showWechat) {
+            buttons.push(`
+    <button class="sidebar-btn wechat-btn" id="sidebarWechatBtn">
+        <div class="btn-emoji">
+            <img src="${cfg.wechatIcon}" alt="${cfg.i18n.wechat}" class="sidebar-icon">
+        </div>
+        <span class="btn-label">${cfg.i18n.wechat}</span>
+        <div class="wechat-qr-hover">
+            <img src="${cfg.wechatQrUrl}" alt="二维码">
+            <p>${cfg.i18n.scanFollow}</p>
+        </div>
+    </button>`);
+        }
+
+        if (cfg.showDeepseek) {
+            buttons.push(`
+    <button class="sidebar-btn" id="sidebarDeepseekBtn">
+        <div class="btn-emoji">
+            <img src="${cfg.deepseekIcon}" alt="AI助手" class="sidebar-icon">
+        </div>
+        <span class="btn-label">${cfg.i18n.deepseek}</span>
+    </button>`);
+        }
+
+        if (cfg.customButtons && cfg.customButtons.length > 0) {
+            cfg.customButtons.forEach(btn => {
+                buttons.push(`
+    <button class="sidebar-btn ${btn.className || ''}" id="${btn.id || ''}" data-action="${btn.action || ''}">
+        <div class="btn-emoji">${btn.icon || ''}</div>
+        <span class="btn-label">${btn.label || ''}</span>
+    </button>`);
+            });
+        }
+
+        if (cfg.showGoTop) {
+            buttons.push(`
+    <button class="sidebar-btn" id="sidebarGoTopBtn">
+        <div class="btn-emoji">⬆️</div>
+        <span class="btn-label">${cfg.i18n.goTop}</span>
+    </button>`);
+        }
+
+        return buttons.join('\n');
+    }
+
+    // ========== 创建侧边栏 DOM ==========
+    function createSidebar(cfg) {
+        const sidebar = document.createElement('div');
+        sidebar.className = 'dynamic-sidebar';
+        sidebar.id = 'dynamicSidebar';
+        sidebar.innerHTML = buildButtons(cfg);
+        document.body.appendChild(sidebar);
+        return sidebar;
+    }
+
+    // ========== 公告弹窗 ==========
+    function showNoticeModal(cfg) {
         let modal = document.querySelector('.notice-modal');
         if (!modal) {
             modal = document.createElement('div');
             modal.className = 'notice-modal';
             modal.innerHTML = `
                 <div class="modal-content">
-                    <h3>✨ 近期重要演出</h3>
+                    <h3>${cfg.i18n.noticeTitle}</h3>
                     <div class="notice-list" id="noticeList"></div>
-                    <button class="close-modal">关闭</button>
+                    <button class="close-modal">${cfg.i18n.close}</button>
                 </div>
             `;
             document.body.appendChild(modal);
             modal.querySelector('.close-modal').addEventListener('click', () => {
                 modal.style.display = 'none';
             });
-            // 点击背景关闭
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) modal.style.display = 'none';
             });
         }
-        // 填充演出列表
-        const listContainer = modal.querySelector('#noticeList');
-        listContainer.innerHTML = noticePerformances.map(perf => `
-            <div class="notice-item" data-id="${perf.id}" data-name="${perf.name.replace(/['"]/g, '')}">
-                <strong>🎭 ${perf.name}</strong>
-                <div class="detail">📅 ${perf.time} &nbsp;|&nbsp; 📍 ${perf.place} &nbsp;|&nbsp; 💰 ¥${perf.price}</div>
-            </div>
-        `).join('');
-        // 绑定点击事件，跳转到演出详情（product.html）
-        listContainer.querySelectorAll('.notice-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const id = item.dataset.id;
-                const name = item.dataset.name;
-                window.location.href = `product.html?id=${id}&type=performance`;
-            });
-        });
+        updateNoticeList(cfg);
         modal.style.display = 'flex';
     }
 
-    // 绑定通知按钮
-    document.getElementById('noticeBtn').addEventListener('click', showNoticeModal);
-
-    // ---------- DeepSeek 助手：复用原有聊天窗口 ----------
-    function initDeepSeek() {
-        const chatWindow = document.getElementById('aiChatWindow');
-        if (!chatWindow) {
-            console.warn('未找到 #aiChatWindow，请确保页面中存在该元素');
-            return;
+    // ========== 绑定事件 ==========
+    function bindEvents(cfg) {
+        if (cfg.showNotice) {
+            const noticeBtn = document.getElementById('sidebarNoticeBtn');
+            if (noticeBtn) {
+                noticeBtn.addEventListener('click', () => showNoticeModal(cfg));
+            }
         }
-        const deepseekBtn = document.getElementById('deepseekSidebarBtn');
-        const closeChat = document.getElementById('closeChat');
-        if (deepseekBtn) {
-            deepseekBtn.addEventListener('click', () => {
-                chatWindow.style.display = 'flex';
-            });
-        }
-        if (closeChat) {
-            closeChat.addEventListener('click', () => {
-                chatWindow.style.display = 'none';
-            });
-        }
-        // 尝试移除原有的顶部 DeepSeek 按钮（如果有）
-        const oldDeepseekBtn = document.querySelector('.top-bar .deepseek-btn');
-        if (oldDeepseekBtn) oldDeepseekBtn.style.display = 'none';
-    }
 
-    // ---------- 返回顶部 ----------
-    function initGoTop() {
-        const goTop = document.getElementById('goTopBtn');
-        if (goTop) {
-            goTop.addEventListener('click', () => {
-                // 方法1：瞬间滚动（推荐，无视滚动捕捉）
-                window.scrollTo(0, 0);
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
+        if (cfg.showDeepseek) {
+            const deepseekBtn = document.getElementById('sidebarDeepseekBtn');
+            const chatWindow = document.getElementById('aiChatWindow');
+            const closeChat = document.getElementById('closeChat');
+            if (deepseekBtn && chatWindow) {
+                deepseekBtn.addEventListener('click', () => {
+                    chatWindow.style.display = 'flex';
+                });
+            }
+            if (closeChat) {
+                closeChat.addEventListener('click', () => {
+                    chatWindow.style.display = 'none';
+                });
+            }
+            const oldDeepseekBtn = document.querySelector('.top-bar .deepseek-btn');
+            if (oldDeepseekBtn) oldDeepseekBtn.style.display = 'none';
+        }
 
-                // 额外保险：滚动后 100ms 再次强制归零（防止捕捉干扰）
-                setTimeout(() => {
+        if (cfg.showGoTop) {
+            const goTopBtn = document.getElementById('sidebarGoTopBtn');
+            if (goTopBtn) {
+                goTopBtn.addEventListener('click', () => {
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
                     document.body.scrollTop = 0;
-                }, 150);
+                    setTimeout(() => {
+                        window.scrollTo(0, 0);
+                        document.documentElement.scrollTop = 0;
+                        document.body.scrollTop = 0;
+                    }, 150);
+                });
+            }
+        }
+
+        if (cfg.customButtons && cfg.customButtons.length > 0) {
+            cfg.customButtons.forEach(btn => {
+                if (btn.id && btn.onClick && typeof btn.onClick === 'function') {
+                    const el = document.getElementById(btn.id);
+                    if (el) {
+                        el.addEventListener('click', btn.onClick);
+                    }
+                }
             });
         }
     }
 
-    // ---------- 移除原有的悬浮窗预览绑定（避免冲突，可选）----------
-    // 原页面有 historyPreview 悬浮窗，保留但无关紧要
-
-    // ---------- 等待页面加载完成后执行 ----------
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            initDeepSeek();
-            initGoTop();
-        });
-    } else {
-        initDeepSeek();
-        initGoTop();
+    // ========== 脉冲动画 ==========
+    function playPulseAnimation() {
+        setTimeout(() => {
+            const sb = document.querySelector('.dynamic-sidebar');
+            if (sb) {
+                sb.style.boxShadow = '0 0 0 2px rgba(217, 43, 43, 0.4), 0 12px 28px -8px rgba(0,0,0,0.2)';
+                setTimeout(() => { sb.style.boxShadow = ''; }, 500);
+            }
+        }, 500);
     }
 
-    // 添加一个小彩蛋：首次加载时侧边栏脉冲两次，提醒用户
-    setTimeout(() => {
-        const sb = document.querySelector('.dynamic-sidebar');
-        if (sb) {
-            sb.style.boxShadow = '0 0 0 2px rgba(217, 43, 43, 0.4), 0 12px 28px -8px rgba(0,0,0,0.2)';
-            setTimeout(() => { sb.style.boxShadow = ''; }, 500);
+    // ========== 从 script 标签读取 data-* 配置 ==========
+    function readScriptDataConfig() {
+        const scripts = document.querySelectorAll('script[src*="sidebar.js"]');
+        if (scripts.length === 0) return {};
+        const script = scripts[scripts.length - 1];
+        const dataCfg = {};
+        const boolAttrs = ['show-notice', 'show-wechat', 'show-deepseek', 'show-go-top', 'auto-init', 'pulse-animation', 'body-padding'];
+        boolAttrs.forEach(attr => {
+            const val = script.getAttribute(`data-${attr}`);
+            if (val !== null) {
+                const key = attr.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                dataCfg[key] = val === 'true';
+            }
+        });
+        const strAttrs = ['position', 'top', 'wechat-qr-url', 'wechat-icon', 'deepseek-icon'];
+        strAttrs.forEach(attr => {
+            const val = script.getAttribute(`data-${attr}`);
+            if (val !== null) {
+                const key = attr.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                dataCfg[key] = val;
+            }
+        });
+        return dataCfg;
+    }
+
+    // ========== 深度合并配置 ==========
+    function deepMerge(target, source) {
+        const result = { ...target };
+        for (const key in source) {
+            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                result[key] = deepMerge(target[key] || {}, source[key]);
+            } else {
+                result[key] = source[key];
+            }
         }
-    }, 500);
-})();
+        return result;
+    }
+
+    // ========== 公共 API ==========
+    const Sidebar = {
+        init(options = {}) {
+            if (initialized) {
+                console.warn('[Sidebar] 已经初始化，如需重新配置请先调用 Sidebar.destroy()');
+                return this;
+            }
+
+            const scriptDataCfg = readScriptDataConfig();
+            config = deepMerge(deepMerge(DEFAULTS, scriptDataCfg), options);
+            config = resolveI18n(config);
+
+            injectStyles(config);
+
+            if (config.bodyPadding) {
+                document.body.classList.add('sidebar-enabled');
+                if (config.position === 'left') {
+                    document.body.classList.add('sidebar-left');
+                }
+            }
+
+            instance = createSidebar(config);
+
+            const init = () => {
+                bindEvents(config);
+                initI18nListener();
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+            if (config.pulseAnimation) {
+                playPulseAnimation();
+            }
+
+            initialized = true;
+            return this;
+        },
+
+        destroy() {
+            if (!initialized) return this;
+            const sb = document.getElementById('dynamicSidebar');
+            if (sb) sb.remove();
+            const modal = document.querySelector('.notice-modal');
+            if (modal) modal.remove();
+            const styles = document.getElementById('sidebar-component-styles');
+            if (styles) styles.remove();
+            document.body.classList.remove('sidebar-enabled', 'sidebar-left');
+            instance = null;
+            initialized = false;
+            config = {};
+            return this;
+        },
+
+        setOption(key, value) {
+            if (!initialized) {
+                console.warn('[Sidebar] 请先调用 Sidebar.init()');
+                return this;
+            }
+            if (typeof key === 'object') {
+                config = deepMerge(config, key);
+            } else {
+                config[key] = value;
+            }
+            this.destroy();
+            this.init(config);
+            return this;
+        },
+
+        getConfig() {
+            return { ...config };
+        },
+
+        showNotice() {
+            if (initialized) showNoticeModal(config);
+            return this;
+        },
+
+        scrollToTop() {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            return this;
+        },
+
+        isInitialized() {
+            return initialized;
+        }
+    };
+
+    // ========== 自动初始化 ==========
+    if (global.Sidebar === undefined) {
+        global.Sidebar = Sidebar;
+
+        const autoInit = () => {
+            const scriptCfg = readScriptDataConfig();
+            const shouldAutoInit = scriptCfg.autoInit !== false && DEFAULTS.autoInit;
+            if (shouldAutoInit) {
+                Sidebar.init();
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', autoInit);
+        } else {
+            autoInit();
+        }
+    }
+
+})(window);

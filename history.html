@@ -9,7 +9,8 @@
     <meta charset="UTF-8">
     <title>我的浏览记录 · 华夏非遗</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
+  <script src="static/js/i18n.js"></script>
+  <style>
         /* 顶部导航栏：样式见 static/css/navbar.css */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -153,35 +154,78 @@ body::-webkit-scrollbar {
 
         <div class="dashboard">
             <div class="dashboard-header">
-                <h2><i class="fas fa-history"></i> 我的浏览记录</h2>
-                <button class="clear-btn" id="clearHistoryBtn">清空所有</button>
+                <h2 id="historyTitle"><i class="fas fa-history"></i> <span data-i18n="historyTitle">我的浏览记录</span></h2>
+                <button class="clear-btn" id="clearHistoryBtn" data-i18n="clearAll">清空所有</button>
             </div>
-            <div id="historyList" class="history-grid">加载中...</div>
+            <div id="historyList" class="history-grid" data-i18n="loadingData">加载中...</div>
         </div>
     </div>
 
-    <div id="footerMount"></div>
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 data-i18n="ichBranding">华夏非遗 · 薪火相传</h4>
+                <p style="font-size:0.85rem;color:#a09880;" data-i18n="ichBrandingDesc">弘扬中华优秀传统文化，让非遗活在当下，走向世界。</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="quickNav">快捷导航</h4>
+                <ul>
+                    <li><a href="index.html" data-i18n="navHome">首页</a></li>
+                    <li><a href="performances.html" data-i18n="navPerformances">票务演出</a></li>
+                    <li><a href="merchandise.html" data-i18n="navMerchandise">文创周边</a></li>
+                    <li><a href="travel.html" data-i18n="navTravel">去旅游</a></li>
+                    <li><a href="history.html" data-i18n="history">浏览记录</a></li>
+                    <li><a href="knowledge-graph.html" style="color:#ffd966;" data-i18n="ichGraph">非遗图谱✨</a></li>
+                    <li><a href="whereami.html" style="color:#ffd966;" data-i18n="cloudTravel">云旅游✨</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="contact">联系方式</h4>
+                <p data-i18n="email">📧 ich@culture.cn</p>
+                <p data-i18n="phone">📞 400-668-0808</p>
+                <p data-i18n="address">📍 安徽新华学院</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="friendLinks">友情链接</h4>
+                <ul>
+                    <li><a href="https://www.mct.gov.cn" target="_blank" data-i18n="mct">文化和旅游部</a></li>
+                    <li><a href="http://www.ncha.gov.cn" target="_blank" data-i18n="ncha">国家文物局</a></li>
+                    <li><a href="https://www.ihchina.cn" target="_blank" data-i18n="ihchina">中国非物质文化遗产网</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="friend-links">
+            <span style="color:var(--chinese-gold);letter-spacing:2px;" data-i18n="partners">合作伙伴：</span>
+            <a href="https://www.zgysyjy.org.cn" target="_blank" data-i18n="partner1">中国艺术研究院</a>
+            <a href="https://www.dpm.org.cn" target="_blank" data-i18n="partner2">故宫博物院</a>
+            <a href="https://www.nlc.cn" target="_blank" data-i18n="partner3">国家图书馆</a>
+        </div>
+        <div class="footer-bottom">
+            <p data-i18n="copyright">© 2026 华夏非遗保护工程 | 传承文明 利在千秋 | 第二十八届中国机器人及人工智能大赛</p>
+        </div>
+    </footer>
+
 
     <!-- AI 聊天窗口（结构与 index.html 完全一致，样式由 chat.css 提供） -->
     <div id="aiChatWindow" class="ai-chat-window">
         <div class="chat-header">
-            <span><i class="fas fa-robot"></i> 非遗助手</span>
+            <span><i class="fas fa-robot"></i> <span data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span>
             <span class="close-chat" id="closeChat">&times;</span>
         </div>
         <div class="chat-body" id="chatBody">
             <div class="chat-message ai">
-                <div class="message-sender">非遗小助手</div>
-                <div class="message-bubble">您好！我是非遗小助手，有任何戏曲、演出、非遗的问题都可以问我～</div>
+                <div class="message-sender" data-i18n="aiSender">菲菲</div>
+                <div class="message-bubble" data-i18n="aiWelcome">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
             </div>
         </div>
         <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="例如：京剧有什么特点？">
+            <input type="text" id="chatInput" data-i18n-placeholder="chatInput" placeholder="例如：京剧有什么特点？">
             <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 
     <div id="historyPreview">
-        <div class="preview-title">最近浏览</div>
+        <div class="preview-title" data-i18n="recentBrowse">最近浏览</div>
         <div id="previewList"></div>
     </div>
 
@@ -220,15 +264,17 @@ body::-webkit-scrollbar {
     function renderHistory() {
         const container = document.getElementById('historyList');
         if (browsingHistory.length === 0) {
-            container.innerHTML = '<div class="empty-tip">暂无浏览记录</div>';
+            const t = window.i18n ? window.i18n.t('noHistory') : '暂无浏览记录';
+            container.innerHTML = `<div class="empty-tip">${t}</div>`;
             return;
         }
+        const browseTypeLabel = window.i18n ? window.i18n.t('browseType') : '浏览';
         container.innerHTML = browsingHistory.map((item, index) => `
             <div class="card">
                 <img src="${item.img || 'static/img/placeholder.svg'}" alt="${escapeHtml(item.name)}" onerror="this.onerror=null;this.src='static/img/placeholder.svg'">
                 <div class="card-body">
                     <strong>${escapeHtml(item.name)}</strong><br>
-                    <span>${escapeHtml(item.type || '浏览')}</span>
+                    <span>${escapeHtml(item.type || browseTypeLabel)}</span>
                 </div>
                 <button class="delete-btn" data-index="${index}"><i class="fas fa-trash-alt"></i></button>
             </div>
@@ -236,7 +282,7 @@ body::-webkit-scrollbar {
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const idx = parseInt(btn.dataset.index);
-                if (confirm('确定删除这条记录吗？')) {
+                if (confirm(window.i18n?.t('confirmDelete') || '确定删除这条记录吗？')) {
                     browsingHistory.splice(idx, 1);
                     saveHistory(browsingHistory);
                     renderHistory();
@@ -246,7 +292,7 @@ body::-webkit-scrollbar {
     }
 
     function clearAllHistory() {
-        if (confirm('确定要清空所有浏览记录吗？此操作不可撤销。')) {
+        if (confirm(window.i18n?.t('confirmClearAll') || '确定要清空所有浏览记录吗？此操作不可撤销。')) {
             browsingHistory = [];
             saveHistory(browsingHistory);
             renderHistory();
@@ -255,6 +301,26 @@ body::-webkit-scrollbar {
 
     document.getElementById('clearHistoryBtn').addEventListener('click', clearAllHistory);
     renderHistory();
+    
+    function applyPageLang() {
+        if (window.i18n) {
+            const titleEl = document.getElementById('historyTitle');
+            if (titleEl) {
+                titleEl.innerHTML = `<i class="fas fa-history"></i> ${window.i18n.t('historyTab')}`;
+            }
+            const clearBtn = document.getElementById('clearHistoryBtn');
+            if (clearBtn) {
+                clearBtn.textContent = window.i18n.t('clearAll');
+            }
+        }
+        renderHistory();
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyPageLang);
+    } else {
+        applyPageLang();
+    }
+    document.addEventListener('lang:changed', applyPageLang);
 
     function escapeHtml(str) {
         if (!str) return '';

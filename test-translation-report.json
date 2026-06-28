@@ -1,0 +1,484 @@
+{
+  "summary": {
+    "totalTests": 45,
+    "passed": 45,
+    "failed": 0,
+    "skipped": 0,
+    "totalLatency": 6196,
+    "startTime": "2026-06-27T21:52:13.647Z",
+    "endTime": "2026-06-27T21:52:42.880Z"
+  },
+  "testCases": [
+    {
+      "text": "你好",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Hello",
+      "error": null,
+      "latency": 534,
+      "charCount": 2
+    },
+    {
+      "text": "谢谢",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Thank you",
+      "error": null,
+      "latency": 223,
+      "charCount": 2
+    },
+    {
+      "text": "再见",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Goodbye",
+      "error": null,
+      "latency": 107,
+      "charCount": 2
+    },
+    {
+      "text": "非遗",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Intangible Cultural Heritage",
+      "error": null,
+      "latency": 111,
+      "charCount": 2
+    },
+    {
+      "text": "京剧",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Peking Opera",
+      "error": null,
+      "latency": 0,
+      "charCount": 2
+    },
+    {
+      "text": "昆曲",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Kunqu Opera",
+      "error": null,
+      "latency": 0,
+      "charCount": 2
+    },
+    {
+      "text": "剪纸",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Paper Cutting",
+      "error": null,
+      "latency": 0,
+      "charCount": 2
+    },
+    {
+      "text": "中医",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Traditional Chinese Medicine",
+      "error": null,
+      "latency": 0,
+      "charCount": 2
+    },
+    {
+      "text": "春节",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Spring Festival",
+      "error": null,
+      "latency": 0,
+      "charCount": 2
+    },
+    {
+      "text": "太极拳",
+      "from": "zh",
+      "to": "en",
+      "category": "short",
+      "success": true,
+      "translation": "Tai Chi",
+      "error": null,
+      "latency": 0,
+      "charCount": 3
+    },
+    {
+      "text": "非物质文化遗产是中华优秀传统文化的重要组成部分",
+      "from": "zh",
+      "to": "en",
+      "category": "medium",
+      "success": true,
+      "translation": "Intangible cultural heritage is an important component of China's excellent traditional culture",
+      "error": null,
+      "latency": 322,
+      "charCount": 23
+    },
+    {
+      "text": "京剧是中国五大戏曲剧种之一，被视为中国国粹",
+      "from": "zh",
+      "to": "en",
+      "category": "medium",
+      "success": true,
+      "translation": "Beijing Opera is one of the five major types of Chinese opera and is regarded as a national treasure of China",
+      "error": null,
+      "latency": 296,
+      "charCount": 21
+    },
+    {
+      "text": "二十四节气是中国古代订立的一种用来指导农事的补充历法",
+      "from": "zh",
+      "to": "en",
+      "category": "medium",
+      "success": true,
+      "translation": "The 24 solar terms are a supplementary calendar established in ancient China to guide agricultural activities",
+      "error": null,
+      "latency": 302,
+      "charCount": 26
+    },
+    {
+      "text": "皮影戏，又称影子戏，是一种以兽皮或纸板做成的人物剪影以表演故事的民间戏剧",
+      "from": "zh",
+      "to": "en",
+      "category": "medium",
+      "success": true,
+      "translation": "Shadow puppetry, also known as shadow play, is a folk drama that uses animal skins or cardboard to create character silhouettes for storytelling",
+      "error": null,
+      "latency": 312,
+      "charCount": 36
+    },
+    {
+      "text": "中国书法是一门古老的汉字的书写艺术，被誉为无言的诗、无形的舞",
+      "from": "zh",
+      "to": "en",
+      "category": "medium",
+      "success": true,
+      "translation": "Chinese calligraphy is an ancient art of writing Chinese characters, known as wordless poetry and intangible dance",
+      "error": null,
+      "latency": 268,
+      "charCount": 30
+    },
+    {
+      "text": "非物质文化遗产是指各族人民世代相传，并视为其文化遗产组成部分的各种传统文化表现形式，以及与传统文化表现形式相关的实物和场所。非物质文化遗产是一个国家和民族历史文化成就的重要标志，是优秀传统文化的重要组成部分。",
+      "from": "zh",
+      "to": "en",
+      "category": "long",
+      "success": true,
+      "translation": "Intangible cultural heritage refers to various traditional cultural expressions passed down from generation to generation by people of all ethnic groups and considered as part of their cultural heritage, as well as physical objects and places related to traditional cultural expressions. Intangible cultural heritage is an important symbol of a country's and a nation's historical and cultural achievements, and an important component of excellent traditional culture.",
+      "error": null,
+      "latency": 294,
+      "charCount": 104
+    },
+    {
+      "text": "昆曲，原名昆山腔，是中国古老的戏曲声腔、剧种，被称为百花园中的一朵兰花。昆曲发源于14世纪中国的苏州昆山，后经魏良辅等人的改良而走向全国，自明代中叶以来独领中国剧坛近300年。",
+      "from": "zh",
+      "to": "en",
+      "category": "long",
+      "success": true,
+      "translation": "Kunqu Opera, formerly known as Kunshan Opera, is an ancient Chinese opera style and genre, known as an orchid in a garden of flowers. Kunqu originated in Kunshan, Suzhou, China in the 14th century, and later expanded nationwide through improvements by Wei Liangfu and others. Since the mid Ming Dynasty, it has dominated the Chinese theater scene for nearly 300 years.",
+      "error": null,
+      "latency": 248,
+      "charCount": 88
+    },
+    {
+      "text": "太极拳是以中国传统儒、道哲学中的太极、阴阳辩证理念为核心思想，集颐养性情、强身健体、技击对抗等多种功能为一体，结合易学的阴阳五行之变化，中医经络学，古代的导引术和吐纳术形成的一种内外兼修、柔和、缓慢、轻灵、刚柔相济的汉族传统拳术。",
+      "from": "zh",
+      "to": "en",
+      "category": "long",
+      "success": true,
+      "translation": "Tai Chi is a traditional Han Chinese martial art that combines the core ideas of Tai Chi and the dialectical concept of yin and yang in traditional Chinese Confucian and Taoist philosophy. It integrates various functions such as nurturing temperament, strengthening the body, and fighting with martial arts. It is formed by combining the changes of yin and yang and the five elements in the Book of Changes, traditional Chinese meridian theory, ancient guidance techniques, and breathing techniques, and is characterized by a combination of internal and external cultivation, softness, slowness, lightness, and flexibility.",
+      "error": null,
+      "latency": 406,
+      "charCount": 115
+    },
+    {
+      "text": "Hello",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "你好",
+      "error": null,
+      "latency": 222,
+      "charCount": 5
+    },
+    {
+      "text": "Thank you",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "非常感谢。",
+      "error": null,
+      "latency": 127,
+      "charCount": 9
+    },
+    {
+      "text": "Goodbye",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "再见",
+      "error": null,
+      "latency": 224,
+      "charCount": 7
+    },
+    {
+      "text": "Heritage",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "遗产",
+      "error": null,
+      "latency": 217,
+      "charCount": 8
+    },
+    {
+      "text": "Peking Opera",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "京剧",
+      "error": null,
+      "latency": 0,
+      "charCount": 12
+    },
+    {
+      "text": "Kunqu Opera",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "昆曲",
+      "error": null,
+      "latency": 0,
+      "charCount": 11
+    },
+    {
+      "text": "Paper Cutting",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "剪纸",
+      "error": null,
+      "latency": 0,
+      "charCount": 13
+    },
+    {
+      "text": "Tai Chi",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "太极拳",
+      "error": null,
+      "latency": 0,
+      "charCount": 7
+    },
+    {
+      "text": "Spring Festival",
+      "from": "en",
+      "to": "zh",
+      "category": "short",
+      "success": true,
+      "translation": "春节",
+      "error": null,
+      "latency": 0,
+      "charCount": 15
+    },
+    {
+      "text": "Intangible cultural heritage is an important part of traditional Chinese culture.",
+      "from": "en",
+      "to": "zh",
+      "category": "medium",
+      "success": true,
+      "translation": "非物质文化遗产是中国传统文化的重要组成部分。",
+      "error": null,
+      "latency": 208,
+      "charCount": 81
+    },
+    {
+      "text": "Peking Opera is one of the five major opera genres in China and is regarded as the national opera.",
+      "from": "en",
+      "to": "zh",
+      "category": "medium",
+      "success": true,
+      "translation": "京剧是中国五大剧种之一，被视为国剧。",
+      "error": null,
+      "latency": 191,
+      "charCount": 98
+    },
+    {
+      "text": "The Twenty-Four Solar Terms are a supplementary calendar used in ancient China to guide agricultural activities.",
+      "from": "en",
+      "to": "zh",
+      "category": "medium",
+      "success": true,
+      "translation": "二十四节气是中国古代用来指导农业活动的补充历法。",
+      "error": null,
+      "latency": 257,
+      "charCount": 112
+    },
+    {
+      "text": "Shadow puppetry is a form of storytelling and entertainment using flat figures that cast shadows on a screen.",
+      "from": "en",
+      "to": "zh",
+      "category": "medium",
+      "success": true,
+      "translation": "皮影戏是一种讲故事和娱乐的形式，使用平面人物在屏幕上投射阴影。",
+      "error": null,
+      "latency": 310,
+      "charCount": 109
+    },
+    {
+      "text": "Chinese calligraphy is an ancient art of writing Chinese characters, often described as silent poetry.",
+      "from": "en",
+      "to": "zh",
+      "category": "medium",
+      "success": true,
+      "translation": "中国书法是一种古老的汉字书写艺术，常被描述为无声诗。",
+      "error": null,
+      "latency": 261,
+      "charCount": 102
+    },
+    {
+      "text": "Intangible cultural heritage refers to various traditional cultural expressions that are passed down from generation to generation by people of all ethnic groups and are regarded as part of their cultural heritage, as well as the objects and places related to traditional cultural expressions.",
+      "from": "en",
+      "to": "zh",
+      "category": "long",
+      "success": true,
+      "translation": "非物质文化遗产是指各民族人民世代相传并被视为文化遗产一部分的各种传统文化表现形式，以及与传统文化表现方式相关的物品和场所。",
+      "error": null,
+      "latency": 310,
+      "charCount": 293
+    },
+    {
+      "text": "Kunqu Opera, originally known as Kunshan Opera, is one of the oldest forms of Chinese opera. It originated in Kunshan, Suzhou in the 14th century and became popular throughout China after improvements by Wei Liangfu and others.",
+      "from": "en",
+      "to": "zh",
+      "category": "long",
+      "success": true,
+      "translation": "昆曲，原名昆山戏，是中国最古老的戏曲形式之一。它起源于14世纪的苏州昆山，经过魏良富等人的改进，在中国各地流行起来。",
+      "error": null,
+      "latency": 198,
+      "charCount": 227
+    }
+  ],
+  "glossaryTests": [
+    {
+      "term": "京剧",
+      "expected": "Peking Opera",
+      "actual": "Peking Opera",
+      "success": true,
+      "fromCache": true
+    },
+    {
+      "term": "昆曲",
+      "expected": "Kunqu Opera",
+      "actual": "Kunqu Opera",
+      "success": true,
+      "fromCache": true
+    },
+    {
+      "term": "太极拳",
+      "expected": "Tai Chi",
+      "actual": "Tai Chi",
+      "success": true,
+      "fromCache": true
+    },
+    {
+      "term": "剪纸",
+      "expected": "Paper Cutting",
+      "actual": "Paper Cutting",
+      "success": true,
+      "fromCache": true
+    },
+    {
+      "term": "中医",
+      "expected": "Traditional Chinese Medicine",
+      "actual": "Traditional Chinese Medicine",
+      "success": true,
+      "fromCache": true
+    },
+    {
+      "term": "春节",
+      "expected": "Spring Festival",
+      "actual": "Spring Festival",
+      "success": true,
+      "fromCache": true
+    },
+    {
+      "term": "非物质文化遗产",
+      "expected": "Intangible Cultural Heritage",
+      "actual": "Intangible Cultural Heritage",
+      "success": true,
+      "fromCache": true
+    }
+  ],
+  "errorTests": [
+    {
+      "name": "空字符串输入",
+      "input": "",
+      "expectEmpty": true,
+      "success": true,
+      "actual": "",
+      "error": null
+    },
+    {
+      "name": "相同语言对",
+      "input": "测试",
+      "from": "zh",
+      "to": "zh",
+      "expectSame": true,
+      "success": true,
+      "actual": "测试",
+      "error": null
+    },
+    {
+      "name": "无效的 API 密钥",
+      "input": "你好世界",
+      "from": "zh",
+      "to": "en",
+      "expectError": true,
+      "success": true,
+      "actual": null,
+      "error": "百度翻译错误 [52003]: UNAUTHORIZED USER"
+    }
+  ],
+  "cacheTests": [
+    {
+      "success": true,
+      "firstRequestCount": 1,
+      "secondRequestCount": 0,
+      "cacheHit": true,
+      "resultMatch": true,
+      "translation": "Cache Test Text_2blunb"
+    }
+  ],
+  "performanceMetrics": {
+    "requestCount": 24,
+    "totalLatency": 6196,
+    "averageLatency": 258.1666666666667,
+    "cacheSize": 1
+  }
+}

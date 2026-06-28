@@ -10,12 +10,27 @@
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    // 获取 i18n 文本（兼容 i18n.js 尚未加载）
+    function tt(key, params) {
+        return (window.i18n && window.i18n.t) ? window.i18n.t(key, params) : key;
+    }
+
     function highlightKeywords(text) {
-        const keywords = [
+        const currentLang = window.i18n ? window.i18n.getLang() : 'zh';
+        const keywords = currentLang === 'zh' ? [
             '京剧', '昆曲', '越剧', '黄梅戏', '豫剧', '川剧', '秦腔', '粤剧', '评剧',
             '皮影戏', '木偶戏', '剪纸', '刺绣', '陶瓷', '书法', '古琴', '太极拳',
             '非遗', '非物质文化遗产', '脸谱', '变脸', '傩戏', '花鼓戏', '二人转',
             '《贵妃醉酒》', '《牡丹亭》', '《天仙配》', '《梁祝》', '生旦净末丑'
+        ] : [
+            'Peking Opera', 'Kunqu Opera', 'Yue Opera', 'Huangmei Opera', 'Yu Opera',
+            'Sichuan Opera', 'Qinqiang', 'Cantonese Opera', 'Ping Opera',
+            'Shadow Puppetry', 'Puppet Show', 'Paper Cutting', 'Embroidery',
+            'Ceramics', 'Calligraphy', 'Guqin', 'Tai Chi',
+            'ICH', 'Intangible Cultural Heritage', 'Mask', 'Face-Changing',
+            'Nuo Opera', 'Flower Drum Opera', 'Er Ren Zhuan',
+            'The Drunken Beauty', 'The Peony Pavilion', 'Heavenly Match',
+            'Butterfly Lovers', 'Sheng Dan Jing Mo Chou'
         ];
         let result = text;
         keywords.forEach(kw => {
@@ -45,7 +60,7 @@
             const msgDiv = document.createElement('div');
             msgDiv.className = 'chat-message user';
             msgDiv.innerHTML = `
-                <div class="message-sender">您</div>
+                <div class="message-sender">${escapeHtml(tt('you'))}</div>
                 <div class="message-bubble">${escapeHtml(text)}</div>
             `;
             chatBody.appendChild(msgDiv);
@@ -56,7 +71,7 @@
             const msgDiv = document.createElement('div');
             msgDiv.className = 'chat-message ai';
             msgDiv.innerHTML = `
-                <div class="message-sender">菲菲</div>
+                <div class="message-sender">${escapeHtml(tt('aiSender'))}</div>
                 <div class="message-bubble"><span class="ai-content"></span><span class="typing-cursor"></span></div>
             `;
             chatBody.appendChild(msgDiv);
@@ -84,7 +99,7 @@
         function showThinkingIndicator(container) {
             const thinkDiv = document.createElement('div');
             thinkDiv.className = 'thinking-indicator';
-            thinkDiv.innerHTML = `<span class="thinking-text">📖 菲菲正在查典籍</span><span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span>`;
+            thinkDiv.innerHTML = `<span class="thinking-text">📖 ${escapeHtml(tt('aiThinking'))}</span><span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span>`;
             container.appendChild(thinkDiv);
             scrollToBottom();
             return thinkDiv;
@@ -112,17 +127,17 @@
                 removeThinkingIndicator(thinkingIndicator);
 
                 if (data.success) {
-                    let replyText = data.reply || '（没有返回内容）';
+                    let replyText = data.reply || tt('aiNoContent');
                     replyText = replyText.replace(/\n/g, '<br>');
                     const highlightedText = highlightKeywords(replyText);
                     displayAiContent(contentSpan, cursorSpan, highlightedText, data.imageUrl);
                 } else {
-                    displayAiContent(contentSpan, cursorSpan, '抱歉，菲菲暂时听不到你说的话：' + escapeHtml(data.error || '未知错误'));
+                    displayAiContent(contentSpan, cursorSpan, tt('aiSorry') + escapeHtml(data.error || tt('aiUnknownError')));
                 }
             } catch (err) {
                 console.error(err);
                 removeThinkingIndicator(thinkingIndicator);
-                displayAiContent(contentSpan, cursorSpan, '网络连接错误，请确保后端服务已启动（node proxy-server.js）');
+                displayAiContent(contentSpan, cursorSpan, tt('aiNetworkError'));
             }
         };
 
@@ -131,6 +146,11 @@
                 e.preventDefault();
                 sendButton.click();
             }
+        });
+
+        // 监听语言切换，刷新 chat 占位符
+        document.addEventListener('lang:changed', () => {
+            if (chatInput) chatInput.placeholder = tt('chatInput');
         });
 
         function escapeHtml(str) {
