@@ -281,6 +281,110 @@ const mimeTypes = {
     '.map': 'application/json'
 };
 
+// ==================== 文件上传处理 ====================
+
+const UPLOAD_DIR = path.join(__dirname, 'static', 'uploads');
+const GENERATED_DIR = path.join(__dirname, 'static', 'generated');
+
+function ensureDirs() {
+    if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+    if (!fs.existsSync(GENERATED_DIR)) fs.mkdirSync(GENERATED_DIR, { recursive: true });
+}
+ensureDirs();
+
+function parseMultipart(req) {
+    return new Promise((resolve, reject) => {
+        const contentType = req.headers['content-type'];
+        if (!contentType || !contentType.includes('multipart/form-data')) {
+            reject(new Error('Content-Type 不是 multipart/form-data'));
+            return;
+        }
+
+        const boundaryMatch = contentType.match(/boundary=([^;]+)/);
+        if (!boundaryMatch) {
+            reject(new Error('缺少 boundary'));
+            return;
+        }
+        const boundary = '--' + boundaryMatch[1].trim();
+        const boundaryBuffer = Buffer.from(boundary, 'ascii');
+
+        const chunks = [];
+        req.on('data', chunk => chunks.push(chunk));
+        req.on('end', () => {
+            try {
+                const body = Buffer.concat(chunks);
+                const parts = [];
+                let start = 0;
+
+                while (start < body.length) {
+                    const boundaryIndex = body.indexOf(boundaryBuffer, start);
+                    if (boundaryIndex === -1) break;
+
+                    if (boundaryIndex > start) {
+                        const partData = body.slice(start, boundaryIndex);
+                        if (partData.length > 0) {
+                            parts.push(partData);
+                        }
+                    }
+                    start = boundaryIndex + boundaryBuffer.length;
+                    
+                    const afterBoundary = body.slice(start);
+                    if (afterBoundary.length >= 2 && afterBoundary[0] === 0x0D && afterBoundary[1] === 0x0A) {
+                        start += 2;
+                    }
+                }
+
+                const files = {};
+                const fields = {};
+
+                for (const part of parts) {
+                    const doubleCrlf = Buffer.from('\r\n\r\n', 'ascii');
+                    const headerEnd = part.indexOf(doubleCrlf);
+                    if (headerEnd === -1) continue;
+
+                    const headers = part.slice(0, headerEnd).toString('ascii');
+                    const content = part.slice(headerEnd + 4);
+
+                    const filenameMatch = headers.match(/filename="([^"]+)"/);
+                    const nameMatch = headers.match(/name="([^"]+)"/);
+                    const contentTypeMatch = headers.match(/Content-Type:\s*([^\r\n]+)/);
+
+                    const filename = filenameMatch ? filenameMatch[1] : null;
+                    const fieldname = nameMatch ? nameMatch[1] : null;
+                    const partContentType = contentTypeMatch ? contentTypeMatch[1] : null;
+
+                    if (!fieldname) continue;
+
+                    if (filename) {
+                        let contentBuffer = content;
+                        if (contentBuffer.length >= 2 && 
+                            contentBuffer[contentBuffer.length - 2] === 0x0D && 
+                            contentBuffer[contentBuffer.length - 1] === 0x0A) {
+                            contentBuffer = contentBuffer.slice(0, -2);
+                        }
+                        files[fieldname] = { filename, contentType: partContentType, buffer: contentBuffer };
+                    } else {
+                        fields[fieldname] = content.toString('utf8').trim();
+                    }
+                }
+
+                resolve({ files, fields });
+            } catch (err) {
+                reject(err);
+            }
+        });
+        req.on('error', reject);
+    });
+}
+
+async function saveUploadedFile(buffer, originalName) {
+    const ext = path.extname(originalName) || '.jpg';
+    const filename = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${ext}`;
+    const filePath = path.join(UPLOAD_DIR, filename);
+    await fs.promises.writeFile(filePath, buffer);
+    return `/static/uploads/${filename}`;
+}
+
 // ==================== HTTP 服务器 ====================
 const server = http.createServer(async (req, res) => {
     // —————— CORS 处理 ——————
@@ -304,6 +408,141 @@ const server = http.createServer(async (req, res) => {
 
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
+
+    // ========== API 路由：文件上传 ==========
+    if (req.method === 'POST' && pathname === '/api/upload') {
+        try {
+            const { files } = await parseMultipart(req);
+            if (!files.file) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: '缺少文件' }));
+                return;
+            }
+
+            const filePath = await saveUploadedFile(files.file.buffer, files.file.filename);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, filepath: filePath }));
+        } catch (error) {
+            console.error('文件上传失败:', error.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: '文件上传失败' }));
+        }
+        return;
+    }
+
+    // ========== API 路由：双图融合生成合影 ==========
+    if (req.method === 'POST' && pathname === '/api/generate-image') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+
+        req.on('end', async () => {
+            try {
+                let parsed;
+                try {
+                    parsed = JSON.parse(body);
+                } catch {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: '请求格式无效' }));
+                    return;
+                }
+
+                const { person_image, scene_image, prompt } = parsed;
+                if (!person_image) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: '缺少人物照片' }));
+                    return;
+                }
+                if (!scene_image) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: '缺少风景照片' }));
+                    return;
+                }
+
+                let personBuffer, sceneBuffer;
+                try {
+                    let safePersonPath = person_image;
+                    if (!safePersonPath.startsWith('/')) safePersonPath = '/' + safePersonPath;
+                    if (!safePersonPath.startsWith('/static/')) {
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ success: false, error: '人物照片路径无效' }));
+                        return;
+                    }
+                    const personPath = path.join(__dirname, safePersonPath);
+                    personBuffer = fs.readFileSync(personPath);
+                } catch {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: '无法读取人物照片' }));
+                    return;
+                }
+
+                try {
+                    let safeScenePath = scene_image;
+                    if (!safeScenePath.startsWith('/')) safeScenePath = '/' + safeScenePath;
+                    if (!safeScenePath.startsWith('/static/')) {
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ success: false, error: '场景照片路径无效' }));
+                        return;
+                    }
+                    const scenePath = path.join(__dirname, safeScenePath);
+                    sceneBuffer = fs.readFileSync(scenePath);
+                } catch {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: '无法读取场景照片' }));
+                    return;
+                }
+
+                const personBase64 = `data:image/jpeg;base64,${personBuffer.toString('base64')}`;
+                const sceneBase64 = `data:image/jpeg;base64,${sceneBuffer.toString('base64')}`;
+
+                const safePrompt = (prompt || '古风唯美，高清真实').trim()
+                    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+                    .replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+                const finalPrompt = `请根据以下要求合成图片：
+- 将第一张图（人物照）中的人物，无缝融合到第二张图（风景照）的背景中。
+- 严格保持人物面部、服装、姿态、体型与原图一致，不能变形、换脸或风格化。
+- 人物的光影、色调、透视要与风景背景自然匹配，看起来像是原本就在那里拍摄的。
+- 用户额外要求：${safePrompt}
+- 最终输出一张照片级的真实合影，不要有明显合成痕迹，不要加滤镜或特效。`;
+
+                const requestBody = {
+                    model: IMAGE_MODEL,
+                    prompt: finalPrompt,
+                    image: [personBase64, sceneBase64],
+                    sequential_image_generation: "disabled",
+                    size: "2K",
+                };
+
+                console.log('[豆包] 正在调用双图融合 API...');
+                const response = await fetch(DOUBAO_IMAGE_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${DOUBAO_API_KEY}`
+                    },
+                    body: JSON.stringify(requestBody),
+                    signal: AbortSignal.timeout(90000)
+                });
+
+                const data = await response.json();
+                console.log('[豆包] 双图融合响应:', JSON.stringify(data).substring(0, 500));
+
+                const generatedImageUrl = data.data?.[0]?.url;
+                if (!generatedImageUrl) {
+                    throw new Error('API返回的图片URL无效: ' + JSON.stringify(data));
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, image_url: generatedImageUrl }));
+
+            } catch (error) {
+                console.error('双图融合失败:', error.message);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: error.message || '图像合成失败' }));
+            }
+        });
+        return;
+    }
 
     // ========== API 路由：AI 聊天 ==========
     if (req.method === 'POST' && pathname === '/api/chat') {
