@@ -111,13 +111,14 @@
             thinking: '思考中...',
 
             // ===== 侧边栏 =====
-            sidebarNotice: '公告通知',
+            sidebarNotice: '公告',
             sidebarWechat: '公众号',
-            sidebarDeepseek: '菲菲助手',
-            sidebarGoTop: '回顶部',
+            sidebarDeepseek: '菲菲',
+            sidebarGoTop: '顶部',
             sidebarNoticeTitle: '✨ 近期重要演出',
             sidebarClose: '关闭',
             sidebarScanFollow: '扫码关注',
+            footerScanFollow: '扫码关注公众号',
 
             // ===== 导航栏 =====
             navHome: '首页',
@@ -742,6 +743,7 @@
             sidebarNoticeTitle: '✨ Upcoming Performances',
             sidebarClose: 'Close',
             sidebarScanFollow: 'Scan to Follow',
+            footerScanFollow: 'Scan to Follow',
 
             // ===== Navbar =====
             navHome: 'Home',

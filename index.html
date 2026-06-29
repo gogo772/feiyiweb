@@ -54,7 +54,6 @@
             scroll-snap-align: start;
             min-height: 100vh;
             width: 100%;
-            margin-bottom: 150px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -64,7 +63,6 @@
         .page-3 {
             scroll-snap-align: none;
             scroll-margin-top: 80px;
-            padding-bottom: 80px;
             min-height: auto;
         }
 
@@ -879,10 +877,10 @@
 
         .section-title {
             font-size: 2rem;
-            margin-bottom: 20px;
+            margin-top: 100px;
+
             color: #ffefcf;
             letter-spacing: 2px;
-            border-left: 5px solid #c9a96e;
             padding-left: 20px;
         }
 
@@ -950,13 +948,13 @@
 <!-- 第三页：非遗推荐 + 动态时间轴（带HOT标签） -->
 <div class="page-section page-3">
     <div class="container" style="width:100%">
-        <div class="section-title"><i class="fas fa-heart"></i> <span data-i18n="recommend">非遗推荐</span></div>
+        <div class="section-title" style="text-align: center;"><i class="fas fa-heart"></i> <span data-i18n="recommend">非遗推荐</span></div>
 
         <div class="performance-slider" id="performanceSlider">
             <div class="performance-track" id="performanceTrack"></div>
         </div>
         <div class="carousel-dots" id="carouselDots"></div>
-        <div class="section-title"><i class="fas fa-calendar-alt"></i> <span data-i18n="news">非遗动态</span></div>
+        <div class="section-title" style="text-align: center;"><i class="fas fa-calendar-alt"></i> <span data-i18n="news">非遗动态</span></div>
 
         <div class="timeline-container">
             <div class="timeline-list" id="timelineList"></div>

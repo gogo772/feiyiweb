@@ -264,18 +264,18 @@
                 <div class="auth-container">
                     <span class="auth-close">&times;</span>
                     <h2 id="authModalTitle">${escapeHtml(tt('login'))}</h2>
+                    <label data-i18n-role="username-label" class="form-label">${escapeHtml(tt('username'))}</label>
                     <div class="input-group">
-                        <input type="text" id="authUsername" placeholder=" " autocomplete="off">
-                        <label data-i18n-role="username-label">${escapeHtml(tt('username'))}</label>
+                        <input type="text" id="authUsername" autocomplete="off">
                     </div>
+                    <label data-i18n-role="password-label" class="form-label">${escapeHtml(tt('password'))}</label>
                     <div class="input-group">
-                        <input type="password" id="authPassword" placeholder=" " autocomplete="off">
-                        <label data-i18n-role="password-label">${escapeHtml(tt('password'))}</label>
+                        <input type="password" id="authPassword" autocomplete="off">
                     </div>
+                    <label data-i18n-role="captcha-label" class="form-label">${escapeHtml(tt('captcha'))}</label>
                     <div class="captcha-row">
                         <div class="input-group">
-                            <input type="text" id="authCaptcha" placeholder=" " autocomplete="off">
-                            <label data-i18n-role="captcha-label">${escapeHtml(tt('captcha'))}</label>
+                            <input type="text" id="authCaptcha" autocomplete="off">
                         </div>
                         <canvas id="captchaCanvas" class="captcha-canvas" width="130" height="54"></canvas>
                     </div>

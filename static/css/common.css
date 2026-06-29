@@ -133,6 +133,31 @@ body > #footerMount {
   margin: 0 auto;
 }
 
+/* 页脚二维码 */
+.footer-qr {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.footer-qr h4 {
+  color: var(--chinese-gold);
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.footer-qr-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 4px;
+  display: block;
+}
+
 /* ---------- 页脚加载失败降级样式 ---------- */
 .footer-error {
   text-align: center;
@@ -167,11 +192,19 @@ body > #footerMount {
     font-size: 0.78rem;
     padding: 5px 10px;
   }
+  .footer-qr-img {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 @media (max-width: 480px) {
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 18px;
+  }
+  .footer-qr-img {
+    width: 70px;
+    height: 70px;
   }
 }

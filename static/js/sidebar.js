@@ -33,7 +33,7 @@
         position: 'right',
         top: '50%',
         showNotice: true,
-        showWechat: true,
+        showWechat: false,
         showDeepseek: true,
         showGoTop: true,
         autoInit: true,
@@ -61,10 +61,10 @@
             borderRadius: '24px'
         },
         i18n: {
-            notice: '公告通知',
+            notice: '公告',
             wechat: '公众号',
-            deepseek: '菲菲助手',
-            goTop: '回顶部',
+            deepseek: '菲菲',
+            goTop: '顶部',
             noticeTitle: '✨ 近期重要演出',
             close: '关闭',
             scanFollow: '扫码关注'
@@ -260,7 +260,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 6px;
+        gap: 3px;
         cursor: pointer;
         color: ${cfg.theme.textColor};
         font-size: 0.7rem;
@@ -308,7 +308,7 @@
         flex-direction: row;
         justify-content: flex-start;
         padding-${cfg.position === 'right' ? 'left' : 'right'}: 12px;
-        gap: 12px;
+        gap: 8px;
         min-height: 52px;
     }
     .dynamic-sidebar:hover .sidebar-btn .btn-label {
