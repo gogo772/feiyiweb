@@ -250,8 +250,8 @@
         box-shadow: 0 20px 32px -12px rgba(0,0,0,0.3);
     }
     .sidebar-btn {
-        width: 52px;
-        min-height: 64px;
+        width: 50px;
+        min-height: 56px;
         background: ${cfg.theme.buttonBg};
         backdrop-filter: blur(4px);
         border: none;
@@ -260,7 +260,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 3px;
+        gap: 2px;
         cursor: pointer;
         color: ${cfg.theme.textColor};
         font-size: 0.7rem;
@@ -304,18 +304,23 @@
     }
     .sidebar-btn.active .btn-label { color: white; }
     .dynamic-sidebar:hover .sidebar-btn {
-        width: 92%;
+        width: 75%;
         flex-direction: row;
         justify-content: flex-start;
         padding-${cfg.position === 'right' ? 'left' : 'right'}: 12px;
-        gap: 8px;
-        min-height: 52px;
+        padding-${cfg.position === 'right' ? 'right' : 'left'}: 6px;
+        gap: 3px;
+        min-height: 48px;
     }
     .dynamic-sidebar:hover .sidebar-btn .btn-label {
-        font-size: 0.8rem;
-        max-width: 100px;
+        font-size: 0.78rem;
+        max-width: 70px;
         text-align: left;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .dynamic-sidebar:hover .sidebar-btn .btn-emoji { font-size: 1.4rem; }
     .wechat-qr-hover {
