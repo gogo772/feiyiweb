@@ -468,10 +468,11 @@ const server = http.createServer(async (req, res) => {
                         return;
                     }
                     const personPath = path.join(__dirname, safePersonPath);
-                    personBuffer = fs.readFileSync(personPath);
-                } catch {
+                    personBuffer = fs.readFileSync(personPath, { encoding: null });
+                } catch (err) {
+                    console.error('读取人物照片失败:', err.message);
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, error: '无法读取人物照片' }));
+                    res.end(JSON.stringify({ success: false, error: '无法读取人物照片: ' + err.message }));
                     return;
                 }
 
@@ -484,10 +485,11 @@ const server = http.createServer(async (req, res) => {
                         return;
                     }
                     const scenePath = path.join(__dirname, safeScenePath);
-                    sceneBuffer = fs.readFileSync(scenePath);
-                } catch {
+                    sceneBuffer = fs.readFileSync(scenePath, { encoding: null });
+                } catch (err) {
+                    console.error('读取场景照片失败:', err.message);
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, error: '无法读取场景照片' }));
+                    res.end(JSON.stringify({ success: false, error: '无法读取场景照片: ' + err.message }));
                     return;
                 }
 

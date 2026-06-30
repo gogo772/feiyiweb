@@ -9,15 +9,17 @@
     <link rel="stylesheet" href="static/css/auth.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        html, body {
-            min-height: 100%;
-            overflow-y: auto;
+        html {
             scroll-behavior: smooth;
             scrollbar-width: none;
         }
-        html::-webkit-scrollbar, body::-webkit-scrollbar {
+        html::-webkit-scrollbar {
             width: 0;
             background: transparent;
+        }
+        body {
+            min-height: 100%;
+            overflow-x: hidden;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -55,17 +57,16 @@
             padding-top: 80px;
             font-family: 'Segoe UI', 'Noto Serif SC', sans-serif;
             color: #fff;
-            display: block !important;
-            min-height: 100vh;
             position: relative;
         }
         .container {
-            max-width: 1200px;
+            width: 100%;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 0;
         }
         .main-content {
             display: flex;
@@ -88,7 +89,7 @@
         /* 照相亭标题 */
         .booth-title {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .booth-title h1 {
             font-size: 2.5rem;
@@ -97,29 +98,21 @@
             letter-spacing: 8px;
             font-weight: 300;
         }
-        .booth-title p {
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 10px;
-            font-size: 1rem;
-            letter-spacing: 2px;
-        }
 
         /* 3步骤选项卡导航 */
         .booth-tabs {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            padding: 14px 18px;
-            border-radius: 60px;
+            gap: 8px;
+            padding: 12px 14px;
+            border-radius: 20px;
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.14);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-            position: sticky;
-            top: 70px;
-            z-index: 20;
-            max-width: 720px;
-            margin: 0 auto 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 900px;
         }
         .booth-tab {
             flex: 1;
@@ -127,17 +120,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 10px 14px;
-            border-radius: 40px;
+            gap: 6px;
+            padding: 8px 10px;
+            border-radius: 16px;
             cursor: pointer;
             color: rgba(255, 255, 255, 0.75);
             background: transparent;
             border: 1px solid transparent;
             transition: all 0.3s ease;
             user-select: none;
-            font-size: 0.92rem;
-            letter-spacing: 1px;
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
         }
         .booth-tab:hover {
             color: #fff;
@@ -147,17 +140,17 @@
             color: #2c2c2c;
             background: linear-gradient(135deg, #c9a96e, #ffd966);
             border-color: rgba(255, 217, 102, 0.6);
-            box-shadow: 0 6px 20px rgba(255, 217, 102, 0.35);
+            box-shadow: 0 4px 15px rgba(255, 217, 102, 0.35);
             transform: translateY(-1px);
         }
         .booth-tab .step-num {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.72rem;
+            font-size: 0.65rem;
             font-weight: 700;
             background: rgba(255, 255, 255, 0.15);
             color: #fff;
@@ -179,12 +172,12 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 22px;
-            height: 22px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: rgba(255, 217, 102, 0.9);
             color: #2c2c2c;
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             flex-shrink: 0;
         }
         .booth-tab.done {
@@ -259,85 +252,142 @@
 
         /* 步骤2 布局 */
         .step2-wrap {
-            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            min-height: calc(100vh - 190px);
+            max-width: 900px;
             margin: 0 auto;
+            padding: 0;
+        }
+        .step2-wrap .step3-controls {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: stretch;
+            min-height: calc(100vh - 280px);
+            padding: 10px 0;
         }
         .step2-wrap .scene-section {
             height: auto;
+            flex: 1;
+            overflow-y: auto;
         }
 
         /* 步骤3 布局 */
         .step3-wrap {
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 16px;
             align-items: center;
-            max-width: 900px;
+            min-height: calc(100vh - 200px);
+            max-width: 960px;
             margin: 0 auto;
+            padding: 0;
+        }
+        .step3-content-row {
+            display: flex;
+            flex-direction: row;
+            gap: 24px;
+            align-items: flex-start;
+            width: 100%;
+            justify-content: center;
+            flex: 1;
+            overflow: hidden;
         }
         .step3-hero {
-            width: 100%;
-            max-width: 460px;
+            width: 399.35px;
+            max-width: 399.35px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 0;
+            height: 100%;
         }
         .step3-hero .booth-preview {
             aspect-ratio: 4/5;
+            max-height: calc(100vh - 280px);
+            width: 100%;
+            flex: 1;
         }
         .step3-hero .booth-preview-inner {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding: 20px;
+            padding: 16px;
+            overflow: hidden;
+            height: 100%;
         }
         .step3-hero .mini-status {
-            text-align: center;
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.75);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             padding: 8px 14px;
             border-radius: 18px;
             background: rgba(0,0,0,0.28);
             backdrop-filter: blur(6px);
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .step3-hero .mini-status .chip {
-            display: inline-block;
-            padding: 2px 10px;
+        .step3-hero .mini-status .mini-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
             border-radius: 12px;
             background: rgba(255, 217, 102, 0.18);
             color: #ffd966;
             font-size: 0.78rem;
-            margin: 0 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 217, 102, 0.3);
         }
-        .step3-hero .mini-status .chip.ok {
-            background: rgba(46, 204, 113, 0.22);
-            color: #8affb0;
+        .step3-hero .mini-status .mini-action-btn:hover {
+            background: rgba(255, 217, 102, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(255, 217, 102, 0.2);
         }
-        .step3-hero .mini-status .chip.missing {
-            background: rgba(231, 76, 60, 0.22);
-            color: #ffacac;
+        .step3-hero .mini-status .mini-action-btn i {
+            font-size: 0.75rem;
         }
         .step3-controls {
             width: 100%;
+            flex: 1;
+            min-width: 300px;
+            max-width: 516px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            align-items: center;
+            gap: 16px;
+            align-items: stretch;
+            height: 100%;
+            padding: 10px 0;
         }
         .step3-controls .booth-controls {
-            width: 100%;
+            width: auto;
+            align-self: center;
             justify-content: center;
+            flex-shrink: 0;
+        }
+        .step3-controls .prompt-section {
+            flex-shrink: 0;
         }
 
         /* 预览区 */
         .booth-preview {
             position: relative;
             width: 100%;
+            max-width: 100%;
+            max-height: calc(100vh - 240px);
             flex: 1;
-            border-radius: 32px;
+            border-radius: 24px;
             overflow: hidden;
             box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.6),
-                0 0 0 4px rgba(201, 169, 110, 0.3),
-                inset 0 0 60px rgba(0, 0, 0, 0.3);
+                0 12px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 3px rgba(201, 169, 110, 0.3),
+                inset 0 0 40px rgba(0, 0, 0, 0.3);
             background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
             aspect-ratio: 4/5;
         }
@@ -348,19 +398,21 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 30px;
+            padding: 16px;
             position: relative;
+            overflow: hidden;
         }
         
         .preview-hint {
             text-align: center;
             color: rgba(255, 255, 255, 0.4);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            max-width: 80%;
         }
         .preview-hint i {
-            font-size: 3rem;
+            font-size: 2.5rem;
             display: block;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             opacity: 0.3;
         }
 
@@ -368,31 +420,40 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 16px;
+            border-radius: 12px;
         }
 
         .preview-photo-frame {
             width: 100%;
             height: 100%;
-            padding: 12px;
+            min-height: 0;
+            padding: 8px;
             background: linear-gradient(135deg, #c9a96e, #ffd966, #c9a96e, #d4af37);
-            border-radius: 28px;
+            border-radius: 20px;
             position: relative;
+            box-sizing: border-box;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .preview-photo-frame::before {
             content: '';
             position: absolute;
-            inset: 4px;
-            border-radius: 22px;
+            inset: 3px;
+            border-radius: 16px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             pointer-events: none;
         }
         .preview-photo-frame img {
+            max-width: 100%;
+            max-height: 100%;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border-radius: 20px;
+            object-fit: contain;
+            border-radius: 14px;
             display: block;
+            background: rgba(0, 0, 0, 0.3);
         }
 
         /* 控制栏 */
@@ -525,7 +586,7 @@
 
         .scene-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             justify-items: center;
             flex: 1;
@@ -533,8 +594,8 @@
         }
         .scene-card {
             width: 100%;
-            max-width: 280px;
-            border-radius: 24px;
+            max-width: 200px;
+            border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -551,14 +612,14 @@
         }
         .scene-card img {
             width: 100%;
-            height: 200px;
+            height: 140px;
             object-fit: cover;
             display: block;
-            border-radius: 20px 20px 0 0;
+            border-radius: 16px 16px 0 0;
         }
         .scene-card .scene-name {
-            padding: 14px;
-            font-size: 0.9rem;
+            padding: 10px;
+            font-size: 0.8rem;
             background: rgba(0,0,0,0.7);
             color: #ffd966;
             text-align: center;
@@ -606,39 +667,127 @@
             color: rgba(255, 255, 255, 0.4);
         }
 
-        /* 结果卡片 */
-        .result-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(15px);
-            border-radius: 24px;
-            padding: 24px;
-            border: 1px solid rgba(201, 169, 110, 0.3);
-            margin-top: 30px;
-            text-align: center;
+        /* 结果展示区域 */
+        .result-section {
+            width: 100%;
+            max-width: 1200px;
+            margin: 30px auto 20px;
+            padding: 16px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            border: 1px solid rgba(201, 169, 110, 0.25);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            max-height: calc(100vh - 130px);
+            display: flex;
+            flex-direction: column;
+            scroll-margin-top: 90px;
         }
-        .result-card h3 {
-            font-size: 1.2rem;
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .result-header h2 {
+            font-size: 1.4rem;
             color: #ffd966;
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(255, 217, 102, 0.3);
+            flex-shrink: 0;
+        }
+        .result-header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .result-content-row {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .result-preview-box {
+            width: fit-content;
+            max-width: 100%;
+            max-height: 100%;
+            margin: 0 auto;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow:
+                0 16px 50px rgba(0, 0, 0, 0.6),
+                0 0 0 4px rgba(201, 169, 110, 0.35),
+                inset 0 0 50px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            display: inline-flex;
+            flex-direction: column;
+        }
+        .result-preview-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            box-sizing: border-box;
+            overflow: hidden;
         }
         .result-img {
             max-width: 100%;
+            max-height: calc(100vh - 250px);
+            width: auto;
+            height: auto;
+            object-fit: contain;
             border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .btn-back-modify {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 18px;
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+        }
+        .btn-back-modify:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 217, 102, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 217, 102, 0.2);
+        }
+        .btn-back-modify i {
+            font-size: 1rem;
+            color: #ffd966;
         }
         .btn-save {
             background: linear-gradient(135deg, #c9a96e, #ffd966);
             color: #2c2c2c;
             border: none;
-            padding: 14px 40px;
-            border-radius: 40px;
-            font-size: 1rem;
+            padding: 10px 22px;
+            border-radius: 18px;
+            font-size: 0.85rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
+            letter-spacing: 2px;
         }
         .btn-save:hover {
             transform: translateY(-2px);
@@ -668,12 +817,22 @@
             display: none;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 992px) {
+            .result-content-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+            .result-preview-box {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
             .booth-tabs {
                 padding: 10px 12px;
                 gap: 6px;
-                border-radius: 40px;
-                top: 68px;
+                border-radius: 16px;
             }
             .booth-tab {
                 padding: 8px 10px;
@@ -682,38 +841,68 @@
                 gap: 6px;
             }
             .booth-tab .step-num {
-                width: 22px;
-                height: 22px;
+                width: 20px;
+                height: 20px;
                 font-size: 0.68rem;
             }
             .booth-tab .step-status {
-                width: 20px;
-                height: 20px;
+                width: 18px;
+                height: 18px;
                 font-size: 0.62rem;
             }
-            .step1-layout {
+            .step3-wrap {
+                flex-direction: column;
+                align-items: center;
+                height: auto;
+                min-height: calc(100vh - 100px);
+            }
+            .step3-content-row {
                 flex-direction: column;
                 align-items: center;
             }
-            .step1-preview {
-                width: 100%;
-                max-width: 360px;
+            .step3-hero {
+                width: 399.35px;
+                max-width: 399.35px;
+                height: auto;
             }
-            .step1-actions {
-                width: 100%;
-                max-width: 440px;
+            .step3-controls {
+                max-width: 100%;
+                min-width: auto;
+                align-items: center;
+                height: auto;
             }
-            .step3-wrap .booth-controls {
+            .step3-controls .booth-controls {
                 flex-wrap: wrap;
             }
-        }
-        @media (max-width: 768px) {
             .booth-title h1 {
                 font-size: 1.8rem;
                 letter-spacing: 4px;
             }
+            .step2-wrap {
+                flex-direction: column;
+                align-items: center;
+                height: auto;
+                padding-bottom: 20px;
+            }
+            .step2-wrap .step3-controls {
+                max-width: 100%;
+                min-width: auto;
+                align-items: center;
+            }
             .booth-preview {
-                border-radius: 24px;
+                border-radius: 20px;
+                max-height: calc(100vh - 200px);
+                aspect-ratio: 4/5;
+            }
+            .booth-preview-inner {
+                padding: 12px;
+            }
+            .step3-hero {
+                width: 399.35px;
+                max-width: 399.35px;
+            }
+            .step3-hero .booth-preview {
+                max-height: calc(100vh - 220px);
             }
             .booth-controls {
                 gap: 15px;
@@ -742,6 +931,22 @@
             .booth-tab .step-label {
                 font-size: 0.78rem;
             }
+            .step3-wrap {
+                flex-direction: column;
+                align-items: center;
+            }
+            .step3-controls {
+                max-width: 100%;
+                min-width: auto;
+                align-items: center;
+            }
+            .preview-photo-frame {
+                padding: 6px;
+                border-radius: 16px;
+            }
+            .preview-photo-frame img {
+                border-radius: 12px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -752,17 +957,17 @@
             .booth-tabs {
                 padding: 8px 10px;
                 gap: 4px;
-                border-radius: 36px;
+                border-radius: 12px;
             }
             .booth-tab {
                 padding: 6px 8px;
                 font-size: 0.72rem;
                 gap: 4px;
-                border-radius: 30px;
+                border-radius: 10px;
             }
             .booth-tab .step-num {
-                width: 20px;
-                height: 20px;
+                width: 18px;
+                height: 18px;
                 font-size: 0.6rem;
             }
             .booth-tab .step-label {
@@ -772,28 +977,20 @@
             .booth-tab .step-status {
                 display: none;
             }
-            .step1-preview {
-                width: 100%;
-                max-width: 280px;
+            .booth-preview {
+                border-radius: 16px;
+                max-height: calc(100vh - 240px);
+                aspect-ratio: 4/5;
             }
-            .step1-actions {
-                padding: 18px;
-                gap: 12px;
-            }
-            .step1-actions h3 {
-                font-size: 0.95rem;
-            }
-            .scene-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .scene-card {
-                max-width: 150px;
-            }
-            .scene-card img {
-                height: 120px;
+            .booth-preview-inner {
+                padding: 10px;
             }
             .step3-hero {
-                max-width: 320px;
+                width: min(399.35px, 90vw);
+                max-width: min(399.35px, 90vw);
+            }
+            .step3-hero .booth-preview {
+                max-height: calc(100vh - 260px);
             }
             .mini-status {
                 font-size: 0.82rem;
@@ -812,6 +1009,23 @@
             .control-btn span {
                 font-size: 0.75rem;
             }
+            .btn-generate {
+                padding: 14px 25px;
+                font-size: 0.9rem;
+            }
+            .preview-photo-frame {
+                padding: 5px;
+                border-radius: 12px;
+            }
+            .preview-photo-frame img {
+                border-radius: 10px;
+            }
+            .preview-hint i {
+                font-size: 2rem;
+            }
+            .preview-hint {
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -824,63 +1038,63 @@
     <div class="container">
         <!-- 标题 -->
         <div class="booth-title">
-            <h1><i class="fas fa-camera"></i> 云游 · AI合影</h1>
-            <p>上传照片，即刻穿越到心仪的非遗景区</p>
-        </div>
-
-        <div class="booth-tabs" id="boothTabs">
-            <div class="booth-tab active" data-step="1">
-                <span class="step-num">1</span>
-                <span class="step-label">上传照片</span>
-                <span class="step-status" title="完成">✓</span>
-            </div>
-            <div class="booth-tab" data-step="2">
-                <span class="step-num">2</span>
-                <span class="step-label">选择场景</span>
-                <span class="step-status" title="完成">✓</span>
-            </div>
-            <div class="booth-tab" data-step="3">
-                <span class="step-num">3</span>
-                <span class="step-label">生成合影</span>
-                <span class="step-status" title="完成">✓</span>
-            </div>
+            <h1><i class="fas fa-camera"></i> <span data-i18n="whereamiTitle">云旅游 · AI合影</span></h1>
         </div>
 
         <!-- 步骤1：提交图片预览区 -->
         <div class="booth-step-panel active" data-panel="1">
-            <div class="step1-layout">
-                <div class="step1-preview">
-                    <div class="booth-preview">
-                        <div class="booth-preview-inner">
-                            <div id="previewHint" class="preview-hint">
+            <div class="step3-wrap">
+                <div class="booth-tabs" id="boothTabs1">
+                    <div class="booth-tab active" data-step="1">
+                        <span class="step-num">1</span>
+                        <span class="step-label" data-i18n="stepLabelUpload">上传照片</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
+                    </div>
+                    <div class="booth-tab" data-step="2">
+                        <span class="step-num">2</span>
+                        <span class="step-label" data-i18n="stepLabelSelect">选择场景</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
+                    </div>
+                    <div class="booth-tab" data-step="3">
+                        <span class="step-num">3</span>
+                        <span class="step-label" data-i18n="stepLabelGenerate">生成合影</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
+                    </div>
+                </div>
+                <div class="step3-content-row">
+                    <div class="step3-hero">
+                        <div class="booth-preview">
+                            <div class="booth-preview-inner">
+                                <div id="previewHint" class="preview-hint">
                                 <i class="fas fa-image"></i>
-                                <p>点击右侧「上传照片」</p>
-                                <p style="font-size: 0.75rem; margin-top: 5px;">开始您的云游之旅</p>
+                                <p data-i18n="previewHintUpload">点击右侧「上传照片」</p>
+                                <p style="font-size: 0.75rem; margin-top: 5px;" data-i18n="previewHintStart">开始您的云游之旅</p>
                             </div>
-                            <div id="previewContent" style="display: none; width: 100%; height: 100%;">
-                                <div class="preview-photo-frame">
-                                    <img id="previewImg" class="preview-image" src="" alt="预览">
+                                <div id="previewContent" style="display: none; width: 100%; height: 100%;">
+                                    <div class="preview-photo-frame">
+                                        <img id="previewImg" class="preview-image" src="" data-i18n-alt="previewHintUpload" alt="预览">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="step1-actions">
-                    <h3><i class="fas fa-cloud-upload-alt"></i> 上传人像照片</h3>
-                    <p>选择一张正脸清晰、光线良好的照片作为基础人像，稍后与选中的景点合成。</p>
-                    <div class="upload-row">
-                        <div class="control-btn" id="uploadBtn">
-                            <i class="fas fa-upload"></i>
-                            <span>上传照片</span>
-                        </div>
-                        <div class="booth-controls" style="gap:10px; flex-wrap:wrap;">
-                            <div class="control-btn" id="goStep2Btn">
-                                <i class="fas fa-arrow-right"></i>
-                                <span>下一步</span>
+                    <div class="step3-controls">
+                        <div class="prompt-section" style="margin-top: 0; width: 100%;">
+                            <h3><i class="fas fa-cloud-upload-alt"></i> <span data-i18n="uploadPhotoTitle">上传人像照片</span></h3>
+                            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 15px;" data-i18n="uploadPhotoDesc">选择一张正脸清晰、光线良好的照片作为基础人像，稍后与选中的景点合成。</p>
+                            <div class="control-btn" id="uploadBtn" style="justify-content: center;">
+                                <i class="fas fa-upload"></i>
+                                <span data-i18n="uploadPhotoBtn">上传照片</span>
                             </div>
+                            <p style="font-size: 0.75rem; opacity: 0.55; text-align: center; margin-top: 10px;" data-i18n="uploadPhotoTip">支持 JPG / PNG，建议横向或正方形构图</p>
+                        </div>
+
+                        <div class="booth-controls">
+                            <button class="btn-generate" id="goStep2Btn">
+                                <i class="fas fa-arrow-right"></i> <span data-i18n="nextStep">下一步</span>
+                            </button>
                         </div>
                     </div>
-                    <p style="font-size: 0.75rem; opacity: 0.55;">支持 JPG / PNG，建议横向或正方形构图</p>
                 </div>
             </div>
         </div>
@@ -888,26 +1102,45 @@
         <!-- 步骤2：场景选择区 -->
         <div class="booth-step-panel" data-panel="2">
             <div class="step2-wrap">
-                <div class="scene-section" id="sceneSection">
-                    <div class="scene-header">
-                        <h3><i class="fas fa-map"></i> 选择目的地</h3>
-                        <select id="locationSelect" class="location-select">
-                            <option value="">请选择景区</option>
-                        </select>
+                <div class="booth-tabs" id="boothTabs2">
+                    <div class="booth-tab done" data-step="1">
+                        <span class="step-num">1</span>
+                        <span class="step-label" data-i18n="stepLabelUpload">上传照片</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
                     </div>
-                    <div id="sceneGrid" class="scene-grid">
-                        <p style="text-align: center; color: rgba(255,255,255,0.4); grid-column: 1 / -1;">请先选择景区</p>
+                    <div class="booth-tab active" data-step="2">
+                        <span class="step-num">2</span>
+                        <span class="step-label" data-i18n="stepLabelSelect">选择场景</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
                     </div>
-                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 15px; text-align: center;">点击图片即可选中作为背景</p>
+                    <div class="booth-tab" data-step="3">
+                        <span class="step-num">3</span>
+                        <span class="step-label" data-i18n="stepLabelGenerate">生成合影</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
+                    </div>
                 </div>
-                <div class="booth-controls" style="margin-top:18px;">
-                    <div class="control-btn" id="backStep1Btn">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>上一步</span>
+                <div class="step3-controls" style="max-width: 900px; width: 100%;">
+                    <div class="scene-section" id="sceneSection" style="margin-top: 0; height: auto; flex: 1; overflow-y: auto;">
+                        <div class="scene-header">
+                            <h3><i class="fas fa-map"></i> <span data-i18n="selectDestination">选择目的地</span></h3>
+                            <select id="locationSelect" class="location-select">
+                                <option value="" data-i18n="selectScenicArea">请选择景区</option>
+                            </select>
+                        </div>
+                        <div id="sceneGrid" class="scene-grid">
+                            <p style="text-align: center; color: rgba(255,255,255,0.4); grid-column: 1 / -1;" data-i18n="pleaseSelectScenicArea">请先选择景区</p>
+                        </div>
+                        <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 15px; text-align: center;" data-i18n="selectSceneImgTip">点击图片即可选中作为背景</p>
                     </div>
-                    <div class="control-btn" id="goStep3Btn">
-                        <i class="fas fa-arrow-right"></i>
-                        <span>下一步：生成</span>
+
+                    <div class="booth-controls">
+                        <div class="control-btn" id="backStep1Btn">
+                            <i class="fas fa-arrow-left"></i>
+                            <span data-i18n="previousStep">上一步</span>
+                        </div>
+                        <button class="btn-generate" id="goStep3Btn">
+                            <i class="fas fa-arrow-right"></i> <span data-i18n="nextStepGenerate">下一步：生成</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -916,46 +1149,62 @@
         <!-- 步骤3：底部控制栏和生成合影按钮 -->
         <div class="booth-step-panel" data-panel="3">
             <div class="step3-wrap">
-                <div class="step3-hero">
-                    <div class="booth-preview">
-                        <div class="booth-preview-inner">
-                            <div class="mini-status" id="miniStatus">
-                                <span class="chip" id="chipPhoto">待上传人像</span>
-                                <span class="chip" id="chipScene">待选场景</span>
-                            </div>
-                            <div id="miniPreviewHint" class="preview-hint" style="padding-top:10px;">
-                                <i class="fas fa-images"></i>
-                                <p>确认您的人像与场景，点击下方合成</p>
-                            </div>
-                        </div>
+                <div class="booth-tabs" id="boothTabs">
+                    <div class="booth-tab" data-step="1">
+                        <span class="step-num">1</span>
+                        <span class="step-label" data-i18n="stepLabelUpload">上传照片</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
+                    </div>
+                    <div class="booth-tab" data-step="2">
+                        <span class="step-num">2</span>
+                        <span class="step-label" data-i18n="stepLabelSelect">选择场景</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
+                    </div>
+                    <div class="booth-tab active" data-step="3">
+                        <span class="step-num">3</span>
+                        <span class="step-label" data-i18n="stepLabelGenerate">生成合影</span>
+                        <span class="step-status" data-i18n-title="confirm">✓</span>
                     </div>
                 </div>
-
-                <div class="step3-controls">
-                    <div class="prompt-section" style="margin-top: 0; width: 100%;">
-                        <h3><i class="fas fa-pencil-alt"></i> 调整参数（可选）</h3>
-                        <textarea id="promptInput" class="prompt-textarea" placeholder="输入您的创意描述，如：古风、唯美、高清、真实感..."></textarea>
+                <div class="step3-content-row">
+                    <div class="step3-hero" id="step3Hero">
+                        <div class="booth-preview">
+                            <div class="booth-preview-inner" id="step3PreviewInner">
+                                <div class="mini-status" id="miniStatus">
+                                    <div class="mini-action-btn" id="reUploadBtn">
+                                        <i class="fas fa-upload"></i>
+                                        <span data-i18n="reUploadPhoto">重传人像</span>
+                                    </div>
+                                    <div class="mini-action-btn" id="reLocationBtn">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span data-i18n="changeScene">换个场景</span>
+                                    </div>
+                                </div>
+                            <div id="miniPreviewHint" class="preview-hint" style="padding-top:10px;">
+                                <i class="fas fa-images"></i>
+                                <p data-i18n="confirmMergeHint">确认您的人像与场景，点击下方合成</p>
+                            </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="booth-controls">
-                        <div class="control-btn" id="backStep2Btn">
-                            <i class="fas fa-arrow-left"></i>
-                            <span>上一步</span>
+                    <div class="step3-controls">
+                        <div class="prompt-section" style="margin-top: 0; width: 100%;">
+                            <h3><i class="fas fa-pencil-alt"></i> <span data-i18n="adjustParams">调整参数（可选）</span></h3>
+                            <textarea id="promptInput" class="prompt-textarea" data-i18n-placeholder="promptPlaceholder" placeholder="输入您的创意描述，如：古风、唯美、高清、真实感..."></textarea>
                         </div>
-                        <button class="btn-generate" id="generateBtn" disabled>
-                            <i class="fas fa-magic"></i> 生成合影
-                        </button>
-                    </div>
 
-                    <div class="booth-controls">
-                        <div class="control-btn" id="reUploadBtn">
-                            <i class="fas fa-upload"></i>
-                            <span>重传人像</span>
+                        <div class="booth-controls">
+                            <div class="control-btn" id="backStep2Btn">
+                                <i class="fas fa-arrow-left"></i>
+                                <span data-i18n="previousStep">上一步</span>
+                            </div>
+                            <button class="btn-generate" id="generateBtn" disabled>
+                                <i class="fas fa-magic"></i> <span data-i18n="generatePhoto">生成合影</span>
+                            </button>
                         </div>
-                        <div class="control-btn" id="reLocationBtn">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>换个场景</span>
-                        </div>
+
+                        
                     </div>
                 </div>
             </div>
@@ -966,51 +1215,66 @@
         <!-- 加载状态 -->
         <div id="loading" class="loading">
             <i class="fas fa-spinner"></i>
-            <p>正在生成中，请稍候...</p>
+            <p data-i18n="generatingHint">正在生成中，请稍候...</p>
         </div>
 
-        <!-- 结果卡片 -->
-        <div id="resultCard" class="result-card" style="display: none;">
-            <h3><i class="fas fa-camera-retro"></i> 合成结果</h3>
-            <img id="resultImg" class="result-img" src="" alt="合成结果">
-            <button class="btn-save" id="saveResultBtn"><i class="fas fa-download"></i> 保存图片</button>
+        <!-- 结果展示区域 -->
+        <div id="resultSection" class="result-section" style="display: none;">
+            <div class="result-header">
+                <h2><i class="fas fa-camera-retro"></i> <span data-i18n="mergeResult">合成结果</span></h2>
+                <div class="result-header-actions">
+                    <button class="btn-back-modify" id="backModifyBtn">
+                        <i class="fas fa-arrow-up"></i>
+                        <span data-i18n="backModify">返回修改</span>
+                    </button>
+                    <button class="btn-save" id="saveResultBtn">
+                        <i class="fas fa-download"></i> <span data-i18n="saveImage">保存图片</span>
+                    </button>
+                </div>
+            </div>
+            <div class="result-content-row">
+                <div class="result-preview-box">
+                    <div class="result-preview-inner">
+                        <img id="resultImg" class="result-img" src="" data-i18n-alt="mergeResult" alt="合成结果">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="footerMount"></div>
-
     <script src="static/js/i18n.js"></script>
+    <script src="static/js/sidebar.js"></script>
     <script src="static/js/auth.js"></script>
     <script src="static/js/components.js"></script>
     <script src="static/js/navbar.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sceneImages = {
-                '黄山': [
+                'huangshan': [
                     'static/img/黄山/01.jpg',
                     'static/img/黄山/02.jpg',
                     'static/img/黄山/03.jpg',
                     'static/img/黄山/04.jpg',
                 ],
-                '故宫': [
+                'gugong': [
                     'static/img/故宫/01.jpg',
                     'static/img/故宫/02.jpg',
                     'static/img/故宫/03.jpg',
                     'static/img/故宫/04.jpg',
                 ],
-                '景德镇': [
+                'jingdezhen': [
                     'static/img/景德镇/01.jpg',
                     'static/img/景德镇/02.jpg',
                     'static/img/景德镇/03.jpg',
                     'static/img/景德镇/04.jpg',
                 ],
-                '西湖': [
+                'xihu': [
                     'static/img/西湖/01.jpg',
                     'static/img/西湖/02.jpg',
                     'static/img/西湖/03.jpg',
                     'static/img/西湖/04.jpg',
                 ],
-                '丽江古城': [
+                'lijiang': [
                     'static/img/丽江古城/01.jpg',
                     'static/img/丽江古城/02.jpg',
                     'static/img/丽江古城/03.jpg',
@@ -1025,16 +1289,16 @@
             const sceneSection = document.getElementById('sceneSection');
             const generateBtn = document.getElementById('generateBtn');
             const loading = document.getElementById('loading');
-            const resultCard = document.getElementById('resultCard');
+            const resultSection = document.getElementById('resultSection');
             const resultImg = document.getElementById('resultImg');
             const saveResultBtn = document.getElementById('saveResultBtn');
+            const backModifyBtn = document.getElementById('backModifyBtn');
             const previewHint = document.getElementById('previewHint');
             const previewContent = document.getElementById('previewContent');
             const previewImg = document.getElementById('previewImg');
             const promptInput = document.getElementById('promptInput');
 
-            const boothTabs = document.getElementById('boothTabs');
-            const stepTabs = Array.from(document.querySelectorAll('.booth-tab'));
+            const boothTabsList = document.querySelectorAll('.booth-tabs, .booth-tabs-full');
             const stepPanels = Array.from(document.querySelectorAll('.booth-step-panel'));
             const goStep2Btn = document.getElementById('goStep2Btn');
             const backStep1Btn = document.getElementById('backStep1Btn');
@@ -1042,38 +1306,128 @@
             const backStep2Btn = document.getElementById('backStep2Btn');
             const reUploadBtn = document.getElementById('reUploadBtn');
             const reLocationBtn = document.getElementById('reLocationBtn');
-            const chipPhoto = document.getElementById('chipPhoto');
-            const chipScene = document.getElementById('chipScene');
             const miniPreviewHint = document.getElementById('miniPreviewHint');
 
             let personFile = null;
             let personDataUrl = null;
             let selectedScene = null;
             let selectedLocation = null;
+            let resultImageUrl = null;
+            let currentStep = 1;
+
+            function saveState() {
+                try {
+                    localStorage.setItem('whereami_personDataUrl', personDataUrl || '');
+                    localStorage.setItem('whereami_selectedLocation', selectedLocation || '');
+                    localStorage.setItem('whereami_selectedScene', selectedScene || '');
+                    localStorage.setItem('whereami_resultImageUrl', resultImageUrl || '');
+                    localStorage.setItem('whereami_currentStep', String(currentStep));
+                } catch (e) {
+                    console.warn('whereami saveState failed:', e);
+                }
+            }
+
+            function dataUrlToFile(dataUrl, filename) {
+                const arr = dataUrl.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new File([u8arr], filename, { type: mime });
+            }
+
+            function restoreState() {
+                const savedPersonDataUrl = localStorage.getItem('whereami_personDataUrl');
+                const savedLocation = localStorage.getItem('whereami_selectedLocation');
+                const savedScene = localStorage.getItem('whereami_selectedScene');
+                const savedResultUrl = localStorage.getItem('whereami_resultImageUrl');
+                const savedStep = localStorage.getItem('whereami_currentStep');
+
+                if (savedLocation) {
+                    selectedLocation = savedLocation;
+                    locationSelect.value = savedLocation;
+                    renderScenes(savedLocation);
+                }
+
+                if (savedScene) {
+                    selectedScene = savedScene;
+                    const sceneCards = document.querySelectorAll('.scene-card');
+                    if (savedLocation && sceneImages[savedLocation]) {
+                        const index = sceneImages[savedLocation].indexOf(savedScene);
+                        if (index >= 0 && sceneCards[index]) {
+                            sceneCards[index].classList.add('selected');
+                        }
+                    }
+                }
+
+                if (savedPersonDataUrl) {
+                    personDataUrl = savedPersonDataUrl;
+                    previewImg.src = personDataUrl;
+                    previewHint.style.display = 'none';
+                    previewContent.style.display = 'block';
+                    renderStep3PhotoFrame(personDataUrl);
+                    const fileName = `person_${Date.now()}.png`;
+                    personFile = dataUrlToFile(savedPersonDataUrl, fileName);
+                }
+
+                if (savedResultUrl) {
+                    resultImageUrl = savedResultUrl;
+                    resultImg.src = savedResultUrl;
+                    resultSection.style.display = 'block';
+                    setTimeout(() => {
+                        resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
+
+                if (savedStep) {
+                    currentStep = parseInt(savedStep, 10);
+                    switchToStep(currentStep);
+                }
+
+                checkReady();
+            }
 
             function switchToStep(n) {
-                stepTabs.forEach(t => {
-                    const step = parseInt(t.dataset.step, 10);
-                    t.classList.toggle('active', step === n);
-                    t.classList.toggle('done', step < n);
+                currentStep = n;
+                boothTabsList.forEach(tabs => {
+                    tabs.querySelectorAll('.booth-tab').forEach(t => {
+                        const step = parseInt(t.dataset.step, 10);
+                        t.classList.toggle('active', step === n);
+                        t.classList.toggle('done', step < n);
+                    });
                 });
                 stepPanels.forEach(p => {
                     const step = parseInt(p.dataset.panel, 10);
                     p.classList.toggle('active', step === n);
                 });
-                requestAnimationFrame(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
+                saveState();
             }
 
-            boothTabs.addEventListener('click', (e) => {
-                const tab = e.target.closest('.booth-tab');
-                if (!tab) return;
-                const n = parseInt(tab.dataset.step, 10);
-                switchToStep(n);
+            boothTabsList.forEach(tabs => {
+                tabs.addEventListener('click', (e) => {
+                    const tab = e.target.closest('.booth-tab');
+                    if (!tab) return;
+                    const n = parseInt(tab.dataset.step, 10);
+                    switchToStep(n);
+                });
             });
 
-            goStep2Btn.addEventListener('click', () => switchToStep(2));
+            goStep2Btn.addEventListener('click', () => {
+                switchToStep(2);
+                if (personDataUrl) {
+                    const step2Img = document.getElementById('step2PreviewImg');
+                    const step2Content = document.getElementById('step2PreviewContent');
+                    const step2Hint = document.getElementById('step2PreviewHint');
+                    if (step2Img && step2Content && step2Hint) {
+                        step2Img.src = personDataUrl;
+                        step2Content.style.display = 'block';
+                        step2Hint.style.display = 'none';
+                    }
+                }
+            });
             backStep1Btn.addEventListener('click', () => switchToStep(1));
             goStep3Btn.addEventListener('click', () => switchToStep(3));
             backStep2Btn.addEventListener('click', () => switchToStep(2));
@@ -1081,24 +1435,6 @@
             reLocationBtn.addEventListener('click', () => switchToStep(2));
 
             function updateStep3Status() {
-                if (personFile) {
-                    chipPhoto.textContent = '✓ 人像已上传';
-                    chipPhoto.classList.add('ok');
-                    chipPhoto.classList.remove('missing');
-                } else {
-                    chipPhoto.textContent = '待上传人像';
-                    chipPhoto.classList.remove('ok');
-                    chipPhoto.classList.add('missing');
-                }
-                if (selectedScene) {
-                    chipScene.textContent = '✓ 场景已选';
-                    chipScene.classList.add('ok');
-                    chipScene.classList.remove('missing');
-                } else {
-                    chipScene.textContent = '待选场景';
-                    chipScene.classList.remove('ok');
-                    chipScene.classList.add('missing');
-                }
             }
 
             function syncStep3Preview() {
@@ -1113,7 +1449,7 @@
 
             function renderStep3PhotoFrame(src) {
                 let frame = document.getElementById('step3PhotoFrame');
-                const hero = document.querySelector('.step3-hero .booth-preview-inner');
+                const hero = document.getElementById('step3PreviewInner');
                 if (!frame) {
                     const wrap = document.createElement('div');
                     wrap.className = 'preview-photo-frame';
@@ -1121,7 +1457,7 @@
                     const img = document.createElement('img');
                     img.className = 'preview-image';
                     img.id = 'miniPreviewImg';
-                    img.alt = '人像预览';
+                    img.alt = window.i18n.t('uploadPhotoTitle');
                     wrap.appendChild(img);
                     hero.insertBefore(wrap, miniPreviewHint);
                     frame = wrap;
@@ -1130,19 +1466,34 @@
                 miniPreviewHint.style.display = 'none';
             }
 
-            Object.keys(sceneImages).forEach(loc => {
-                const opt = document.createElement('option');
-                opt.value = loc;
-                opt.textContent = loc;
-                locationSelect.appendChild(opt);
-            });
+            const scenicKeys = {
+                'huangshan': 'scenic_huangshan',
+                'gugong': 'scenic_gugong',
+                'jingdezhen': 'scenic_jingdezhen',
+                'xihu': 'scenic_xihu',
+                'lijiang': 'scenic_lijiang'
+            };
+            function populateLocationSelect() {
+                locationSelect.innerHTML = '';
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.textContent = window.i18n.t('selectScenicArea');
+                locationSelect.appendChild(defaultOpt);
+                Object.keys(sceneImages).forEach(loc => {
+                    const opt = document.createElement('option');
+                    opt.value = loc;
+                    opt.textContent = window.i18n.t(scenicKeys[loc]);
+                    locationSelect.appendChild(opt);
+                });
+            }
+            populateLocationSelect();
 
             function renderScenes(location) {
                 sceneGrid.innerHTML = '';
                 if (!location || !sceneImages[location]) {
                     const p = document.createElement('p');
                     p.style.cssText = 'text-align: center; color: rgba(255,255,255,0.4); grid-column: 1 / -1;';
-                    p.textContent = '请先选择景区';
+                    p.textContent = window.i18n.t('pleaseSelectScenicArea');
                     sceneGrid.appendChild(p);
                     return;
                 }
@@ -1150,13 +1501,15 @@
                 sceneImages[location].slice(0, 4).forEach((img, idx) => {
                     const card = document.createElement('div');
                     card.className = 'scene-card';
-                    card.innerHTML = `<img src="${img}" alt="场景${idx+1}"><div class="scene-name">场景${idx+1}</div>`;
+                    const sceneName = window.i18n.t('sceneName') + (idx + 1);
+                    card.innerHTML = `<img src="${img}" alt="${sceneName}"><div class="scene-name">${sceneName}</div>`;
                     card.onclick = () => {
                         document.querySelectorAll('.scene-card').forEach(c => c.classList.remove('selected'));
                         card.classList.add('selected');
                         selectedScene = img;
                         checkReady();
                         updateStep3Status();
+                        saveState();
                     };
                     sceneGrid.appendChild(card);
                 });
@@ -1173,6 +1526,7 @@
                         bgLayer.classList.remove('fade-out');
                     }, 400);
                 }
+                saveState();
             });
 
             uploadBtn.addEventListener('click', () => personUpload.click());
@@ -1189,6 +1543,7 @@
                         previewContent.style.display = 'block';
                         renderStep3PhotoFrame(personDataUrl);
                         updateStep3Status();
+                        saveState();
                     };
                     reader.readAsDataURL(file);
                 } else if (file) {
@@ -1200,7 +1555,7 @@
             });
 
             function checkReady() {
-                generateBtn.disabled = !personFile || !selectedScene;
+                generateBtn.disabled = !personDataUrl || !selectedScene;
             }
 
             async function uploadFile(file) {
@@ -1210,20 +1565,27 @@
                     method: 'POST',
                     body: formData
                 });
-                if (!response.ok) throw new Error('上传失败');
+                if (!response.ok) throw new Error(window.i18n.t('error'));
                 const data = await response.json();
                 return data.filepath;
             }
 
             generateBtn.addEventListener('click', async () => {
-                if (!personFile || !selectedScene) return;
+                if (!personDataUrl || !selectedScene) return;
+                if (!personFile && personDataUrl) {
+                    const fileName = `person_${Date.now()}.png`;
+                    personFile = dataUrlToFile(personDataUrl, fileName);
+                }
                 generateBtn.disabled = true;
                 loading.style.display = 'block';
-                resultCard.style.display = 'none';
+                resultSection.style.display = 'none';
                 try {
                     const personPath = await uploadFile(personFile);
-                    const scenePath = selectedScene;
-                    const prompt = promptInput.value || '古风唯美，高清真实';
+                    let scenePath = selectedScene;
+                    if (!scenePath.startsWith('/')) {
+                        scenePath = '/' + scenePath;
+                    }
+                    const prompt = promptInput.value || window.i18n.t('defaultPromptText');
                     const response = await fetch('/api/generate-image', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -1233,14 +1595,18 @@
                             prompt: prompt
                         })
                     });
-                    if (!response.ok) throw new Error('生成失败');
+                    if (!response.ok) throw new Error(window.i18n.t('generateFailed'));
                     const data = await response.json();
                     resultImg.src = data.image_url;
-                    resultCard.style.display = 'block';
-                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    resultImageUrl = data.image_url;
+                    resultSection.style.display = 'block';
+                    saveState();
+                    setTimeout(() => {
+                        resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
                 } catch (error) {
                     console.error(error);
-                    alert('生成失败，请重试');
+                    alert(window.i18n.t('generateFailed'));
                 } finally {
                     loading.style.display = 'none';
                     generateBtn.disabled = false;
@@ -1254,7 +1620,22 @@
                 link.click();
             });
 
+            backModifyBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
             updateStep3Status();
+            restoreState();
+
+            document.addEventListener('lang:changed', () => {
+                const currentVal = locationSelect.value;
+                populateLocationSelect();
+                if (currentVal) {
+                    locationSelect.value = currentVal;
+                    renderScenes(currentVal);
+                }
+                updateStep3Status();
+            });
         });
     </script>
 </body>

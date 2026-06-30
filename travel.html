@@ -312,7 +312,7 @@
         /* 旅游卡片网格 */
         .tour-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 30px;
             margin: 40px 0;
         }
@@ -435,6 +435,12 @@
         }
 
         /* 页脚样式已迁移至 static/css/common.css */
+        @media (max-width: 1024px) {
+            .tour-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .hero-travel h1 {
                 font-size: 32px;
