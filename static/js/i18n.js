@@ -111,10 +111,10 @@
             thinking: '思考中...',
 
             // ===== 侧边栏 =====
-            sidebarNotice: '公告',
+            sidebarNotice: '近期公告',
             sidebarWechat: '公众号',
-            sidebarDeepseek: '菲菲',
-            sidebarGoTop: '顶部',
+            sidebarDeepseek: '菲菲助手',
+            sidebarGoTop: '返回顶部',
             sidebarNoticeTitle: '✨ 近期重要演出',
             sidebarClose: '关闭',
             sidebarScanFollow: '扫码关注',

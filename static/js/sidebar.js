@@ -63,7 +63,7 @@
         i18n: {
             notice: '公告',
             wechat: '公众号',
-            deepseek: '菲菲',
+            deepseek: '助手',
             goTop: '顶部',
             noticeTitle: '✨ 近期重要演出',
             close: '关闭',
@@ -251,7 +251,7 @@
     }
     .dynamic-sidebar:hover {
         transform: translateY(-50%) translateX(0);
-        width: 180px;
+        width: 220px;
         background: ${cfg.theme.sidebarBg};
         backdrop-filter: blur(20px);
         box-shadow: 0 20px 32px -12px rgba(0,0,0,0.3);
@@ -272,7 +272,7 @@
         color: ${cfg.theme.textColor};
         font-size: 0.7rem;
         font-weight: 500;
-        transition: all 0.2s ease;
+        transition: all 0.25s ease;
         box-shadow: 0 4px 8px rgba(0,0,0,0.02);
         font-family: inherit;
         letter-spacing: 0.3px;
@@ -313,21 +313,22 @@
     .dynamic-sidebar:hover .sidebar-btn {
         width: 75%;
         flex-direction: row;
-        justify-content: flex-start;
+        justify-content: center;
         padding-${cfg.position === 'right' ? 'left' : 'right'}: 12px;
-        padding-${cfg.position === 'right' ? 'right' : 'left'}: 6px;
-        gap: 3px;
+        padding-${cfg.position === 'right' ? 'right' : 'left'}: 12px;
+        gap: 10px;
         min-height: 48px;
+        border-radius: 40px;
     }
     .dynamic-sidebar:hover .sidebar-btn .btn-label {
         font-size: 0.78rem;
-        max-width: 70px;
-        text-align: left;
+        max-width: none;
+        flex: 1;
+        text-align: center;
         letter-spacing: 0.3px;
-        margin: 18px;
+        margin: 0;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        overflow: visible;
     }
     .dynamic-sidebar:hover .sidebar-btn .btn-emoji { font-size: 1.4rem; }
     .wechat-qr-hover {
