@@ -191,17 +191,24 @@
     .sidebar-icon {
         width: 28px;
         height: 28px;
-        object-fit: contain;
+        object-fit: cover;
         display: block;
+        border-radius: 50%;
         transition: all 0.2s ease;
+        border: 1.5px solid rgba(255, 217, 102, 0.55);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+        background: rgba(0, 0, 0, 0.15);
     }
     .dynamic-sidebar:hover .sidebar-icon {
-        width: 24px;
-        height: 24px;
+        width: 30px;
+        height: 30px;
+    }
+    .sidebar-btn .btn-emoji img.sidebar-icon {
+        object-fit: cover;
     }
     @media (max-width: 640px) {
         .sidebar-icon { width: 24px; height: 24px; }
-        .dynamic-sidebar:hover .sidebar-icon { width: 20px; height: 20px; }
+        .dynamic-sidebar:hover .sidebar-icon { width: 26px; height: 26px; }
     }
     .sidebar-btn .btn-emoji {
         display: flex;
@@ -317,7 +324,7 @@
         max-width: 70px;
         text-align: left;
         letter-spacing: 0.3px;
-        margin: 0;
+        margin: 18px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

@@ -63,6 +63,18 @@
     color: var(--chat-primary);
 }
 
+.chat-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+    margin-right: 10px;
+    border: 2px solid rgba(255, 217, 102, 0.6);
+    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.35);
+    background: rgba(0, 0, 0, 0.2);
+}
+
 .close-chat {
     cursor: pointer;
     font-size: 26px;
