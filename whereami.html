@@ -1312,86 +1312,8 @@
             let personDataUrl = null;
             let selectedScene = null;
             let selectedLocation = null;
-            let resultImageUrl = null;
-            let currentStep = 1;
-
-            function saveState() {
-                try {
-                    localStorage.setItem('whereami_personDataUrl', personDataUrl || '');
-                    localStorage.setItem('whereami_selectedLocation', selectedLocation || '');
-                    localStorage.setItem('whereami_selectedScene', selectedScene || '');
-                    localStorage.setItem('whereami_resultImageUrl', resultImageUrl || '');
-                    localStorage.setItem('whereami_currentStep', String(currentStep));
-                } catch (e) {
-                    console.warn('whereami saveState failed:', e);
-                }
-            }
-
-            function dataUrlToFile(dataUrl, filename) {
-                const arr = dataUrl.split(',');
-                const mime = arr[0].match(/:(.*?);/)[1];
-                const bstr = atob(arr[1]);
-                let n = bstr.length;
-                const u8arr = new Uint8Array(n);
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
-                return new File([u8arr], filename, { type: mime });
-            }
-
-            function restoreState() {
-                const savedPersonDataUrl = localStorage.getItem('whereami_personDataUrl');
-                const savedLocation = localStorage.getItem('whereami_selectedLocation');
-                const savedScene = localStorage.getItem('whereami_selectedScene');
-                const savedResultUrl = localStorage.getItem('whereami_resultImageUrl');
-                const savedStep = localStorage.getItem('whereami_currentStep');
-
-                if (savedLocation) {
-                    selectedLocation = savedLocation;
-                    locationSelect.value = savedLocation;
-                    renderScenes(savedLocation);
-                }
-
-                if (savedScene) {
-                    selectedScene = savedScene;
-                    const sceneCards = document.querySelectorAll('.scene-card');
-                    if (savedLocation && sceneImages[savedLocation]) {
-                        const index = sceneImages[savedLocation].indexOf(savedScene);
-                        if (index >= 0 && sceneCards[index]) {
-                            sceneCards[index].classList.add('selected');
-                        }
-                    }
-                }
-
-                if (savedPersonDataUrl) {
-                    personDataUrl = savedPersonDataUrl;
-                    previewImg.src = personDataUrl;
-                    previewHint.style.display = 'none';
-                    previewContent.style.display = 'block';
-                    renderStep3PhotoFrame(personDataUrl);
-                    const fileName = `person_${Date.now()}.png`;
-                    personFile = dataUrlToFile(savedPersonDataUrl, fileName);
-                }
-
-                if (savedResultUrl) {
-                    resultImageUrl = savedResultUrl;
-                    resultImg.src = savedResultUrl;
-                    resultSection.style.display = 'block';
-                    setTimeout(() => {
-                        resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-                }
-
-                if (savedStep) {
-                    currentStep = parseInt(savedStep, 10);
-                    switchToStep(currentStep);
-                }
-
-                checkReady();
-            }
 
             function switchToStep(n) {
-                currentStep = n;
                 boothTabsList.forEach(tabs => {
                     tabs.querySelectorAll('.booth-tab').forEach(t => {
                         const step = parseInt(t.dataset.step, 10);
@@ -1403,7 +1325,6 @@
                     const step = parseInt(p.dataset.panel, 10);
                     p.classList.toggle('active', step === n);
                 });
-                saveState();
             }
 
             boothTabsList.forEach(tabs => {
@@ -1509,7 +1430,6 @@
                         selectedScene = img;
                         checkReady();
                         updateStep3Status();
-                        saveState();
                     };
                     sceneGrid.appendChild(card);
                 });
@@ -1526,7 +1446,6 @@
                         bgLayer.classList.remove('fade-out');
                     }, 400);
                 }
-                saveState();
             });
 
             uploadBtn.addEventListener('click', () => personUpload.click());
@@ -1543,7 +1462,6 @@
                         previewContent.style.display = 'block';
                         renderStep3PhotoFrame(personDataUrl);
                         updateStep3Status();
-                        saveState();
                     };
                     reader.readAsDataURL(file);
                 } else if (file) {
@@ -1555,7 +1473,7 @@
             });
 
             function checkReady() {
-                generateBtn.disabled = !personDataUrl || !selectedScene;
+                generateBtn.disabled = !personFile || !selectedScene;
             }
 
             async function uploadFile(file) {
@@ -1571,11 +1489,7 @@
             }
 
             generateBtn.addEventListener('click', async () => {
-                if (!personDataUrl || !selectedScene) return;
-                if (!personFile && personDataUrl) {
-                    const fileName = `person_${Date.now()}.png`;
-                    personFile = dataUrlToFile(personDataUrl, fileName);
-                }
+                if (!personFile || !selectedScene) return;
                 generateBtn.disabled = true;
                 loading.style.display = 'block';
                 resultSection.style.display = 'none';
@@ -1598,9 +1512,7 @@
                     if (!response.ok) throw new Error(window.i18n.t('generateFailed'));
                     const data = await response.json();
                     resultImg.src = data.image_url;
-                    resultImageUrl = data.image_url;
                     resultSection.style.display = 'block';
-                    saveState();
                     setTimeout(() => {
                         resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }, 100);
@@ -1625,7 +1537,6 @@
             });
 
             updateStep3Status();
-            restoreState();
 
             document.addEventListener('lang:changed', () => {
                 const currentVal = locationSelect.value;
