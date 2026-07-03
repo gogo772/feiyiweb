@@ -2,6 +2,8 @@
 <html lang="zh-CN">
 <head>
         <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
+        <link rel="preload" href="static/lib/d3.v7.min.js" as="script">
+        <link rel="preload" href="static/data/intangible_heritage_data.json" as="fetch" crossorigin>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -9,7 +11,7 @@
     <!-- 引入 D3.js 核心库（本地文件） -->
     <script src="static/lib/d3.v7.min.js"></script>
     <!-- 引入 Font Awesome 图标库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="static/lib/font-awesome/all.min.css">
     <script src="static/js/i18n.js"></script>
     <!-- 引入聊天组件样式（菲菲助手） -->
     <link rel="stylesheet" href="static/css/chat.css">
@@ -304,7 +306,7 @@ body::-webkit-scrollbar {
                 const lang = getCurrentLang();
                 nodes.push({
                     id: rootId,
-                    name: lang === 'en' ? (data.name_en || data.name) : data.name,
+                    name: data.name,
                     depth: 0,
                     isRoot: true,
                     isCategory: false,
@@ -318,9 +320,8 @@ body::-webkit-scrollbar {
                 let catCounts = {}, cats = [];
                 for (const cat of data.children) {
                     const catName = cat.name;
-                    const catNameEn = cat.name_en || catName;
-                    const displayCatName = lang === 'en' ? catNameEn : catName;
-                    if (!COLORS[catName] && !COLORS[catNameEn]) continue;
+                    const displayCatName = catName;
+                    if (!COLORS[catName]) continue;
                     cats.push(displayCatName);
                     const limited = cat.children.slice(0, MAX_ITEMS_PER_CAT);
                     const catId = 'cat::' + catName;
@@ -331,7 +332,7 @@ body::-webkit-scrollbar {
                         isRoot: false,
                         isCategory: true,
                         isItem: false,
-                        color: COLORS[catName] || COLORS[catNameEn] || '#999',
+                        color: COLORS[catName] || '#999',
                         radius: CAT_R,
                         itemCount: limited.length,
                         origName: catName
@@ -342,10 +343,9 @@ body::-webkit-scrollbar {
 
                     for (const item of limited) {
                         const itemId = 'item::' + catName + '::' + item.name;
-                        const itemNameEn = item.name_en || item.name;
                         const itemNode = {
                             id: itemId,
-                            name: lang === 'en' ? itemNameEn : item.name,
+                            name: item.name,
                             depth: 2,
                             isRoot: false,
                             isCategory: false,
@@ -384,6 +384,7 @@ body::-webkit-scrollbar {
                     return { visNodes, visLinks };
                 }
 
+                let tickCount = 0;
                 function startSimulation() {
                     const { visNodes, visLinks } = getVisibleNodesAndLinks();
                     const simNodes = visNodes.map(n => ({
@@ -396,23 +397,27 @@ body::-webkit-scrollbar {
                     const simLinks = visLinks.map(l => ({ ...l }));
 
                     if (simulation) simulation.stop();
+                    const nodeCount = simNodes.length;
+                    const linkCount = simLinks.length;
+                    const hasManyItems = nodeCount > 100;
+
                     simulation = d3.forceSimulation(simNodes)
                         .force('link', d3.forceLink(simLinks)
                             .id(d => d.id)
                             .distance(l => l.depth === 0 ? 130 : 85)
-                            .strength(l => l.depth === 0 ? 0.28 : 0.15))
+                            .strength(l => l.depth === 0 ? 0.35 : 0.2))
                         .force('charge', d3.forceManyBody()
-                            .strength(d => d.isRoot ? -1800 : (d.isCategory ? -800 : -200)))
+                            .strength(d => d.isRoot ? -2000 : (d.isCategory ? -1000 : (hasManyItems ? -80 : -200))))
                         .force('center', d3.forceCenter(0, rootY).strength(0.1))
-                        .force('collision', d3.forceCollide().radius(d => d.radius + 6))
+                        .force('collision', d3.forceCollide().radius(d => d.radius + (hasManyItems ? 3 : 6)))
                         .force('radial', d3.forceRadial(d => d.isCategory ? CAT_DIST : 0, 0, rootY)
-                            .strength(d => d.isCategory ? 0.65 : 0))
-                        .alpha(0.8).alphaDecay(0.022);
+                            .strength(d => d.isCategory ? 0.7 : 0))
+                        .alpha(0.9).alphaDecay(hasManyItems ? 0.03 : 0.022);
 
                     const link = linkG.selectAll('line').data(simLinks, d => d.source.id + '--' + d.target.id);
                     link.join('line')
                         .attr('stroke', 'rgba(210, 190, 140, 0.5)')
-                        .attr('stroke-width', l => l.depth === 0 ? 2.5 : 1.2)
+                        .attr('stroke-width', l => l.depth === 0 ? 2.5 : (hasManyItems ? 0.8 : 1.2))
                         .attr('stroke-opacity', 0.6)
                         .attr('stroke-dasharray', l => l.depth === 0 ? 'none' : '2 2');
 
@@ -439,7 +444,10 @@ body::-webkit-scrollbar {
                             .attr('stroke-opacity', 0.4);
                     }
 
-                    const labelData = simNodes.filter(d => d.isRoot || d.isCategory || d.isItem);
+                    const labelData = simNodes.filter(d => d.isRoot || d.isCategory);
+                    if (!hasManyItems) {
+                        labelData.push(...simNodes.filter(d => d.isItem));
+                    }
                     const textSel = labelG.selectAll('text').data(labelData, d => d.id);
                     textSel.join('text')
                         .attr('text-anchor', 'middle')
@@ -473,7 +481,11 @@ body::-webkit-scrollbar {
                         }
                     });
 
+                    tickCount = 0;
                     simulation.on('tick', () => {
+                        tickCount++;
+                        if (tickCount % (hasManyItems ? 3 : 1) !== 0) return;
+
                         linkG.selectAll('line')
                             .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
                             .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
@@ -481,6 +493,12 @@ body::-webkit-scrollbar {
                         labelG.selectAll('text').attr('x', d => d.x).attr('y', d => d.y);
                     });
                     simulation._simNodes = simNodes;
+
+                    if (hasManyItems) {
+                        setTimeout(() => {
+                            if (simulation) simulation.stop();
+                        }, 5000);
+                    }
                 }
 
                 function toggleCategory(catNode) {
@@ -506,20 +524,17 @@ body::-webkit-scrollbar {
                                 <span class="tt-category" style="background:${d.color}">${escapeHtml(d.category)}</span>`;
                     d.records.forEach(r => {
                         html += `<table>`;
-                        if (lang === 'en' && r.records_en) {
-                            for (const [key, value] of Object.entries(r.records_en)) {
+                        if (lang === 'en') {
+                            for (const [key, value] of Object.entries(r)) {
                                 html += `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value)}</td></tr>`;
                             }
                         } else {
-                            if (r['公布时间']) html += `<tr><th>${t('publishTime')}</th><td>${escapeHtml(r['公布时间'])}${t('tooltipCNTag')}</td></tr>`;
-                            if (r['申报地区或单位']) html += `<tr><th>${t('applyRegion')}</th><td>${escapeHtml(r['申报地区或单位'])}${t('tooltipCNTag')}</td></tr>`;
-                            if (r['保护单位']) html += `<tr><th>${t('protectUnit')}</th><td>${escapeHtml(r['保护单位'])}${t('tooltipCNTag')}</td></tr>`;
+                            if (r['公布时间']) html += `<tr><th>${t('publishTime')}</th><td>${escapeHtml(r['公布时间'])}</td></tr>`;
+                            if (r['申报地区或单位']) html += `<tr><th>${t('applyRegion')}</th><td>${escapeHtml(r['申报地区或单位'])}</td></tr>`;
+                            if (r['保护单位']) html += `<tr><th>${t('protectUnit')}</th><td>${escapeHtml(r['保护单位'])}</td></tr>`;
                         }
                         html += `</table>`;
                     });
-                    if (lang === 'zh' || d.records.some(r => !r.records_en)) {
-                        html += `<div style="margin-top:8px;font-size:0.7rem;color:#aaa;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px">${t('tooltipPartialCN')}</div>`;
-                    }
                     tooltipDiv.innerHTML = html;
                     tooltipDiv.classList.add('visible');
 

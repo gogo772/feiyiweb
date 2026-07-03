@@ -50,7 +50,7 @@
                 nameEn: d.nameEn || d.name,                      // 英文名
                 center: d.center || [0, 0],
                 zoom: typeof d.zoom === 'number' ? d.zoom : 1.0,
-                geoPath: `geo/${code}_full.json`,                 // 本地 GeoJSON 路径
+                geoPath: `/static/geo/${code}_full.json`,                 // 本地 GeoJSON 路径
                 spotsZh: Array.isArray(d.spotsZh) ? d.spotsZh : (Array.isArray(d.spots) ? d.spots : []),
                 spotsEn: Array.isArray(d.spotsEn) ? d.spotsEn : (Array.isArray(d.spots) ? d.spots : [])
             };
@@ -186,18 +186,26 @@ function pickHighMatches(spotsWithScore, rule) {
 
     // ==================== 匹配分数缓存（必须在computeMatchScore之前定义） ====================
     const matchScoreCache = new WeakMap();
+    const MAX_MATCH_SCORE_ENTRIES = 1000;
+    let matchScoreCacheSize = 0;
 
     // ==================== 坐标抖动缓存（必须在applyCoordJitter之前定义） ====================
     // 用于确保相同点位在不同缩放级别下产生相同的偏移量，避免路线错位
-    const jitterCache = new Map(); // 使用Map而非WeakMap，因为键是字符串
+    const jitterCache = new Map();
+    const MAX_JITTER_ENTRIES = 500;
 
     // ==================== 匹配分数计算（带缓存） ====================
     function computeMatchScore(spot, pref) {
-        // 修复：添加缓存避免重复计算
-        const cacheKey = `${pref.cultural}-${pref.scenery}-${pref.food}-${pref.intangible}-${pref.leisure}`;
-        const spotCache = matchScoreCache.get(spot) || {};
-        if (spotCache[cacheKey] !== undefined) {
-            return spotCache[cacheKey];
+        let spotCache = matchScoreCache.get(spot);
+        if (!spotCache) {
+            spotCache = {};
+            matchScoreCache.set(spot, spotCache);
+            matchScoreCacheSize++;
+        }
+        const cacheKey = pref.cultural * 100000000 + pref.scenery * 1000000 + pref.food * 10000 + pref.intangible * 100 + pref.leisure;
+        const cached = spotCache[cacheKey];
+        if (cached !== undefined) {
+            return cached;
         }
         
         const diff = Math.sqrt(
@@ -207,12 +215,10 @@ function pickHighMatches(spotsWithScore, rule) {
             Math.pow(spot.heritageScore - pref.intangible, 2) +
             Math.pow(spot.leisureScore - pref.leisure, 2)
         );
-        const maxDiff = Math.sqrt(5 * 100 * 100);
+        const maxDiff = Math.sqrt(50000);
         const score = Math.min(100, Math.max(0, 100 - (diff / maxDiff) * 100));
         
-        // 缓存结果
         spotCache[cacheKey] = score;
-        matchScoreCache.set(spot, spotCache);
         return score;
     }
 
@@ -402,19 +408,21 @@ function pickHighMatches(spotsWithScore, rule) {
     // 返回新数组(不修改原对象)。key 用 lng.lat 字符串(4 位小数精度检测)
     // 修复:使用jitterCache缓存偏移结果,确保相同点位在不同缩放级别下产生相同的偏移量
     function applyCoordJitter(spots, range = JITTER_RANGE) {
-        const seen = new Map(); // key -> count
+        const seen = new Map();
         return spots.map(spot => {
             const [lng, lat] = spot.coord;
             const key = `${lng.toFixed(4)}_${lat.toFixed(4)}`;
             const c = seen.get(key) || 0;
             seen.set(key, c + 1);
-            if (c === 0) return spot; // 首个不偏移
+            if (c === 0) return spot;
 
-            // 使用缓存的偏移量,确保相同点位在不同缩放级别下产生相同的偏移
             const spotName = spot.name || `${lng}_${lat}_${c}`;
             let cachedOffset = jitterCache.get(spotName);
             if (!cachedOffset) {
-                // 首次计算:生成随机偏移并缓存
+                if (jitterCache.size >= MAX_JITTER_ENTRIES) {
+                    const firstKey = jitterCache.keys().next().value;
+                    if (firstKey) jitterCache.delete(firstKey);
+                }
                 const dx = (Math.random() * 2 - 1) * range;
                 const dy = (Math.random() * 2 - 1) * range;
                 cachedOffset = {dx, dy};
@@ -484,10 +492,12 @@ function pickHighMatches(spotsWithScore, rule) {
     //         方向各推一半距离,多轮迭代直到收敛(或达最大轮数)
     // 复杂度:湖北 47 点 → 47² × 3 轮 ≈ 6.6k 配对,毫秒级,无性能问题
     function applyPixelSpaceRepulsion(spots, chart, minDist = MIN_PIXEL_DIST) {
-        if (!spots || spots.length < 2) return spots;
+        if (!spots || spots.length < 3) return spots;
         if (!canProjectGeo(chart)) return spots;
 
-        // 1) 全部投影到像素空间,记录基础坐标 + 累积位移
+        const n = spots.length;
+        const maxIter = n <= 10 ? 1 : (n <= 20 ? 2 : PIXEL_REPULSION_ITERATIONS);
+
         const items = spots.map(s => {
             let x = 0, y = 0;
             let valid = true;
@@ -499,21 +509,21 @@ function pickHighMatches(spotsWithScore, rule) {
             return {spot: s, x, y, dx: 0, dy: 0, valid};
         });
 
-        // 2) 多轮迭代:每轮扫描所有点对,距离不足则互相推开
-        for (let it = 0; it < PIXEL_REPULSION_ITERATIONS; it++) {
+        for (let it = 0; it < maxIter; it++) {
             let moved = false;
-            for (let i = 0; i < items.length; i++) {
-                for (let j = i + 1; j < items.length; j++) {
-                    const a = items[i], b = items[j];
-                    if (!a.valid || !b.valid) continue;
+            for (let i = 0; i < n; i++) {
+                const a = items[i];
+                if (!a.valid) continue;
+                for (let j = i + 1; j < n; j++) {
+                    const b = items[j];
+                    if (!b.valid) continue;
                     const ddx = (a.x + a.dx) - (b.x + b.dx);
                     const ddy = (a.y + a.dy) - (b.y + b.dy);
                     const dist = Math.hypot(ddx, ddy);
                     if (dist >= minDist) continue;
                     let nx, ny, push;
                     if (dist < 0.001) {
-                        // 完全重叠:用稳定哈希给个方向,避免每轮随机 → 反复横跳不收敛
-                        const ang = (((i * 2654435761) ^ (j * 40503)) % 360) * Math.PI / 180;
+                        const ang = (i + j * 7) * 0.785398;
                         nx = Math.cos(ang); ny = Math.sin(ang);
                         push = minDist / 2;
                     } else {
@@ -525,10 +535,9 @@ function pickHighMatches(spotsWithScore, rule) {
                     moved = true;
                 }
             }
-            if (!moved) break; // 本轮无任何调整,已收敛
+            if (!moved) break;
         }
 
-        // 3) 把累积位移转回经纬度;位移 < 0.01px 视为无变化,直接返回原 spot 省一次换算
         return items.map(p => {
             if (Math.abs(p.dx) < 0.01 && Math.abs(p.dy) < 0.01) return p.spot;
             let newCoord;
@@ -542,9 +551,11 @@ function pickHighMatches(spotsWithScore, rule) {
 
     function getMapSeries(spots, pref, chart) {
         const projChart = chart || myMapChart;
-        const filteredSpots = currentTypeFilter === 'all'
-            ? spots
-            : spots.filter(s => s.type === currentTypeFilter);
+        const filterType = currentTypeFilter;
+        let filteredSpots = spots;
+        if (filterType !== 'all') {
+            filteredSpots = spots.filter(s => s.type === filterType);
+        }
 
         if (!filteredSpots.length) {
             return [
@@ -554,83 +565,106 @@ function pickHighMatches(spotsWithScore, rule) {
             ];
         }
 
-        const spotsWithScore = filteredSpots.map(spot => ({
-            ...spot,
-            matchScore: computeMatchScore(spot, pref)
-        }));
+        const spotsWithScore = [];
+        for (let i = 0; i < filteredSpots.length; i++) {
+            const spot = filteredSpots[i];
+            spotsWithScore.push({
+                ...spot,
+                matchScore: computeMatchScore(spot, pref)
+            });
+        }
 
         const highMatches = pickHighMatches(spotsWithScore, HIGH_MATCH_RULE);
-        const highMatchNames = new Set(highMatches.map(s => s.name));
-        const normalSpots = spotsWithScore.filter(s => !highMatchNames.has(s.name));
 
         const tier = currentZoom <= ZOOM_TIERS.tierA.maxZoom
             ? ZOOM_TIERS.tierA
             : (currentZoom <= ZOOM_TIERS.tierB.maxZoom ? ZOOM_TIERS.tierB : ZOOM_TIERS.tierC);
         const levelRank = {core: 2, regular: 1, supplementary: 0};
 
-        function visibleByZoom(spot) {
-            return levelRank[getSpotLevel(spot)] >= tier.minLevel;
+        const highMatchNames = {};
+        for (let i = 0; i < highMatches.length; i++) {
+            highMatchNames[highMatches[i].name] = true;
         }
 
-        const visibleNormal = normalSpots.filter(visibleByZoom);
+        const visibleNormal = [];
+        for (let i = 0; i < spotsWithScore.length; i++) {
+            const s = spotsWithScore[i];
+            if (!highMatchNames[s.name] && levelRank[getSpotLevel(s)] >= tier.minLevel) {
+                visibleNormal.push(s);
+            }
+        }
+
         const visibleHigh = highMatches;
 
         let jitteredNormal, jitteredHigh;
         if (canProjectGeo(projChart)) {
             jitteredNormal = applyCoordJitterPixel(visibleNormal, projChart);
-            jitteredNormal = applyPixelSpaceRepulsion(jitteredNormal, projChart);
+            if (jitteredNormal.length > 2) {
+                jitteredNormal = applyPixelSpaceRepulsion(jitteredNormal, projChart);
+            }
             jitteredHigh = applyCoordJitterPixel(visibleHigh, projChart);
-            jitteredHigh = applyPixelSpaceRepulsion(jitteredHigh, projChart);
+            if (jitteredHigh.length > 2) {
+                jitteredHigh = applyPixelSpaceRepulsion(jitteredHigh, projChart);
+            }
         } else {
             jitteredNormal = applyCoordJitter(visibleNormal);
             jitteredHigh = applyCoordJitter(visibleHigh);
         }
 
-        const normalSeriesData = jitteredNormal.map(spot => {
+        const normalSeriesData = [];
+        for (let i = 0; i < jitteredNormal.length; i++) {
+            const spot = jitteredNormal[i];
             const lvl = getSpotLevel(spot);
-            return {
+            const tm = typeMap[spot.type];
+            normalSeriesData.push({
                 name: spot.name,
-                value: [...spot.coord, spot.matchScore],
+                value: [spot.coord[0], spot.coord[1], spot.matchScore],
                 itemStyle: {
-                    color: typeMap[spot.type]?.color || '#00d4ff',
+                    color: tm?.color || '#00d4ff',
                     borderColor: 'rgba(255,255,255,0.3)',
                     borderWidth: 0.6,
                     opacity: 0.75
                 },
-                symbol: typeMap[spot.type].symbol,
+                symbol: tm.symbol,
                 symbolSize: SPOT_LEVEL_SIZE.normal[lvl]
-            };
-        });
+            });
+        }
 
-        const effectData = jitteredHigh.map(spot => {
+        const effectData = [];
+        const startName = routeStartSpot ? routeStartSpot.name : null;
+        for (let i = 0; i < jitteredHigh.length; i++) {
+            const spot = jitteredHigh[i];
             const lvl = getSpotLevel(spot);
-            const isStart = routeStartSpot && spot.name === routeStartSpot.name;
-            return {
+            const isStart = startName && spot.name === startName;
+            const tm = typeMap[spot.type];
+            const color = isStart ? '#FF6B6B' : '#F0C870';
+            effectData.push({
                 name: spot.name,
-                value: [...spot.coord, spot.matchScore],
+                value: [spot.coord[0], spot.coord[1], spot.matchScore],
                 itemStyle: {
-                    color: isStart ? '#FF6B6B' : '#F0C870',
+                    color: color,
                     shadowBlur: isStart ? 35 : 25,
                     shadowColor: isStart ? 'rgba(255,107,107,0.9)' : 'rgba(240,200,112,0.8)',
                     borderColor: isStart ? '#FF4757' : '#FFD966',
                     borderWidth: isStart ? 3 : 2
                 },
-                symbol: typeMap[spot.type].symbol,
+                symbol: tm.symbol,
                 symbolSize: isStart ? SPOT_LEVEL_SIZE.high[lvl] * 1.4 : SPOT_LEVEL_SIZE.high[lvl],
                 rippleEffect: {
                     brushType: 'stroke',
                     scale: isStart ? 5 : 4,
                     period: isStart ? 2 : 3
                 }
-            };
-        });
+            });
+        }
 
         let linesData = [];
         let generateSuccess = false;
+        const hLen = jitteredHigh.length;
 
         try {
-            if (jitteredHigh.length >= 2) {
-                for (let i = 0; i < jitteredHigh.length - 1; i++) {
+            if (hLen >= 2) {
+                for (let i = 0; i < hLen - 1; i++) {
                     linesData.push({
                         coords: [jitteredHigh[i].coord, jitteredHigh[i + 1].coord],
                         lineStyle: {
@@ -642,9 +676,9 @@ function pickHighMatches(spotsWithScore, rule) {
                         }
                     });
                 }
-                if (jitteredHigh.length > 2) {
+                if (hLen > 2) {
                     linesData.push({
-                        coords: [jitteredHigh[jitteredHigh.length - 1].coord, jitteredHigh[0].coord],
+                        coords: [jitteredHigh[hLen - 1].coord, jitteredHigh[0].coord],
                         lineStyle: {
                             color: 'rgba(240,200,112,0.6)',
                             width: 1.5,
@@ -660,12 +694,9 @@ function pickHighMatches(spotsWithScore, rule) {
             console.warn('[starmap] 线路生成失败，使用上一次有效线路:', e.message);
         }
 
-        // 降级方案：如果线路生成失败，使用上一次有效的线路数据
         if (!generateSuccess && lastValidLinesData.length > 0) {
             linesData = lastValidLinesData;
-            console.log('[starmap] 使用降级方案，显示上一次有效线路');
         } else if (generateSuccess) {
-            // 生成成功，更新缓存
             lastValidLinesData = linesData;
         }
 
@@ -1234,7 +1265,7 @@ function pickHighMatches(spotsWithScore, rule) {
         if (GeoJsonCache.has(provinceCode)) {
             return {geoJson: GeoJsonCache.get(provinceCode), fromCache: true};
         }
-        const url = geoPath || `geo/${provinceCode}_full.json`;
+        const url = geoPath || `/static/geo/${provinceCode}_full.json`;
         try {
             const res = await fetch(url);
             if (!res.ok) {
@@ -1271,7 +1302,7 @@ function pickHighMatches(spotsWithScore, rule) {
                 nameEn: d.nameEn || d.name,
                 center: d.center || [0, 0],
                 zoom: typeof d.zoom === 'number' ? d.zoom : 1.0,
-                geoPath: `geo/${provinceCode}_full.json`,
+                geoPath: `/static/geo/${provinceCode}_full.json`,
                 spotsZh: Array.isArray(d.spotsZh) ? d.spotsZh : (Array.isArray(d.spots) ? d.spots : []),
                 spotsEn: Array.isArray(d.spotsEn) ? d.spotsEn : (Array.isArray(d.spots) ? d.spots : [])
             };
@@ -1319,8 +1350,6 @@ function pickHighMatches(spotsWithScore, rule) {
             const latestLang = window.i18n ? window.i18n.getLang() : 'zh';
             const spotList = latestLang === 'en' ? cfg.spotsEn : cfg.spotsZh;
             currentSpotsData = Array.isArray(spotList) ? spotList : [];
-            // 切换省份时清空抖动缓存，避免不同省份的同名景点产生混淆的偏移量
-            jitterCache.clear();
             // 切换省份时清空线路缓存，避免不同省份的线路数据混淆
             lastValidLinesData = [];
             // 切换省份时清空路线起点
@@ -1414,7 +1443,6 @@ function pickHighMatches(spotsWithScore, rule) {
             } else {
                 setMapEmpty(false);
             }
-            refreshAll();
             setTimeout(() => {
                 const statusReady2 = window.i18n ? window.i18n.t('statusReady') : '就绪';
                 setStatus(statusReady2, '');
@@ -1468,7 +1496,7 @@ function pickHighMatches(spotsWithScore, rule) {
         renderProvinceOptions();
         // 默认选择：storage -> 首项（修复：使用安全的storage对象）
         const saved = storage.get('appProvince');
-        const initial = (saved && provinceConfig[saved]) ? saved : (list[0]?.code);
+        const initial = (saved && provinceConfig[saved]) ? saved : '340000';
         if (initial) {
             sel.value = initial;
             await switchProvince(initial);
@@ -1526,20 +1554,24 @@ function pickHighMatches(spotsWithScore, rule) {
                         const opt = myMapChart.getOption();
                         const geos = Array.isArray(opt.geo) ? opt.geo : (opt.geo ? [opt.geo] : []);
                         const z = (geos[0] && typeof geos[0].zoom === 'number') ? geos[0].zoom : currentZoom;
-                        if (Math.abs(z - currentZoom) > 0.01) {
+                        const diff = Math.abs(z - currentZoom);
+                        if (diff > 0.05) {
                             currentZoom = z;
                             const newTier = (z <= 1.0) ? 'tierA' : (z <= 1.5 ? 'tierB' : 'tierC');
                             if (newTier !== currentZoomTier) {
                                 currentZoomTier = newTier;
+                                myMapChart.setOption({
+                                    series: getMapSeries(currentSpotsData, currentPreference, myMapChart)
+                                }, false);
+                            } else if (diff > 0.2) {
+                                myMapChart.setOption({
+                                    series: getMapSeries(currentSpotsData, currentPreference, myMapChart)
+                                }, false);
                             }
-                            // 每次缩放变化都重算 series，确保像素空间防重叠跟随新 zoom 重排
-                            myMapChart.setOption({
-                                series: getMapSeries(currentSpotsData, currentPreference, myMapChart)
-                            }, false);
                         }
                     } catch (err) { /* 静默：getOption 异常不阻断交互 */
                     }
-                }, 220);
+                }, 300);
             });
         }
     }

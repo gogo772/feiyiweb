@@ -26,7 +26,10 @@ docs/
 .DS_Store
 Thumbs.db
 Desktop.ini
-
+# 数据库
+feiyiweb_django/db.sqlite3
+feiyiweb_django/static_root/
+feiyiweb_django/media/
 # 日志文件
 *.log
 *.err
@@ -38,7 +41,3 @@ npm-debug.log*
 .venv/
 __pycache__/
 *.pyc
-# 数据库文件
-db.sqlite3
-static_root/
-media/
