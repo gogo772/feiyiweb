@@ -1,0 +1,514 @@
+/* =====================================================
+   天气组件样式 - 独立样式文件
+   包含：天气组件布局、城市下拉菜单、天气预报悬浮框
+   依赖 CSS 变量（定义在 main.css :root 中）：
+     --ocean-deep, --breeze-blue, --glass-border, --accent-gold
+   ===================================================== */
+
+/* ========== 天气组件整体布局 ========== */
+.weather-widget {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #00d4ff 100%);
+    background-size: 200% 100%;
+    border-radius: 40px;
+    padding: 6px 16px;
+    backdrop-filter: blur(8px);
+    margin-right: 12px;
+    animation: gradientFlow 6s ease-in-out infinite;
+}
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* 交互时暂停流淌动画，避免干扰用户体验 */
+.weather-widget:hover {
+    animation-play-state: paused;
+}
+
+/* 天气组件内文字改为白色 */
+.weather-widget .weather-temp,
+.weather-widget .city-dropdown-trigger,
+.weather-widget .city-dropdown-trigger i {
+    color: white;
+}
+
+.weather-widget .city-dropdown-trigger {
+    background: rgb(30 74 118 / 70%); /* 海洋深蓝 */
+}
+
+.weather-widget .city-dropdown-trigger:hover {
+    background: rgb(30 74 118 / 85%);
+}
+
+/* ========== 城市下拉容器 ========== */
+.city-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* 触发器按钮样式 */
+.city-dropdown-trigger {
+    background: rgb(0 0 0 / 8%);
+    border-radius: 30px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #1e293b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.city-dropdown-trigger:hover {
+    background: rgb(0 0 0 / 15%);
+}
+
+/* 下拉菜单（默认隐藏，hover时显示） */
+.city-dropdown-menu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background: rgb(255 255 255 / 96%); /* 半透白背景 */
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 220px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 12px 28px rgb(0 0 0 / 15%);
+    border: 1px solid rgb(59 130 246 / 30%);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s;
+}
+
+/* 省份快速切换栏 */
+.weather-province-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 8px;
+    border-bottom: 1px solid rgb(0 0 0 / 0.08);
+    background: rgb(255 255 255 / 0.5);
+    border-radius: 20px 20px 0 0;
+}
+
+.weather-province-tab {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgb(0 0 0 / 0.05);
+    color: #334155;
+    border: 1px solid transparent;
+}
+
+.weather-province-tab:hover {
+    background: rgb(59 130 246 / 0.1);
+    color: #3b82f6;
+}
+
+.weather-province-tab.active {
+    background: rgb(59 130 246 / 0.15);
+    color: #3b82f6;
+    border-color: rgb(59 130 246 / 0.3);
+    font-weight: 600;
+}
+
+/* 城市列表容器 */
+.weather-cities-container {
+    padding: 8px 0;
+}
+
+/* 天气提示文案 */
+.weather-tip {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    color: #64748b;
+    background: rgb(59 130 246 / 0.05);
+    border-bottom: 1px solid rgb(59 130 246 / 0.1);
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+/* 省份项样式 */
+.weather-province-item {
+    border-bottom: 1px solid rgb(0 0 0 / 0.05);
+}
+
+.weather-province-item:last-child {
+    border-bottom: none;
+}
+
+/* 省份头部（可点击展开） */
+.weather-province-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1e293b;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+}
+
+.weather-province-header:hover {
+    background: rgb(59 130 246 / 0.1);
+}
+
+/* 省份箭头 */
+.weather-province-arrow {
+    font-size: 0.85rem;
+    color: #64748b;
+    transition: transform 0.2s ease;
+}
+
+/* 城市容器（默认隐藏） */
+.weather-province-cities {
+    display: none;
+    background: rgb(0 0 0 / 0.02);
+    padding: 4px 0;
+}
+
+/* 省份展开时显示城市 */
+.weather-province-item.expanded .weather-province-cities {
+    display: block;
+}
+
+.weather-province-item.expanded .weather-province-arrow {
+    transform: rotate(90deg);
+}
+
+/* 鼠标悬停时显示菜单 */
+.city-dropdown:hover .city-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 城市菜单项样式（兼容旧结构） */
+.weather-province-cities li {
+    padding: 8px 28px 8px 32px;
+    font-size: 0.9rem;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.weather-province-cities li:hover {
+    background: rgb(59 130 246 / 0.15);
+    color: #3b82f6;
+}
+
+/* 手机端适配：触摸屏可以点击展开 */
+@media (width <= 768px) {
+    .city-dropdown .city-dropdown-menu {
+        position: fixed;
+        inset: auto 20px 70px;
+        width: auto;
+        max-height: 350px;
+    }
+
+    .city-dropdown:hover .city-dropdown-menu {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .city-dropdown.active .city-dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .weather-province-header {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .weather-province-cities li {
+        padding: 8px 32px 8px 36px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ========== 天气组件内的天气图标 ========== */
+.weather-widget .weather-info .weather-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+/* ========== 天气信息显示 ========== */
+/* 隐藏天气描述文字 */
+.weather-desc {
+    display: none;
+}
+
+/* 调整天气信息布局 */
+.weather-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.weather-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.weather-temp {
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* 天气位置显示（城市, 省份） */
+.weather-location {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+/* ========== 城市下拉菜单 - 分组样式 ========== */
+.city-group {
+    margin: 2px 0;
+}
+
+.group-header {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #3b82f6;
+    background: rgb(59 130 246 / 6%);
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgb(59 130 246 / 15%);
+    margin-top: 2px;
+}
+
+.group-header:first-of-type {
+    margin-top: 0;
+}
+
+/* 城市列表项样式 */
+.weather-cities-list li {
+    padding: 6px 16px 6px 28px;
+    font-size: 0.85rem;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.weather-cities-list li:hover {
+    background: rgb(59 130 246 / 0.15);
+    color: #3b82f6;
+}
+
+.weather-cities-list li.selected {
+    color: #3b82f6;
+    font-weight: 600;
+    background: rgb(59 130 246 / 0.08);
+}
+
+.city-dropdown-menu li:hover {
+    background: rgb(59 130 246 / 20%);
+}
+
+/* 移动端适配保持一致 */
+@media (width <= 768px) {
+    .city-dropdown-menu {
+        width: auto;
+        max-width: 220px;
+    }
+
+    .city-dropdown-menu li {
+        padding-left: 28px;
+    }
+}
+
+/* ========== 天气预报悬浮框 - 苹果风格 ========== */
+.weather-info {
+    position: relative;
+    cursor: pointer;
+}
+
+.weather-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform: translateX(-20px);
+    margin-top: 12px;
+    background: rgb(30 40 50 / 94%);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 16px;
+    min-width: 280px;
+    box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
+    border: 1px solid rgb(255 255 255 / 20%);
+    z-index: 1000;
+    display: none;
+    color: #f0f0f0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    transition: transform 400ms ease-in-out, opacity 300ms ease-in-out;
+    opacity: 0;
+}
+
+.weather-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 16px;
+    transform: translateX(0);
+    border: 8px solid transparent;
+    border-bottom-color: rgb(30 40 50 / 94%);
+}
+
+/* 悬浮框可见状态 - 带右移动画 */
+.weather-tooltip.visible {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* 每天的预报行 */
+.forecast-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgb(255 255 255 / 15%);
+}
+
+.forecast-row:last-child {
+    border-bottom: none;
+}
+
+/* 左侧：日期 + 星期 + 图标 */
+.forecast-left {
+    width: 110px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.forecast-date {
+    font-weight: 600;
+    min-width: 50px;
+}
+
+.forecast-weekday {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-left: 4px;
+}
+
+.forecast-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+/* 中间：温度范围条 */
+.forecast-middle {
+    flex: 1;
+    margin: 0 12px;
+    position: relative;
+}
+
+.temp-range-bar {
+    position: relative;
+    height: 4px;
+    background: rgb(255 255 255 / 30%);
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.temp-range-fill {
+    position: absolute;
+    height: 100%;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    border-radius: 4px;
+    left: 0%;
+    width: 0%;
+}
+
+.temp-range-dot {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: #ffd966;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgb(0 0 0 / 20%);
+    pointer-events: none;
+}
+
+.temp-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+.temp-low, .temp-high {
+    font-weight: 500;
+}
+
+
+
+/* 移动端适配 */
+@media (width <= 768px) {
+    .weather-tooltip {
+        left: 0;
+        right: auto;
+        transform: translateX(0);
+        min-width: 260px;
+        padding: 12px;
+    }
+
+    .weather-tooltip::before {
+        left: 16px;
+        right: auto;
+        transform: none;
+    }
+
+    .forecast-left {
+        width: 80px;
+        gap: 6px;
+    }
+
+    .forecast-date {
+        font-size: 0.85rem;
+        min-width: 40px;
+    }
+
+    .forecast-icon {
+        width: 24px;
+        height: 24px;
+    }
+}

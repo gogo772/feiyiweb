@@ -38,3 +38,7 @@ npm-debug.log*
 .venv/
 __pycache__/
 *.pyc
+# 数据库文件
+db.sqlite3
+static_root/
+media/

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>非遗星图・多省文旅雷达 | 沉浸式景点探索</title>
+    <link rel="icon" href="static/img/logo/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="static/img/logo/logo.png">
+    <link rel="stylesheet" href="static/css/navbar.css">
+    <link rel="stylesheet" href="static/css/starmap.css">
+    <link rel="stylesheet" href="static/css/weather.css">
+    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="static/js/spots-data.js"></script>
+    <script src="static/js/city-name-map.js"></script>
+</head>
+<body>
+    <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
+    <div id="navbarMount"></div>
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText"></div>
+    </div>
+    <div class="star-bg"></div>
+    <div class="dashboard">
+        <div class="map-container">
+            <span class="map-corner-bl"></span>
+            <span class="map-corner-br"></span>
+            <!-- 天气组件（左上角） -->
+            <div class="starmap-weather-wrap" id="starmapWeatherWrap">
+                <div class="weather-widget" id="weatherWidget">
+                    <div class="weather-info" id="weatherInfo">
+                        <img class="weather-icon" src="" alt="">
+                        <span class="weather-temp">--°C</span>
+                        <span class="weather-location" id="weatherLocation">--</span>
+                        <div class="weather-tooltip" id="weatherTooltip"></div>
+                    </div>
+                    <div class="city-dropdown" id="cityDropdown">
+                        <div class="city-dropdown-trigger">
+                            <span id="currentCityDisplay">合肥</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="city-dropdown-menu" id="cityMenu">
+                            <!-- 省份快速切换栏 -->
+                            <div class="weather-province-tabs" id="weatherProvinceTabs"></div>
+                            <!-- 城市列表容器 -->
+                            <div class="weather-cities-container" id="weatherCitiesContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="province-switcher" id="provinceSwitcher">
+                <span class="switcher-label">省份</span>
+                <select id="provinceSelect" aria-label="省份切换" data-i18n-aria="provinceSelectAria"></select>
+                <span class="switcher-status" id="switcherStatus">就绪</span>
+            </div>
+            <div id="mapChart"></div>
+            <!-- 地图内层加载动画（覆盖在 mapChart 之上，初始隐藏） -->
+            <div id="mapLoading" class="map-loading hide" aria-live="polite">
+                <div class="mini-spinner"></div>
+                <div class="mini-loading-text" id="mapLoadingText" data-i18n="drawingStarmap">✨ 星图绘制中 ✨</div>
+            </div>
+            <!-- 地图内层空状态（数据缺失兜底，初始隐藏） -->
+            <div id="mapEmpty" class="map-empty hide" role="status">
+                <div class="empty-icon">🌌</div>
+                <div class="empty-title" data-i18n="emptyTitle">该省份暂无景点数据</div>
+                <div class="empty-tip" data-i18n="emptyTip">请尝试切换至其他省份，或稍后再试</div>
+            </div>
+            <div class="map-legend" id="mapLegend">
+                <div class="legend-item"><div class="legend-badge circle" style="background:#FFD966;"></div><span id="legendNaturalText">自然风光</span></div>
+                <div class="legend-item"><div class="legend-badge" style="background:#C9B6E0;"></div><span id="legendHistoricText">人文古迹</span></div>
+                <div class="legend-item"><div class="legend-badge" style="background:#FFA07A;"></div><span id="legendIntangibleText">非遗体验</span></div>
+                <div class="legend-item"><div class="legend-badge" style="background:#76E4B0;"></div><span id="legendFoodText">美食打卡</span></div>
+                <div class="legend-item"><div style="width:12px;height:12px;background:#FCE570;border-radius:50%;box-shadow:0 0 4px gold;"></div><span id="legendHighMatchText">高匹配</span></div>
+            </div>
+            <div class="filter-tags" id="typeFilterGroup">
+                <button type="button" class="tag-btn active" data-category="all" id="filterAll">全部星点</button>
+                <button type="button" class="tag-btn" data-category="nature" id="filterNatural">自然风光</button>
+                <button type="button" class="tag-btn" data-category="historic" id="filterHistoric">人文古迹</button>
+                <button type="button" class="tag-btn" data-category="heritage" id="filterIntangible">非遗体验</button>
+                <button type="button" class="tag-btn" data-category="food" id="filterFood">美食打卡</button>
+            </div>
+        </div>
+        <div class="radar-panel">
+            <span class="panel-corner tl"></span>
+            <span class="panel-corner tr"></span>
+            <span class="panel-corner bl"></span>
+            <span class="panel-corner br"></span>
+            <div class="title-section">
+                <h1 id="mainTitle">徽韵星图 · 文旅雷达</h1>
+                <p id="subTitle">调整偏好 · 星辰共鸣 · 灵感流光</p>
+            </div>
+            <div class="radar-wrapper">
+                <div id="radarChart"></div>
+            </div>
+            <div class="slider-group" id="preferenceSliders">
+                <div class="slider-item"><label id="cultureLabel">文化厚重感</label><input type="range" id="cultureSlider" min="0" max="100" value="68"><span id="cultureValue" class="slider-value">68</span></div>
+                <div class="slider-item"><label id="sceneryLabel">风景出片率</label><input type="range" id="scenerySlider" min="0" max="100" value="82"><span id="sceneryValue" class="slider-value">82</span></div>
+                <div class="slider-item"><label id="foodLabel">美食浓度</label><input type="range" id="foodSlider" min="0" max="100" value="55"><span id="foodValue" class="slider-value">55</span></div>
+                <div class="slider-item"><label id="heritageLabel">非遗互动度</label><input type="range" id="heritageSlider" min="0" max="100" value="70"><span id="heritageValue" class="slider-value">70</span></div>
+                <div class="slider-item"><label id="leisureLabel">休闲指数</label><input type="range" id="leisureSlider" min="0" max="100" value="80"><span id="leisureValue" class="slider-value">80</span></div>
+            </div>
+            <a href="travel.html" class="starmap-cta" id="starmapCta" title="开启非遗深度之旅" data-i18n-title="starmapCtaText">
+                <i class="fas fa-route"></i>
+                <span data-i18n="starmapCtaText">开启非遗深度之旅</span>
+                <i class="fas fa-arrow-right cta-arrow-icon" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+    <div id="footerMount"></div>
+
+    <script src="static/js/i18n.js"></script>
+    <script src="static/js/tianqi.js"></script>
+    <script src="static/js/starmap-app.js"></script>
+    <script src="static/js/navbar.js"></script>
+    <script src="static/js/auth.js"></script>
+    <script src="static/js/components.js"></script>
+</body>
+</html>

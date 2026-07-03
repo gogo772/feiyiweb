@@ -9,7 +9,12 @@
     "translate-full": "node mimo-translate.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
     "dotenv": "^16.0.0",
-    "pinyin-pro": "^3.28.1"
+    "express": "^5.2.1",
+    "pinyin-pro": "^3.28.1",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1"
   }
 }
