@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
-    <link rel="stylesheet" href="static/css/chat.css">
-    <link rel="stylesheet" href="static/css/auth.css">
-    <link rel="stylesheet" href="static/css/navbar.css">
-    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <link rel="stylesheet" href="/static/css/common.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>去旅游 · 非遗主题游 | 华夏非遗</title>
+    <title>华夏非遗 · 去旅游</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="static/js/i18n.js"></script>
+    <script src="/static/js/i18n.js"></script>
     <style>
         html, body {
             min-height: 100%;
@@ -224,7 +224,7 @@
 
         body {
             padding-top: 80px;
-            background-image: url('static/img/beijin/05.jpg');
+            background-image: url('/static/img/beijin/05.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -466,7 +466,7 @@
 </div>
 
 <!-- 返回星图悬浮按钮 -->
-<a href="starmap.html" class="back-to-starmap" data-i18n-title="backToStarmap" title="返回皖韵星图">
+<a href="/starmap" class="back-to-starmap" data-i18n-title="backToStarmap" title="返回皖韵星图">
     <i class="fas fa-arrow-left cta-arrow-icon" aria-hidden="true"></i>
     <span data-i18n="backToStarmap">返回星图</span>
 </a>
@@ -492,13 +492,13 @@
     <div id="tourGrid" class="tour-grid"></div>
     <div id="pagination" class="pagination"></div>
 </div>
-<div id="footerMount"></div>
+{% include 'components/footer.html' %}
 
 
 <!-- AI 聊天窗口 (菲菲非遗小助手，无头像版) -->
 <div id="aiChatWindow" class="ai-chat-window">
     <div class="chat-header">
-        <span data-i18n="aiAssistant"><img class="chat-avatar" src="static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> 菲菲 · 非遗小助手</span>
+        <span data-i18n="aiAssistant"><img class="chat-avatar" src="/static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> 菲菲 · 非遗小助手</span>
         <span class="close-chat" id="closeChat">&times;</span>
     </div>
     <div class="chat-body" id="chatBody">
@@ -638,21 +638,21 @@
 
     // 旅游数据
     const toursData = [
-        { id: 0, nameKey: 'tour_name_0', regionKey: 'regionYunnan', days: 7, price: 3280, sold: 1280, img: 'static/img/travel-img/1.jpg', descKey: 'tour_desc_0', highlightKey: 'tour_highlight_0' },
-        { id: 1, nameKey: 'tour_name_1', regionKey: 'regionGuizhou', days: 5, price: 2680, sold: 2450, img: 'static/img/travel-img/2.jpg', descKey: 'tour_desc_1', highlightKey: 'tour_highlight_1' },
-        { id: 2, nameKey: 'tour_name_2', regionKey: 'regionSichuan', days: 4, price: 1980, sold: 862, img: 'static/img/travel-img/3.jpg', descKey: 'tour_desc_2', highlightKey: 'tour_highlight_2' },
-        { id: 3, nameKey: 'tour_name_3', regionKey: 'regionYunnan', days: 5, price: 3580, sold: 734, img: 'static/img/travel-img/4.jpg', descKey: 'tour_desc_3', highlightKey: 'tour_highlight_3' },
-        { id: 4, nameKey: 'tour_name_4', regionKey: 'regionGuizhou', days: 4, price: 2280, sold: 591, img: 'static/img/travel-img/5.jpg', descKey: 'tour_desc_4', highlightKey: 'tour_highlight_4' },
-        { id: 5, nameKey: 'tour_name_5', regionKey: 'regionSichuan', days: 6, price: 3180, sold: 412, img: 'static/img/travel-img/6.jpg', descKey: 'tour_desc_5', highlightKey: 'tour_highlight_5' },
-        { id: 6, nameKey: 'tour_name_6', regionKey: 'regionYunnan', days: 6, price: 3980, sold: 1560, img: 'static/img/travel-img/7.jpg', descKey: 'tour_desc_6', highlightKey: 'tour_highlight_6' },
-        { id: 7, nameKey: 'tour_name_7', regionKey: 'regionGuizhou', days: 8, price: 4380, sold: 2030, img: 'static/img/travel-img/8.jpg', descKey: 'tour_desc_7', highlightKey: 'tour_highlight_7' },
-        { id: 8, nameKey: 'tour_name_8', regionKey: 'regionSichuan', days: 4, price: 2480, sold: 984, img: 'static/img/travel-img/9.jpg', descKey: 'tour_desc_8', highlightKey: 'tour_highlight_8' },
-        { id: 9, nameKey: 'tour_name_9', regionKey: 'regionYunnan', days: 9, price: 5280, sold: 2120, img: 'static/img/travel-img/10.jpg', descKey: 'tour_desc_9', highlightKey: 'tour_highlight_9' },
-        { id: 10, nameKey: 'tour_name_10', regionKey: 'regionGuizhou', days: 4, price: 1980, sold: 367, img: 'static/img/travel-img/11.jpg', descKey: 'tour_desc_10', highlightKey: 'tour_highlight_10' },
-        { id: 11, nameKey: 'tour_name_11', regionKey: 'regionSichuan', days: 5, price: 3680, sold: 521, img: 'static/img/travel-img/12.jpg', descKey: 'tour_desc_11', highlightKey: 'tour_highlight_11' },
-        { id: 12, nameKey: 'tour_name_12', regionKey: 'regionYunnan', days: 5, price: 2980, sold: 1670, img: 'static/img/travel-img/13.jpg', descKey: 'tour_desc_12', highlightKey: 'tour_highlight_12' },
-        { id: 13, nameKey: 'tour_name_13', regionKey: 'regionGuizhou', days: 7, price: 4280, sold: 886, img: 'static/img/travel-img/14.jpg', descKey: 'tour_desc_13', highlightKey: 'tour_highlight_13' },
-        { id: 14, nameKey: 'tour_name_14', regionKey: 'regionSichuan', days: 3, price: 1680, sold: 432, img: 'static/img/travel-img/15.jpg', descKey: 'tour_desc_14', highlightKey: 'tour_highlight_14' }
+        { id: 0, nameKey: 'tour_name_0', regionKey: 'regionYunnan', days: 7, price: 3280, sold: 1280, img: '/static/img/travel-img/1.jpg', descKey: 'tour_desc_0', highlightKey: 'tour_highlight_0' },
+        { id: 1, nameKey: 'tour_name_1', regionKey: 'regionGuizhou', days: 5, price: 2680, sold: 2450, img: '/static/img/travel-img/2.jpg', descKey: 'tour_desc_1', highlightKey: 'tour_highlight_1' },
+        { id: 2, nameKey: 'tour_name_2', regionKey: 'regionSichuan', days: 4, price: 1980, sold: 862, img: '/static/img/travel-img/3.jpg', descKey: 'tour_desc_2', highlightKey: 'tour_highlight_2' },
+        { id: 3, nameKey: 'tour_name_3', regionKey: 'regionYunnan', days: 5, price: 3580, sold: 734, img: '/static/img/travel-img/4.jpg', descKey: 'tour_desc_3', highlightKey: 'tour_highlight_3' },
+        { id: 4, nameKey: 'tour_name_4', regionKey: 'regionGuizhou', days: 4, price: 2280, sold: 591, img: '/static/img/travel-img/5.jpg', descKey: 'tour_desc_4', highlightKey: 'tour_highlight_4' },
+        { id: 5, nameKey: 'tour_name_5', regionKey: 'regionSichuan', days: 6, price: 3180, sold: 412, img: '/static/img/travel-img/6.jpg', descKey: 'tour_desc_5', highlightKey: 'tour_highlight_5' },
+        { id: 6, nameKey: 'tour_name_6', regionKey: 'regionYunnan', days: 6, price: 3980, sold: 1560, img: '/static/img/travel-img/7.jpg', descKey: 'tour_desc_6', highlightKey: 'tour_highlight_6' },
+        { id: 7, nameKey: 'tour_name_7', regionKey: 'regionGuizhou', days: 8, price: 4380, sold: 2030, img: '/static/img/travel-img/8.jpg', descKey: 'tour_desc_7', highlightKey: 'tour_highlight_7' },
+        { id: 8, nameKey: 'tour_name_8', regionKey: 'regionSichuan', days: 4, price: 2480, sold: 984, img: '/static/img/travel-img/9.jpg', descKey: 'tour_desc_8', highlightKey: 'tour_highlight_8' },
+        { id: 9, nameKey: 'tour_name_9', regionKey: 'regionYunnan', days: 9, price: 5280, sold: 2120, img: '/static/img/travel-img/10.jpg', descKey: 'tour_desc_9', highlightKey: 'tour_highlight_9' },
+        { id: 10, nameKey: 'tour_name_10', regionKey: 'regionGuizhou', days: 4, price: 1980, sold: 367, img: '/static/img/travel-img/11.jpg', descKey: 'tour_desc_10', highlightKey: 'tour_highlight_10' },
+        { id: 11, nameKey: 'tour_name_11', regionKey: 'regionSichuan', days: 5, price: 3680, sold: 521, img: '/static/img/travel-img/12.jpg', descKey: 'tour_desc_11', highlightKey: 'tour_highlight_11' },
+        { id: 12, nameKey: 'tour_name_12', regionKey: 'regionYunnan', days: 5, price: 2980, sold: 1670, img: '/static/img/travel-img/13.jpg', descKey: 'tour_desc_12', highlightKey: 'tour_highlight_12' },
+        { id: 13, nameKey: 'tour_name_13', regionKey: 'regionGuizhou', days: 7, price: 4280, sold: 886, img: '/static/img/travel-img/14.jpg', descKey: 'tour_desc_13', highlightKey: 'tour_highlight_13' },
+        { id: 14, nameKey: 'tour_name_14', regionKey: 'regionSichuan', days: 3, price: 1680, sold: 432, img: '/static/img/travel-img/15.jpg', descKey: 'tour_desc_14', highlightKey: 'tour_highlight_14' }
     ];
 
     let currentFilter = "all";
@@ -717,7 +717,7 @@
                 e.stopPropagation();
                 const id = btn.dataset.id;
                 requireLogin(() => {
-                    window.location.href = `product.html?id=${id}&type=travel`;
+                    window.location.href = `/product?id=${id}&type=travel`;
                 });
             });
         });
@@ -766,12 +766,12 @@
         return div.innerHTML;
     }
 </script>
-<script src="static/js/sidebar.js"></script>
-<script src="static/js/chat.js"></script>
-<script src="static/js/password-utils.js"></script>
-<script src="static/js/components.js"></script>
-<script src="static/js/auth.js"></script>
-<script src="static/js/navbar.js"></script>
+<script src="/static/js/sidebar.js"></script>
+<script src="/static/js/chat.js"></script>
+<script src="/static/js/password-utils.js"></script>
+<script src="/static/js/components.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/navbar.js"></script>
 
 </body>
 </html>

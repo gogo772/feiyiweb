@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-        <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
-        <link rel="preload" href="static/lib/d3.v7.min.js" as="script">
-        <link rel="preload" href="static/data/intangible_heritage_data.json" as="fetch" crossorigin>
-
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon_io/apple-touch-icon.png">
+    <link rel="preload" href="/static/lib/d3.v7.min.js" as="script">
+    <link rel="preload" href="/static/data/intangible_heritage_data.json" as="fetch" crossorigin>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>华夏非遗 · 知识图谱</title>
     <!-- 引入 D3.js 核心库（本地文件） -->
-    <script src="static/lib/d3.v7.min.js"></script>
+    <script src="/static/lib/d3.v7.min.js"></script>
     <!-- 引入 Font Awesome 图标库 -->
-    <link rel="stylesheet" href="static/lib/font-awesome/all.min.css">
-    <script src="static/js/i18n.js"></script>
+    <link rel="stylesheet" href="/static/lib/font-awesome/all.min.css">
+    <script src="/static/js/i18n.js"></script>
     <!-- 引入聊天组件样式（菲菲助手） -->
-    <link rel="stylesheet" href="static/css/chat.css">
-    <link rel="stylesheet" href="static/css/auth.css">
-    <link rel="stylesheet" href="static/css/navbar.css">
-    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <link rel="stylesheet" href="/static/css/common.css">
     <style>
         html, body {
-    min-height: 100%;
-    overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
-    scroll-behavior: smooth;
-    scrollbar-width: none;      /* Firefox 隐藏滚动条 */
-}
+            min-height: 100%;
+            overflow-y: auto; /* 改为 auto，并隐藏滚动条 */
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Firefox 隐藏滚动条 */
+        }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-    width: 0;
-    background: transparent;    /* Chrome/Safari/Edge 隐藏滚动条 */
-}
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            width: 0;
+            background: transparent; /* Chrome/Safari/Edge 隐藏滚动条 */
+        }
+
         /* 顶部导航栏：样式见 static/css/navbar.css */
         /* ---------- 全局 & 全屏基本样式 ---------- */
         * {
@@ -44,8 +44,8 @@ body::-webkit-scrollbar {
             font-family: 'Segoe UI', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif;
             color: #e8eef2;
             min-height: 100vh;
-            padding-top: 80px;      /* 为固定导航栏留出空间 */
-            padding-bottom: 20px;   /* 底部留少量空间 */
+            padding-top: 80px; /* 为固定导航栏留出空间 */
+            padding-bottom: 20px; /* 底部留少量空间 */
         }
 
         /* 顶部导航栏：样式见 static/css/navbar.css */
@@ -57,25 +57,30 @@ body::-webkit-scrollbar {
             background: rgba(10, 15, 26, 0.75);
             backdrop-filter: blur(2px);
             border-radius: 40px;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(201, 169, 110, 0.35);
             overflow: hidden;
             position: relative;
             cursor: grab;
             transition: box-shadow 0.3s;
         }
+
         .graph-container:hover {
-            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
+
         .graph-svg {
             width: 100%;
-            height: 86vh;               /* 略微再增高一点，充分利用空间 */
+            height: 86vh; /* 略微再增高一点，充分利用空间 */
             display: block;
-            background: radial-gradient(ellipse at 30% 35%, rgba(60, 80, 120, 0.2) 0%, rgba(0,0,0,0.4) 80%);
-        margin-bottom: 47px;}
+            background: radial-gradient(ellipse at 30% 35%, rgba(60, 80, 120, 0.2) 0%, rgba(0, 0, 0, 0.4) 80%);
+            margin-bottom: 47px;
+        }
 
         @media (max-width: 768px) {
-            .graph-svg { height: 76vh; }
+            .graph-svg {
+                height: 76vh;
+            }
         }
 
         /* 工具提示 – 精致磨砂玻璃风格 */
@@ -93,9 +98,13 @@ body::-webkit-scrollbar {
             max-width: 320px;
             opacity: 0;
             transition: opacity 0.2s ease, transform 0.1s;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
         }
-        .graph-tooltip.visible { opacity: 1; }
+
+        .graph-tooltip.visible {
+            opacity: 1;
+        }
+
         .graph-tooltip .tt-title {
             font-weight: bold;
             font-size: 1rem;
@@ -104,17 +113,34 @@ body::-webkit-scrollbar {
             border-left: 3px solid #c9a96e;
             padding-left: 10px;
         }
+
         .graph-tooltip .tt-category {
             display: inline-block;
             font-size: 0.7rem;
             padding: 3px 12px;
             border-radius: 30px;
             margin-bottom: 10px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
         }
-        .graph-tooltip table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
-        .graph-tooltip th { color: #aaa; font-weight: normal; width: 70px; text-align: left; padding: 5px 6px; }
-        .graph-tooltip td { padding: 5px 6px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        .graph-tooltip table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.7rem;
+        }
+
+        .graph-tooltip th {
+            color: #aaa;
+            font-weight: normal;
+            width: 70px;
+            text-align: left;
+            padding: 5px 6px;
+        }
+
+        .graph-tooltip td {
+            padding: 5px 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
         /* 图例 – 悬浮玻璃效果 */
         .graph-legend {
@@ -132,6 +158,7 @@ body::-webkit-scrollbar {
             border: 1px solid rgba(201, 169, 110, 0.3);
             z-index: 15;
         }
+
         .graph-legend-item {
             display: flex;
             align-items: center;
@@ -140,14 +167,25 @@ body::-webkit-scrollbar {
             padding: 6px 12px;
             border-radius: 40px;
             transition: 0.2s;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
         }
+
         .graph-legend-item:hover {
             background: rgba(201, 169, 110, 0.2);
             transform: translateY(-1px);
         }
-        .graph-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .graph-legend-count { color: #c9b18a; margin-left: 4px; font-size: 0.65rem; }
+
+        .graph-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .graph-legend-count {
+            color: #c9b18a;
+            margin-left: 4px;
+            font-size: 0.65rem;
+        }
 
         /* 重置按钮 */
         .graph-reset-btn {
@@ -168,6 +206,7 @@ body::-webkit-scrollbar {
             align-items: center;
             gap: 8px;
         }
+
         .graph-reset-btn:hover {
             background: #c9a96e;
             color: #1f1b18;
@@ -181,7 +220,7 @@ body::-webkit-scrollbar {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             padding: 12px 24px;
             border-radius: 60px;
             color: #ffd966;
@@ -193,33 +232,45 @@ body::-webkit-scrollbar {
 
         /* 响应式微调 */
         @media (max-width: 768px) {
-            .graph-legend { bottom: 12px; left: 12px; padding: 6px 12px; gap: 8px; }
-            .graph-reset-btn { bottom: 14px; right: 14px; padding: 6px 14px; font-size: 0.7rem; }
+            .graph-legend {
+                bottom: 12px;
+                left: 12px;
+                padding: 6px 12px;
+                gap: 8px;
+            }
+
+            .graph-reset-btn {
+                bottom: 14px;
+                right: 14px;
+                padding: 6px 14px;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 统一顶部导航栏 (与 index.html 完全一致) -->
-    <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
-    <div id="navbarMount"></div>
+<!-- 统一顶部导航栏 (与 index.html 完全一致) -->
+<!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
+<div id="navbarMount"></div>
 
-    <!-- 知识图谱主体内容（标题已删除，图谱直接显示） -->
-    <div class="graph-container" id="graphContainer">
-        <svg class="graph-svg" id="knowledgeGraphSvg"></svg>
-        <div class="graph-tooltip" id="graphTooltip"></div>
-        <div class="graph-legend" id="graphLegend"></div>
-        <div class="graph-reset-btn" id="graphResetBtn">
-            <i class="fas fa-sync-alt"></i> <span data-i18n="resetView">重置视角</span>
-        </div>
-        <div class="loading-message" id="loadingMsg">
-            <i class="fas fa-spinner fa-pulse"></i> <span data-i18n="loadingKnowledge">正在加载非遗数据...</span>
-        </div>
+<!-- 知识图谱主体内容（标题已删除，图谱直接显示） -->
+<div class="graph-container" id="graphContainer">
+    <svg class="graph-svg" id="knowledgeGraphSvg"></svg>
+    <div class="graph-tooltip" id="graphTooltip"></div>
+    <div class="graph-legend" id="graphLegend"></div>
+    <div class="graph-reset-btn" id="graphResetBtn">
+        <i class="fas fa-sync-alt"></i> <span data-i18n="resetView">重置视角</span>
     </div>
+    <div class="loading-message" id="loadingMsg">
+        <i class="fas fa-spinner fa-pulse"></i> <span data-i18n="loadingKnowledge">正在加载非遗数据...</span>
+    </div>
+</div>
 
-   <!-- AI 聊天窗口（菲菲无头像版） -->
+<!-- AI 聊天窗口（菲菲无头像版） -->
 <div id="aiChatWindow" class="ai-chat-window">
     <div class="chat-header">
-        <span><img class="chat-avatar" src="static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> <span data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span>
+        <span><img class="chat-avatar" src="/static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> <span
+                data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span>
         <span class="close-chat" id="closeChat">&times;</span>
     </div>
     <div class="chat-body" id="chatBody">
@@ -234,402 +285,405 @@ body::-webkit-scrollbar {
     </div>
 </div>
 
-    <script>
-        // 导航栏激活态由 static/js/navbar.js 统一处理
-    </script>
+<script>
+    // 导航栏激活态由 static/js/navbar.js 统一处理
+</script>
 
-    <!-- 知识图谱核心脚本 -->
-    <script>
-        (function initKnowledgeGraph() {
-            const COLORS = {
-                '民间文学': '#FF6B6B',
-                '传统音乐': '#FF9F43',
-                '传统舞蹈': '#FECA57',
-                '传统戏剧': '#48DBFB',
-                '曲艺': '#FF6FB7',
-                '传统体育、游艺与杂技': '#A29BFE',
-                '传统美术': '#55E6C1',
-                '传统技艺': '#FD79A8',
-                '传统医药': '#00CEC9',
-                '民俗': '#6C5CE7',
-                'Folk Literature': '#FF6B6B',
-                'Traditional Music': '#FF9F43',
-                'Traditional Dance': '#FECA57',
-                'Traditional Drama': '#48DBFB',
-                'Quyi': '#FF6FB7',
-                'Traditional Sports, Recreational Activities and Acrobatics': '#A29BFE',
-                'Traditional Fine Arts': '#55E6C1',
-                'Traditional Crafts': '#FD79A8',
-                'Traditional Medicine': '#00CEC9',
-                'Folk Customs': '#6C5CE7'
-            };
-            const ROOT_COLOR = '#f0c060';
-            const ROOT_R = 26;
-            const CAT_R = 16;
-            const ITEM_R = 6;
-            const CAT_DIST = 270;
-            const MAX_ITEMS_PER_CAT = 160;
+<!-- 知识图谱核心脚本 -->
+<script>
+    (function initKnowledgeGraph() {
+        const COLORS = {
+            '民间文学': '#FF6B6B',
+            '传统音乐': '#FF9F43',
+            '传统舞蹈': '#FECA57',
+            '传统戏剧': '#48DBFB',
+            '曲艺': '#FF6FB7',
+            '传统体育、游艺与杂技': '#A29BFE',
+            '传统美术': '#55E6C1',
+            '传统技艺': '#FD79A8',
+            '传统医药': '#00CEC9',
+            '民俗': '#6C5CE7',
+            'Folk Literature': '#FF6B6B',
+            'Traditional Music': '#FF9F43',
+            'Traditional Dance': '#FECA57',
+            'Traditional Drama': '#48DBFB',
+            'Quyi': '#FF6FB7',
+            'Traditional Sports, Recreational Activities and Acrobatics': '#A29BFE',
+            'Traditional Fine Arts': '#55E6C1',
+            'Traditional Crafts': '#FD79A8',
+            'Traditional Medicine': '#00CEC9',
+            'Folk Customs': '#6C5CE7'
+        };
+        const ROOT_COLOR = '#f0c060';
+        const ROOT_R = 26;
+        const CAT_R = 16;
+        const ITEM_R = 6;
+        const CAT_DIST = 270;
+        const MAX_ITEMS_PER_CAT = 160;
 
-            const container = document.getElementById('graphContainer');
-            const svg = d3.select('#knowledgeGraphSvg');
-            let width = container.clientWidth, height = container.clientHeight || 600;
-            svg.attr('width', width).attr('height', height);
+        const container = document.getElementById('graphContainer');
+        const svg = d3.select('#knowledgeGraphSvg');
+        let width = container.clientWidth, height = container.clientHeight || 600;
+        svg.attr('width', width).attr('height', height);
 
-            const gRoot = svg.append('g');
-            const linkG = gRoot.append('g');
-            const nodeG = gRoot.append('g');
-            const labelG = gRoot.append('g');
+        const gRoot = svg.append('g');
+        const linkG = gRoot.append('g');
+        const nodeG = gRoot.append('g');
+        const labelG = gRoot.append('g');
 
-            const zoom = d3.zoom()
-                .scaleExtent([0.2, 4])
-                .on('zoom', (e) => gRoot.attr('transform', e.transform));
-            svg.call(zoom);
-            svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85));
+        const zoom = d3.zoom()
+            .scaleExtent([0.2, 4])
+            .on('zoom', (e) => gRoot.attr('transform', e.transform));
+        svg.call(zoom);
+        svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85));
 
-            svg.on('dblclick.zoom', function(e) {
-                if (e.target === svg.node()) resetView();
+        svg.on('dblclick.zoom', function (e) {
+            if (e.target === svg.node()) resetView();
+        });
+        document.getElementById('graphResetBtn').addEventListener('click', resetView);
+
+        function resetView() {
+            svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85));
+        }
+
+        let simulation, allNodes, allLinks, visibleIds, rootY;
+
+        function getCurrentLang() {
+            return window.i18n?.getLang?.() || (window.currentLang || 'zh');
+        }
+
+        function buildGraph(data) {
+            const nodes = [], links = [], map = new Map();
+            const rootId = '__root__';
+            const lang = getCurrentLang();
+            nodes.push({
+                id: rootId,
+                name: data.name,
+                depth: 0,
+                isRoot: true,
+                isCategory: false,
+                isItem: false,
+                color: ROOT_COLOR,
+                radius: ROOT_R,
+                origName: data.name
             });
-            document.getElementById('graphResetBtn').addEventListener('click', resetView);
-            function resetView() {
-                svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85));
-            }
+            map.set(rootId, nodes[0]);
 
-            let simulation, allNodes, allLinks, visibleIds, rootY;
-
-            function getCurrentLang() {
-                return window.i18n?.getLang?.() || (window.currentLang || 'zh');
-            }
-
-            function buildGraph(data) {
-                const nodes = [], links = [], map = new Map();
-                const rootId = '__root__';
-                const lang = getCurrentLang();
-                nodes.push({
-                    id: rootId,
-                    name: data.name,
-                    depth: 0,
-                    isRoot: true,
-                    isCategory: false,
+            let catCounts = {}, cats = [];
+            for (const cat of data.children) {
+                const catName = cat.name;
+                const displayCatName = catName;
+                if (!COLORS[catName]) continue;
+                cats.push(displayCatName);
+                const limited = cat.children.slice(0, MAX_ITEMS_PER_CAT);
+                const catId = 'cat::' + catName;
+                const catNode = {
+                    id: catId,
+                    name: displayCatName,
+                    depth: 1,
+                    isRoot: false,
+                    isCategory: true,
                     isItem: false,
-                    color: ROOT_COLOR,
-                    radius: ROOT_R,
-                    origName: data.name
-                });
-                map.set(rootId, nodes[0]);
+                    color: COLORS[catName] || '#999',
+                    radius: CAT_R,
+                    itemCount: limited.length,
+                    origName: catName
+                };
+                nodes.push(catNode);
+                map.set(catId, catNode);
+                links.push({source: rootId, target: catId, depth: 0});
 
-                let catCounts = {}, cats = [];
-                for (const cat of data.children) {
-                    const catName = cat.name;
-                    const displayCatName = catName;
-                    if (!COLORS[catName]) continue;
-                    cats.push(displayCatName);
-                    const limited = cat.children.slice(0, MAX_ITEMS_PER_CAT);
-                    const catId = 'cat::' + catName;
-                    const catNode = {
-                        id: catId,
-                        name: displayCatName,
-                        depth: 1,
+                for (const item of limited) {
+                    const itemId = 'item::' + catName + '::' + item.name;
+                    const itemNode = {
+                        id: itemId,
+                        name: item.name,
+                        depth: 2,
                         isRoot: false,
-                        isCategory: true,
-                        isItem: false,
-                        color: COLORS[catName] || '#999',
-                        radius: CAT_R,
-                        itemCount: limited.length,
-                        origName: catName
+                        isCategory: false,
+                        isItem: true,
+                        color: catNode.color,
+                        radius: ITEM_R,
+                        records: item.records || [],
+                        category: displayCatName,
+                        origCategory: catName
                     };
-                    nodes.push(catNode);
-                    map.set(catId, catNode);
-                    links.push({ source: rootId, target: catId, depth: 0 });
-
-                    for (const item of limited) {
-                        const itemId = 'item::' + catName + '::' + item.name;
-                        const itemNode = {
-                            id: itemId,
-                            name: item.name,
-                            depth: 2,
-                            isRoot: false,
-                            isCategory: false,
-                            isItem: true,
-                            color: catNode.color,
-                            radius: ITEM_R,
-                            records: item.records || [],
-                            category: displayCatName,
-                            origCategory: catName
-                        };
-                        nodes.push(itemNode);
-                        map.set(itemId, itemNode);
-                        links.push({ source: catId, target: itemId, depth: 1 });
-                    }
-                    catCounts[displayCatName] = limited.length;
+                    nodes.push(itemNode);
+                    map.set(itemId, itemNode);
+                    links.push({source: catId, target: itemId, depth: 1});
                 }
-                return { nodes, links, map, catCounts, cats };
+                catCounts[displayCatName] = limited.length;
+            }
+            return {nodes, links, map, catCounts, cats};
+        }
+
+        function render(gd) {
+            allNodes = gd.nodes;
+            allLinks = gd.links;
+            rootY = 0;
+            visibleIds = new Set(allNodes.filter(n => n.isRoot || n.isCategory).map(n => n.id));
+
+            const catNodes = allNodes.filter(n => n.isCategory);
+            catNodes.forEach((cat, i) => {
+                const angle = (2 * Math.PI * i) / catNodes.length - Math.PI / 2;
+                cat.initX = Math.cos(angle) * CAT_DIST;
+                cat.initY = rootY + Math.sin(angle) * CAT_DIST;
+            });
+
+            function getVisibleNodesAndLinks() {
+                const visNodes = allNodes.filter(n => visibleIds.has(n.id));
+                const visLinks = allLinks.filter(l => visibleIds.has(l.source) && visibleIds.has(l.target));
+                return {visNodes, visLinks};
             }
 
-            function render(gd) {
-                allNodes = gd.nodes;
-                allLinks = gd.links;
-                rootY = 0;
-                visibleIds = new Set(allNodes.filter(n => n.isRoot || n.isCategory).map(n => n.id));
+            let tickCount = 0;
 
-                const catNodes = allNodes.filter(n => n.isCategory);
-                catNodes.forEach((cat, i) => {
-                    const angle = (2 * Math.PI * i) / catNodes.length - Math.PI / 2;
-                    cat.initX = Math.cos(angle) * CAT_DIST;
-                    cat.initY = rootY + Math.sin(angle) * CAT_DIST;
-                });
+            function startSimulation() {
+                const {visNodes, visLinks} = getVisibleNodesAndLinks();
+                const simNodes = visNodes.map(n => ({
+                    ...n,
+                    x: n.initX ?? (Math.random() - 0.5) * 200,
+                    y: n.initY ?? (Math.random() - 0.5) * 200,
+                    fx: n.isRoot ? 0 : undefined,
+                    fy: n.isRoot ? rootY : undefined
+                }));
+                const simLinks = visLinks.map(l => ({...l}));
 
-                function getVisibleNodesAndLinks() {
-                    const visNodes = allNodes.filter(n => visibleIds.has(n.id));
-                    const visLinks = allLinks.filter(l => visibleIds.has(l.source) && visibleIds.has(l.target));
-                    return { visNodes, visLinks };
+                if (simulation) simulation.stop();
+                const nodeCount = simNodes.length;
+                const linkCount = simLinks.length;
+                const hasManyItems = nodeCount > 100;
+
+                simulation = d3.forceSimulation(simNodes)
+                    .force('link', d3.forceLink(simLinks)
+                        .id(d => d.id)
+                        .distance(l => l.depth === 0 ? 130 : 85)
+                        .strength(l => l.depth === 0 ? 0.35 : 0.2))
+                    .force('charge', d3.forceManyBody()
+                        .strength(d => d.isRoot ? -2000 : (d.isCategory ? -1000 : (hasManyItems ? -80 : -200))))
+                    .force('center', d3.forceCenter(0, rootY).strength(0.1))
+                    .force('collision', d3.forceCollide().radius(d => d.radius + (hasManyItems ? 3 : 6)))
+                    .force('radial', d3.forceRadial(d => d.isCategory ? CAT_DIST : 0, 0, rootY)
+                        .strength(d => d.isCategory ? 0.7 : 0))
+                    .alpha(0.9).alphaDecay(hasManyItems ? 0.03 : 0.022);
+
+                const link = linkG.selectAll('line').data(simLinks, d => d.source.id + '--' + d.target.id);
+                link.join('line')
+                    .attr('stroke', 'rgba(210, 190, 140, 0.5)')
+                    .attr('stroke-width', l => l.depth === 0 ? 2.5 : (hasManyItems ? 0.8 : 1.2))
+                    .attr('stroke-opacity', 0.6)
+                    .attr('stroke-dasharray', l => l.depth === 0 ? 'none' : '2 2');
+
+                const nodeSel = nodeG.selectAll('g.node').data(simNodes, d => d.id);
+                const nodeEnter = nodeSel.join('g')
+                    .attr('class', 'node')
+                    .style('cursor', d => d.isCategory ? 'pointer' : (d.isItem ? 'crosshair' : 'default'));
+
+                nodeEnter.selectAll('circle').remove();
+                nodeEnter.append('circle')
+                    .attr('r', d => d.radius)
+                    .attr('fill', d => d.color)
+                    .attr('stroke', '#fff')
+                    .attr('stroke-width', d => d.isRoot ? 3 : (d.isCategory ? 2 : 0.8))
+                    .attr('stroke-opacity', 0.85);
+
+                if (simNodes.some(d => d.isRoot)) {
+                    nodeEnter.filter(d => d.isRoot)
+                        .append('circle')
+                        .attr('r', ROOT_R + 10)
+                        .attr('fill', 'none')
+                        .attr('stroke', ROOT_COLOR)
+                        .attr('stroke-width', 2)
+                        .attr('stroke-opacity', 0.4);
                 }
 
-                let tickCount = 0;
-                function startSimulation() {
-                    const { visNodes, visLinks } = getVisibleNodesAndLinks();
-                    const simNodes = visNodes.map(n => ({
-                        ...n,
-                        x: n.initX ?? (Math.random() - 0.5) * 200,
-                        y: n.initY ?? (Math.random() - 0.5) * 200,
-                        fx: n.isRoot ? 0 : undefined,
-                        fy: n.isRoot ? rootY : undefined
-                    }));
-                    const simLinks = visLinks.map(l => ({ ...l }));
-
-                    if (simulation) simulation.stop();
-                    const nodeCount = simNodes.length;
-                    const linkCount = simLinks.length;
-                    const hasManyItems = nodeCount > 100;
-
-                    simulation = d3.forceSimulation(simNodes)
-                        .force('link', d3.forceLink(simLinks)
-                            .id(d => d.id)
-                            .distance(l => l.depth === 0 ? 130 : 85)
-                            .strength(l => l.depth === 0 ? 0.35 : 0.2))
-                        .force('charge', d3.forceManyBody()
-                            .strength(d => d.isRoot ? -2000 : (d.isCategory ? -1000 : (hasManyItems ? -80 : -200))))
-                        .force('center', d3.forceCenter(0, rootY).strength(0.1))
-                        .force('collision', d3.forceCollide().radius(d => d.radius + (hasManyItems ? 3 : 6)))
-                        .force('radial', d3.forceRadial(d => d.isCategory ? CAT_DIST : 0, 0, rootY)
-                            .strength(d => d.isCategory ? 0.7 : 0))
-                        .alpha(0.9).alphaDecay(hasManyItems ? 0.03 : 0.022);
-
-                    const link = linkG.selectAll('line').data(simLinks, d => d.source.id + '--' + d.target.id);
-                    link.join('line')
-                        .attr('stroke', 'rgba(210, 190, 140, 0.5)')
-                        .attr('stroke-width', l => l.depth === 0 ? 2.5 : (hasManyItems ? 0.8 : 1.2))
-                        .attr('stroke-opacity', 0.6)
-                        .attr('stroke-dasharray', l => l.depth === 0 ? 'none' : '2 2');
-
-                    const nodeSel = nodeG.selectAll('g.node').data(simNodes, d => d.id);
-                    const nodeEnter = nodeSel.join('g')
-                        .attr('class', 'node')
-                        .style('cursor', d => d.isCategory ? 'pointer' : (d.isItem ? 'crosshair' : 'default'));
-
-                    nodeEnter.selectAll('circle').remove();
-                    nodeEnter.append('circle')
-                        .attr('r', d => d.radius)
-                        .attr('fill', d => d.color)
-                        .attr('stroke', '#fff')
-                        .attr('stroke-width', d => d.isRoot ? 3 : (d.isCategory ? 2 : 0.8))
-                        .attr('stroke-opacity', 0.85);
-
-                    if (simNodes.some(d => d.isRoot)) {
-                        nodeEnter.filter(d => d.isRoot)
-                            .append('circle')
-                            .attr('r', ROOT_R + 10)
-                            .attr('fill', 'none')
-                            .attr('stroke', ROOT_COLOR)
-                            .attr('stroke-width', 2)
-                            .attr('stroke-opacity', 0.4);
-                    }
-
-                    const labelData = simNodes.filter(d => d.isRoot || d.isCategory);
-                    if (!hasManyItems) {
-                        labelData.push(...simNodes.filter(d => d.isItem));
-                    }
-                    const textSel = labelG.selectAll('text').data(labelData, d => d.id);
-                    textSel.join('text')
-                        .attr('text-anchor', 'middle')
-                        .attr('dy', d => {
-                            if (d.isRoot) return -ROOT_R - 20;
-                            if (d.isCategory) return -CAT_R - 12;
-                            return -ITEM_R - 8;
-                        })
-                        .attr('font-size', d => d.isRoot ? '16px' : (d.isCategory ? '13px' : '9.5px'))
-                        .attr('font-weight', d => (d.isRoot || d.isCategory) ? 'bold' : 'normal')
-                        .attr('fill', '#f5f0e6')
-                        .style('text-shadow', '0 1px 3px rgba(0,0,0,0.7)')
-                        .text(d => d.name.length > 22 ? d.name.slice(0, 20) + '…' : d.name);
-
-                    nodeEnter.on('click', (e, d) => {
-                        if (d.isCategory) {
-                            e.stopPropagation();
-                            toggleCategory(d);
-                        }
+                const labelData = simNodes.filter(d => d.isRoot || d.isCategory);
+                if (!hasManyItems) {
+                    labelData.push(...simNodes.filter(d => d.isItem));
+                }
+                const textSel = labelG.selectAll('text').data(labelData, d => d.id);
+                textSel.join('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', d => {
+                        if (d.isRoot) return -ROOT_R - 20;
+                        if (d.isCategory) return -CAT_R - 12;
+                        return -ITEM_R - 8;
                     })
-                    .on('mouseenter', function(e, d) {
+                    .attr('font-size', d => d.isRoot ? '16px' : (d.isCategory ? '13px' : '9.5px'))
+                    .attr('font-weight', d => (d.isRoot || d.isCategory) ? 'bold' : 'normal')
+                    .attr('fill', '#f5f0e6')
+                    .style('text-shadow', '0 1px 3px rgba(0,0,0,0.7)')
+                    .text(d => d.name.length > 22 ? d.name.slice(0, 20) + '…' : d.name);
+
+                nodeEnter.on('click', (e, d) => {
+                    if (d.isCategory) {
+                        e.stopPropagation();
+                        toggleCategory(d);
+                    }
+                })
+                    .on('mouseenter', function (e, d) {
                         if (d.isItem && d.records && d.records.length > 0) {
                             showTooltip(e, d);
                             d3.select(this).select('circle').transition().duration(150).attr('r', d.radius * 2.2);
                         }
                     })
-                    .on('mouseleave', function(e, d) {
+                    .on('mouseleave', function (e, d) {
                         if (d.isItem) {
                             hideTooltip();
                             d3.select(this).select('circle').transition().duration(150).attr('r', d.radius);
                         }
                     });
 
-                    tickCount = 0;
-                    simulation.on('tick', () => {
-                        tickCount++;
-                        if (tickCount % (hasManyItems ? 3 : 1) !== 0) return;
+                tickCount = 0;
+                simulation.on('tick', () => {
+                    tickCount++;
+                    if (tickCount % (hasManyItems ? 3 : 1) !== 0) return;
 
-                        linkG.selectAll('line')
-                            .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
-                            .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
-                        nodeG.selectAll('g.node').attr('transform', d => `translate(${d.x},${d.y})`);
-                        labelG.selectAll('text').attr('x', d => d.x).attr('y', d => d.y);
-                    });
-                    simulation._simNodes = simNodes;
+                    linkG.selectAll('line')
+                        .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+                        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+                    nodeG.selectAll('g.node').attr('transform', d => `translate(${d.x},${d.y})`);
+                    labelG.selectAll('text').attr('x', d => d.x).attr('y', d => d.y);
+                });
+                simulation._simNodes = simNodes;
 
-                    if (hasManyItems) {
-                        setTimeout(() => {
-                            if (simulation) simulation.stop();
-                        }, 5000);
-                    }
+                if (hasManyItems) {
+                    setTimeout(() => {
+                        if (simulation) simulation.stop();
+                    }, 5000);
                 }
-
-                function toggleCategory(catNode) {
-                    const children = allNodes.filter(n => n.isItem && n.origCategory === catNode.origName).map(n => n.id);
-                    const expanded = children.some(id => visibleIds.has(id));
-                    if (expanded) children.forEach(id => visibleIds.delete(id));
-                    else children.forEach(id => visibleIds.add(id));
-                    startSimulation();
-                    document.querySelectorAll('.graph-legend-item').forEach(el => {
-                        const cat = el.querySelector('span:nth-child(2)').innerText;
-                        const has = allNodes.some(n => n.isItem && n.category === cat && visibleIds.has(n.id));
-                        if (has) el.style.background = 'rgba(201,169,110,0.25)';
-                        else el.style.background = '';
-                    });
-                }
-
-                function showTooltip(ev, d) {
-                    if (!d.records || d.records.length === 0) return;
-                    const tooltipDiv = document.getElementById('graphTooltip');
-                    const t = window.i18n?.t || function(k) { return k; };
-                    const lang = getCurrentLang();
-                    let html = `<div class="tt-title">${escapeHtml(d.name)}</div>
-                                <span class="tt-category" style="background:${d.color}">${escapeHtml(d.category)}</span>`;
-                    d.records.forEach(r => {
-                        html += `<table>`;
-                        if (lang === 'en') {
-                            for (const [key, value] of Object.entries(r)) {
-                                html += `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value)}</td></tr>`;
-                            }
-                        } else {
-                            if (r['公布时间']) html += `<tr><th>${t('publishTime')}</th><td>${escapeHtml(r['公布时间'])}</td></tr>`;
-                            if (r['申报地区或单位']) html += `<tr><th>${t('applyRegion')}</th><td>${escapeHtml(r['申报地区或单位'])}</td></tr>`;
-                            if (r['保护单位']) html += `<tr><th>${t('protectUnit')}</th><td>${escapeHtml(r['保护单位'])}</td></tr>`;
-                        }
-                        html += `</table>`;
-                    });
-                    tooltipDiv.innerHTML = html;
-                    tooltipDiv.classList.add('visible');
-
-                    const rect = container.getBoundingClientRect();
-                    let left = ev.clientX - rect.left + 18;
-                    let top = ev.clientY - rect.top - 20;
-                    const ttRect = tooltipDiv.getBoundingClientRect();
-                    if (left + ttRect.width > rect.width - 10) left = ev.clientX - rect.left - ttRect.width - 18;
-                    if (top + ttRect.height > rect.height - 10) top = ev.clientY - rect.top - ttRect.height - 18;
-                    tooltipDiv.style.left = Math.max(8, left) + 'px';
-                    tooltipDiv.style.top = Math.max(8, top) + 'px';
-                }
-
-                function hideTooltip() {
-                    document.getElementById('graphTooltip').classList.remove('visible');
-                }
-
-                const legendDiv = document.getElementById('graphLegend');
-                legendDiv.innerHTML = '';
-                for (let cat of gd.cats) {
-                    const item = document.createElement('div');
-                    item.className = 'graph-legend-item';
-                    item.innerHTML = `<span class="graph-legend-dot" style="background:${COLORS[cat] || '#999'}"></span>
-                                      <span>${cat}</span>
-                                      <span class="graph-legend-count">(${gd.catCounts[cat] || 0})</span>`;
-                    item.addEventListener('click', () => {
-                        const catNode = allNodes.find(n => n.isCategory && n.name === cat);
-                        if (catNode) toggleCategory(catNode);
-                    });
-                    legendDiv.appendChild(item);
-                }
-                startSimulation();
             }
 
-            function escapeHtml(str) {
-                if (!str) return '';
-                return str.replace(/[&<>]/g, function(m) {
-                    if (m === '&') return '&amp;';
-                    if (m === '<') return '&lt;';
-                    if (m === '>') return '&gt;';
-                    return m;
+            function toggleCategory(catNode) {
+                const children = allNodes.filter(n => n.isItem && n.origCategory === catNode.origName).map(n => n.id);
+                const expanded = children.some(id => visibleIds.has(id));
+                if (expanded) children.forEach(id => visibleIds.delete(id));
+                else children.forEach(id => visibleIds.add(id));
+                startSimulation();
+                document.querySelectorAll('.graph-legend-item').forEach(el => {
+                    const cat = el.querySelector('span:nth-child(2)').innerText;
+                    const has = allNodes.some(n => n.isItem && n.category === cat && visibleIds.has(n.id));
+                    if (has) el.style.background = 'rgba(201,169,110,0.25)';
+                    else el.style.background = '';
                 });
             }
 
-            function loadGraphData() {
+            function showTooltip(ev, d) {
+                if (!d.records || d.records.length === 0) return;
+                const tooltipDiv = document.getElementById('graphTooltip');
+                const t = window.i18n?.t || function (k) {
+                    return k;
+                };
                 const lang = getCurrentLang();
-                const filePath = lang === 'en' 
-                    ? 'static/data/intangible_heritage_data_en.json' 
-                    : 'static/data/intangible_heritage_data.json';
-                const loadingMsg = document.getElementById('loadingMsg');
-                
-                if (loadingMsg) loadingMsg.style.display = 'block';
-                
-                linkG.selectAll('*').remove();
-                nodeG.selectAll('*').remove();
-                labelG.selectAll('*').remove();
-                if (simulation) simulation.stop();
+                let html = `<div class="tt-title">${escapeHtml(d.name)}</div>
+                                <span class="tt-category" style="background:${d.color}">${escapeHtml(d.category)}</span>`;
+                d.records.forEach(r => {
+                    html += `<table>`;
+                    if (lang === 'en') {
+                        for (const [key, value] of Object.entries(r)) {
+                            html += `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value)}</td></tr>`;
+                        }
+                    } else {
+                        if (r['公布时间']) html += `<tr><th>${t('publishTime')}</th><td>${escapeHtml(r['公布时间'])}</td></tr>`;
+                        if (r['申报地区或单位']) html += `<tr><th>${t('applyRegion')}</th><td>${escapeHtml(r['申报地区或单位'])}</td></tr>`;
+                        if (r['保护单位']) html += `<tr><th>${t('protectUnit')}</th><td>${escapeHtml(r['保护单位'])}</td></tr>`;
+                    }
+                    html += `</table>`;
+                });
+                tooltipDiv.innerHTML = html;
+                tooltipDiv.classList.add('visible');
 
-                fetch(filePath)
-                    .then(res => {
-                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                        return res.json();
-                    })
-                    .then(data => {
-                        const graphData = buildGraph(data);
-                        render(graphData);
-                        if (loadingMsg) loadingMsg.style.display = 'none';
-                    })
-                    .catch(err => {
-                        console.error('非遗数据加载失败:', err);
-                        if (loadingMsg) loadingMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (window.i18n?.t('knowledgeLoadError') || '数据加载失败');
-                        svg.append('text')
-                            .attr('x', '50%')
-                            .attr('y', '45%')
-                            .attr('text-anchor', 'middle')
-                            .attr('fill', '#ff8a6f')
-                            .style('font-size', '1.2rem')
-                            .text(window.i18n?.t('knowledgeLoadFailed') || '❌ 非遗数据加载失败');
-                    });
+                const rect = container.getBoundingClientRect();
+                let left = ev.clientX - rect.left + 18;
+                let top = ev.clientY - rect.top - 20;
+                const ttRect = tooltipDiv.getBoundingClientRect();
+                if (left + ttRect.width > rect.width - 10) left = ev.clientX - rect.left - ttRect.width - 18;
+                if (top + ttRect.height > rect.height - 10) top = ev.clientY - rect.top - ttRect.height - 18;
+                tooltipDiv.style.left = Math.max(8, left) + 'px';
+                tooltipDiv.style.top = Math.max(8, top) + 'px';
             }
 
-            document.addEventListener('lang:changed', loadGraphData);
-            loadGraphData();
-        })();
-    </script>
+            function hideTooltip() {
+                document.getElementById('graphTooltip').classList.remove('visible');
+            }
 
-    <!-- 引入聊天组件脚本（菲菲助手） -->
-    <script src="static/js/chat.js"></script>
-    <!-- 引入侧边栏脚本（公告｜公众号｜AI助手｜回顶部） -->
-    <script src="static/js/sidebar.js"></script>
-<script src="static/js/password-utils.js"></script>
-<script src="static/js/components.js"></script>
-<script src="static/js/auth.js"></script>
-<script src="static/js/navbar.js"></script>
-<!-- 公共页脚（由 static/js/components.js 动态加载） -->
-<div id="footerMount"></div>
+            const legendDiv = document.getElementById('graphLegend');
+            legendDiv.innerHTML = '';
+            for (let cat of gd.cats) {
+                const item = document.createElement('div');
+                item.className = 'graph-legend-item';
+                item.innerHTML = `<span class="graph-legend-dot" style="background:${COLORS[cat] || '#999'}"></span>
+                                      <span>${cat}</span>
+                                      <span class="graph-legend-count">(${gd.catCounts[cat] || 0})</span>`;
+                item.addEventListener('click', () => {
+                    const catNode = allNodes.find(n => n.isCategory && n.name === cat);
+                    if (catNode) toggleCategory(catNode);
+                });
+                legendDiv.appendChild(item);
+            }
+            startSimulation();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function (m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function loadGraphData() {
+            const lang = getCurrentLang();
+            const filePath = lang === 'en'
+                ? '/static/data/intangible_heritage_data_en.json'
+                : '/static/data/intangible_heritage_data.json';
+            const loadingMsg = document.getElementById('loadingMsg');
+
+            if (loadingMsg) loadingMsg.style.display = 'block';
+
+            linkG.selectAll('*').remove();
+            nodeG.selectAll('*').remove();
+            labelG.selectAll('*').remove();
+            if (simulation) simulation.stop();
+
+            fetch(filePath)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    const graphData = buildGraph(data);
+                    render(graphData);
+                    if (loadingMsg) loadingMsg.style.display = 'none';
+                })
+                .catch(err => {
+                    console.error('非遗数据加载失败:', err);
+                    if (loadingMsg) loadingMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (window.i18n?.t('knowledgeLoadError') || '数据加载失败');
+                    svg.append('text')
+                        .attr('x', '50%')
+                        .attr('y', '45%')
+                        .attr('text-anchor', 'middle')
+                        .attr('fill', '#ff8a6f')
+                        .style('font-size', '1.2rem')
+                        .text(window.i18n?.t('knowledgeLoadFailed') || '❌ 非遗数据加载失败');
+                });
+        }
+
+        document.addEventListener('lang:changed', loadGraphData);
+        loadGraphData();
+    })();
+</script>
+
+<!-- 引入聊天组件脚本（菲菲助手） -->
+<script src="/static/js/chat.js"></script>
+<!-- 引入侧边栏脚本（公告｜公众号｜AI助手｜回顶部） -->
+<script src="/static/js/sidebar.js"></script>
+<script src="/static/js/password-utils.js"></script>
+<script src="/static/js/components.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/navbar.js"></script>
+{% include 'components/footer.html' %}
 </body>
 </html>

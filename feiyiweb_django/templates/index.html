@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
-    <link rel="stylesheet" href="static/css/chat.css">
-    <link rel="stylesheet" href="static/css/auth.css">
-    <link rel="stylesheet" href="static/css/navbar.css">
-    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <link rel="stylesheet" href="/static/css/common.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>华夏非遗 · 首页</title>
-    <script src="static/lib/echarts.min.js"></script>
-    <script src="static/js/i18n.js"></script>
+    <script src="/static/lib/echarts.min.js"></script>
+    <script src="/static/js/i18n.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="static/lib/d3.v7.min.js"></script>
+    <script src="/static/lib/d3.v7.min.js"></script>
     <style>
         /* ---------- 全局 & 全屏吸附滚动 ---------- */
         * {
@@ -38,7 +38,7 @@
         body {
             font-family: 'Segoe UI', 'Noto Sans CJK SC', Roboto, 'Microsoft YaHei', sans-serif;
             background-color: #f9f7f3;
-            background-image: url('static/img/img3.jpg');
+            background-image: url('/static/img/img3.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -923,11 +923,11 @@
         </div>
     </div>
 </div>
-<div id="footerMount"></div>
+{% include 'components/footer.html' %}
 
 <!-- AI聊天等辅助 -->
 <div id="aiChatWindow" class="ai-chat-window">
-    <div class="chat-header"><span><img class="chat-avatar" src="static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> <span data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span><span
+    <div class="chat-header"><span><img class="chat-avatar" src="/static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> <span data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span><span
             class="close-chat" id="closeChat">&times;</span></div>
     <div class="chat-body" id="chatBody">
         <div class="chat-message ai">
@@ -1037,11 +1037,10 @@ if (page1 && 'IntersectionObserver' in window) {
         const wrapper = document.getElementById('carouselWrapper');
         if (!wrapper) return;
         const hotItems = [
-            {nameKey: "hotItem1Name", img: "static/img/taiji.jpg", descKey: "hotItem1Desc"},
-            {nameKey: "hotItem2Name", img: "static/img/kunqu.jpg", descKey: "hotItem2Desc"},
-            {nameKey: "hotItem3Name", img: "static/img/24jie.jpg", descKey: "hotItem3Desc"},
-            {nameKey: "hotItem4Name", img: "static/img/gaojiaxi.jpeg", descKey: "hotItem4Desc"}
-
+            {nameKey: "hotItem1Name", img: "/static/img/taiji.jpg", descKey: "hotItem1Desc"},
+            {nameKey: "hotItem2Name", img: "/static/img/kunqu.jpg", descKey: "hotItem2Desc"},
+            {nameKey: "hotItem3Name", img: "/static/img/24jie.jpg", descKey: "hotItem3Desc"},
+            {nameKey: "hotItem4Name", img: "/static/img/gaojiaxi.jpeg", descKey: "hotItem4Desc"}
         ];
         let currentAngle = 0, targetAngle = 0, animFrameId = null, autoTimer = null, radius = 390, cards = [];
         let isDragging = false, dragStartX = 0, dragStartAngle = 0;
@@ -1220,53 +1219,52 @@ if (page1 && 'IntersectionObserver' in window) {
         const recommendItems = [
             {
                 nameKey: "recItem1Name",
-                img: "static/img/guifeizuijiu.jpg",
+                img: "/static/img/guifeizuijiu.jpg",
                 descKey: "recItem1Desc",
                 typeKey: "recItem1Type",
-                link: "product.html?id=0&type=performance"
+                link: "/product?id=0&type=performance"
             },
             {
                 nameKey: "recItem2Name",
-                img: "static/img/kunqu1.jpg",
+                img: "/static/img/kunqu1.jpg",
                 descKey: "recItem2Desc",
                 typeKey: "recItem2Type",
-                link: "product.html?id=1&type=performance"
+                link: "/product?id=1&type=performance"
             },
             {
                 nameKey: "recItem3Name",
-                img: "static/img/piying01.jpg",
+                img: "/static/img/piying01.jpg",
                 descKey: "recItem3Desc",
                 typeKey: "recItem3Type",
-                link: "product.html?id=4&type=performance"
+                link: "/product?id=4&type=performance"
             },
             {
                 nameKey: "recItem4Name",
-                img: "static/img/jianzhi01.jpg",
+                img: "/static/img/jianzhi01.jpg",
                 descKey: "recItem4Desc",
                 typeKey: "recItem4Type",
-                link: "product.html?id=21&type=merchandise"
+                link: "/product?id=21&type=merchandise"
             },
             {
                 nameKey: "recItem5Name",
-                img: "static/img/guqing.jpg",
+                img: "/static/img/guqing.jpg",
                 descKey: "recItem5Desc",
                 typeKey: "recItem5Type",
-                link: "product.html?id=14&type=merchandise"
+                link: "/product?id=14&type=merchandise"
             },
             {
                 nameKey: "recItem6Name",
-                img: "static/img/taiji01.jpg",
+                img: "/static/img/taiji01.jpg",
                 descKey: "recItem6Desc",
                 typeKey: "recItem6Type",
-                link: "product.html?id=2&type=travel"
+                link: "/product?id=2&type=travel"
             },
             {
                 nameKey: "recItem7Name",
-                img: "static/img/laran.jpg",
+                img: "/static/img/laran.jpg",
                 descKey: "recItem7Desc",
                 typeKey: "recItem7Type",
-
-                link: "product.html?id=10&type=merchandise"
+                link: "/product?id=10&type=merchandise"
             }
         ];
         const originalLen = recommendItems.length;
@@ -1435,8 +1433,8 @@ if (page1 && 'IntersectionObserver' in window) {
                 titleKey: "timeline1Title",
                 placeKey: "timeline1Place",
                 price: "180",
-                link: "product.html?id=2&type=performance",
-                img: "static/img/gaojiaxi.jpeg",
+                link: "/product?id=2&type=performance",
+                img: "/static/img/gaojiaxi.jpeg",
                 hot: true
             },
             {
@@ -1444,8 +1442,8 @@ if (page1 && 'IntersectionObserver' in window) {
                 titleKey: "timeline2Title",
                 placeKey: "timeline2Place",
                 price: "120",
-                link: "product.html?id=4&type=performance",
-                img: "static/img/piying01.jpg",
+                link: "/product?id=4&type=performance",
+                img: "/static/img/piying01.jpg",
                 hot: false
             },
             {
@@ -1453,8 +1451,8 @@ if (page1 && 'IntersectionObserver' in window) {
                 titleKey: "timeline3Title",
                 placeKey: "timeline3Place",
                 price: "280",
-                link: "product.html?id=1&type=performance",
-                img: "static/img/kunqu1.jpg",
+                link: "/product?id=1&type=performance",
+                img: "/static/img/kunqu1.jpg",
                 hot: true
             },
             {
@@ -1462,8 +1460,8 @@ if (page1 && 'IntersectionObserver' in window) {
                 titleKey: "timeline4Title",
                 placeKey: "timeline4Place",
                 price: "260",
-                link: "product.html?id=5&type=performance",
-                img: "static/img/performances-img/4.jpg",
+                link: "/product?id=5&type=performance",
+                img: "/static/img/performances-img/4.jpg",
                 hot: false
             },
             {
@@ -1471,8 +1469,8 @@ if (page1 && 'IntersectionObserver' in window) {
                 titleKey: "timeline5Title",
                 placeKey: "timeline5Place",
                 price: "380",
-                link: "product.html?id=0&type=performance",
-                img: "static/img/guifeizuijiu.jpg",
+                link: "/product?id=0&type=performance",
+                img: "/static/img/guifeizuijiu.jpg",
                 hot: true
             },
             {
@@ -1480,8 +1478,8 @@ if (page1 && 'IntersectionObserver' in window) {
                 titleKey: "timeline6Title",
                 placeKey: "timeline6Place",
                 price: "free",
-                link: "product.html?id=21&type=merchandise",
-                img: "static/img/jianzhi01.jpg",
+                link: "/product?id=21&type=merchandise",
+                img: "/static/img/jianzhi01.jpg",
                 hot: false
             }
         ];
@@ -1679,11 +1677,11 @@ if (page1 && 'IntersectionObserver' in window) {
         if (typeof window.__ichRebuildTimeline === 'function') window.__ichRebuildTimeline();
     });</script>
 
-<script src="static/js/sidebar.js"></script>
-<script src="static/js/chat.js"></script>
-<script src="static/js/password-utils.js"></script>
-<script src="static/js/auth.js"></script>
-<script src="static/js/navbar.js"></script>
-<script src="static/js/components.js"></script>
+<script src="/static/js/sidebar.js"></script>
+<script src="/static/js/chat.js"></script>
+<script src="/static/js/password-utils.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/navbar.js"></script>
+<script src="/static/js/components.js"></script>
 </body>
 </html>

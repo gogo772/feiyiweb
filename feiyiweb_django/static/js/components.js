@@ -80,13 +80,3 @@ class ComponentLoader {
 
 // 全局单例
 const componentLoader = new ComponentLoader();
-
-// ---------- 自动挂载 ----------
-document.addEventListener('DOMContentLoaded', () => {
-  const footerMount = document.getElementById('footerMount');
-  if (footerMount) {
-    componentLoader.load('components/footer.html', '#footerMount', {
-      year: new Date().getFullYear()
-    });
-  }
-});

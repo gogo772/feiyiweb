@@ -114,35 +114,47 @@
         const nickname = localStorage.getItem('current_nickname') || currentUser;
 
         if (currentUser) {
-            let actionButton = '';
-            if (isUserPage()) {
-                actionButton = `<button id="logoutBtn" class="login-btn" style="background: #666; padding: 6px 16px; border: none; cursor: pointer;">${escapeHtml(tt('logout'))}</button>`;
-            } else {
-                actionButton = `<a href="user.html" class="login-btn" style="background: #2c5f2d; padding: 6px 16px;">${escapeHtml(tt('personalCenter'))}</a>`;
-            }
-
             authArea.innerHTML = `
                 <div class="lang-switch-btn" id="langSwitchBtn" data-i18n="langSwitch">${escapeHtml(tt('langSwitch'))}</div>
-                <span class="user-welcome" style="color: #ffecb3; font-size: 0.9rem; background: rgba(0,0,0,0.4); padding: 6px 16px; border-radius: 40px;">
-                    <i class="fas fa-user"></i> ${escapeHtml(nickname)}
-                </span>
-                ${actionButton}
+                <div class="user-menu-container">
+                    <span class="user-welcome" id="userWelcomeBtn">
+                        <i class="fas fa-user"></i> ${escapeHtml(nickname)}
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <a href="user.html" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i> ${escapeHtml(tt('personalCenter'))}
+                        </a>
+                        <button id="logoutBtn" class="dropdown-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> ${escapeHtml(tt('logout'))}
+                        </button>
+                    </div>
+                </div>
             `;
 
-            if (isUserPage()) {
-                const logoutBtn = document.getElementById('logoutBtn');
-                if (logoutBtn) {
-                    logoutBtn.onclick = () => {
-                        showConfirm(tt('confirmLogout'), () => {
-                            handleLogout();
-                        });
-                    };
-                }
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.onclick = () => {
+                    showConfirm(tt('confirmLogout'), () => {
+                        handleLogout();
+                    });
+                };
+            }
+
+            const userMenuContainer = document.querySelector('.user-menu-container');
+            const userDropdownMenu = document.getElementById('userDropdownMenu');
+            if (userMenuContainer && userDropdownMenu) {
+                userMenuContainer.addEventListener('mouseenter', () => {
+                    userDropdownMenu.classList.add('show');
+                });
+                userMenuContainer.addEventListener('mouseleave', () => {
+                    userDropdownMenu.classList.remove('show');
+                });
             }
         } else {
             authArea.innerHTML = `
                 <div class="lang-switch-btn" id="langSwitchBtn" data-i18n="langSwitch">${escapeHtml(tt('langSwitch'))}</div>
-                <button id="showLoginBtn" class="login-btn" style="background: #b22234; padding: 6px 18px;">${escapeHtml(tt('loginRegister'))}</button>
+                <button id="showLoginBtn" class="login-btn" style="background: #b22234;">${escapeHtml(tt('loginRegister'))}</button>
             `;
             const loginBtn = document.getElementById('showLoginBtn');
             if (loginBtn) loginBtn.onclick = () => showLoginModal();

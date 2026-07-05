@@ -7,11 +7,17 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-3xtjqchthx_nube$ri^bhf!j%xevbxik1cs2z1s_7j)=l^bca%'
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(BASE_DIR, '.env'))
+except ImportError:
+    pass
 
-DEBUG = True
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3xtjqchthx_nube$ri^bhf!j%xevbxik1cs2z1s_7j)=l^bca%')
 
-ALLOWED_HOSTS = ['*']
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 INSTALLED_APPS = [
@@ -23,7 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'accounts',
-    'api',
+    'chat',
+    'commerce',
+    'media',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +117,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 CORS_ALLOW_METHODS = ['GET', 'POST', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['Content-Type']
 

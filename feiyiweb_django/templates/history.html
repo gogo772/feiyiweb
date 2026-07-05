@@ -1,37 +1,48 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-        <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
-    <link rel="stylesheet" href="static/css/chat.css">
-    <link rel="stylesheet" href="static/css/auth.css">
-    <link rel="stylesheet" href="static/css/navbar.css">
-    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <link rel="stylesheet" href="/static/css/common.css">
     <meta charset="UTF-8">
-    <title>我的浏览记录 · 华夏非遗</title>
+    <title>华夏非遗 · 我的浏览记录</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="static/js/i18n.js"></script>
-  <style>
+    <script src="/static/js/i18n.js"></script>
+    <style>
         /* 顶部导航栏：样式见 static/css/navbar.css */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-image: url('static/img/beijin/09.jpg');
+            background-image: url('/static/img/beijin/09.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             font-size: 18px;
             padding-top: 80px;
         }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
         /* 顶部导航栏：样式见 static/css/navbar.css */
 
         .dashboard {
-            background: rgba(255,250,240,0.9);
+            background: rgba(255, 250, 240, 0.9);
             border-radius: 48px;
             padding: 30px;
             margin: 20px 0;
         }
+
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -39,11 +50,13 @@
             flex-wrap: wrap;
             margin-bottom: 20px;
         }
+
         h2 {
             font-size: 32px;
             color: #8b3c1c;
             margin: 0;
         }
+
         .clear-btn {
             background: #b22234;
             color: white;
@@ -53,31 +66,41 @@
             font-size: 16px;
             cursor: pointer;
         }
-        .clear-btn:hover { background: #8b1a1a; }
+
+        .clear-btn:hover {
+            background: #8b1a1a;
+        }
+
         .history-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 25px;
             margin: 20px 0;
         }
+
         .card {
             background: white;
             border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             position: relative;
         }
+
         .card img {
             width: 100%;
             height: 160px;
             object-fit: cover;
         }
-        .card-body { padding: 16px; }
+
+        .card-body {
+            padding: 16px;
+        }
+
         .delete-btn {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             color: white;
             border: none;
             border-radius: 50%;
@@ -88,8 +111,18 @@
             align-items: center;
             justify-content: center;
         }
-        .delete-btn:hover { background: #b22234; }
-        .empty-tip { text-align: center; padding: 40px; color: #666; font-size: 18px; }
+
+        .delete-btn:hover {
+            background: #b22234;
+        }
+
+        .empty-tip {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 18px;
+        }
+
         .back-to-top {
             position: fixed;
             bottom: 30px;
@@ -107,16 +140,23 @@
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             font-size: 24px;
         }
-        .back-to-top.show { opacity: 1; visibility: visible; }
-        .back-to-top:hover { background-color: #1e3a1e; }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: #1e3a1e;
+        }
 
         /* 浏览记录悬浮窗 */
         #historyPreview {
             position: fixed;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.85);
             border-radius: 20px;
             width: 280px;
             padding: 12px;
@@ -124,76 +164,86 @@
             z-index: 1000;
             backdrop-filter: blur(8px);
         }
-        #historyPreview .preview-title { font-weight: bold; margin-bottom: 8px; color: #ffd966; }
-        #previewList { font-size: 14px; color: #eee; }
+
+        #historyPreview .preview-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffd966;
+        }
+
+        #previewList {
+            font-size: 14px;
+            color: #eee;
+        }
 
         /* 页脚样式已迁移至 static/css/common.css */
-                html, body {
-    min-height: 100%;
-    overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
-    scroll-behavior: smooth;
-    scrollbar-width: none;      /* Firefox 隐藏滚动条 */
-}
+        html, body {
+            min-height: 100%;
+            overflow-y: auto; /* 改为 auto，并隐藏滚动条 */
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Firefox 隐藏滚动条 */
+        }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-    width: 0;
-    background: transparent;    /* Chrome/Safari/Edge 隐藏滚动条 */
-}
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            width: 0;
+            background: transparent; /* Chrome/Safari/Edge 隐藏滚动条 */
+        }
     </style>
 </head>
 <script>
     // 导航栏激活态由 static/js/navbar.js 统一处理
 </script>
 <body>
-    <div class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></div>
+<div class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></div>
 
-    <div class="container">
-        <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
-        <div id="navbarMount"></div>
+<div class="container">
+    <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
+    <div id="navbarMount"></div>
 
-        <div class="dashboard">
-            <div class="dashboard-header">
-                <h2 id="historyTitle"><i class="fas fa-history"></i> <span data-i18n="historyTitle">我的浏览记录</span></h2>
-                <button class="clear-btn" id="clearHistoryBtn" data-i18n="clearAll">清空所有</button>
-            </div>
-            <div id="historyList" class="history-grid" data-i18n="loadingData">加载中...</div>
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h2 id="historyTitle"><i class="fas fa-history"></i> <span data-i18n="historyTitle">我的浏览记录</span></h2>
+            <button class="clear-btn" id="clearHistoryBtn" data-i18n="clearAll">清空所有</button>
+        </div>
+        <div id="historyList" class="history-grid" data-i18n="loadingData">加载中...</div>
+    </div>
+</div>
+{% include 'components/footer.html' %}
+
+
+<!-- AI 聊天窗口（结构与 index.html 完全一致，样式由 chat.css 提供） -->
+<div id="aiChatWindow" class="ai-chat-window">
+    <div class="chat-header">
+        <span><img class="chat-avatar" src="/static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> <span
+                data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span>
+        <span class="close-chat" id="closeChat">&times;</span>
+    </div>
+    <div class="chat-body" id="chatBody">
+        <div class="chat-message ai">
+            <div class="message-sender" data-i18n="aiSender">菲菲</div>
+            <div class="message-bubble" data-i18n="aiWelcome">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
         </div>
     </div>
-    <div id="footerMount"></div>
-
-
-    <!-- AI 聊天窗口（结构与 index.html 完全一致，样式由 chat.css 提供） -->
-    <div id="aiChatWindow" class="ai-chat-window">
-        <div class="chat-header">
-            <span><img class="chat-avatar" src="static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> <span data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span>
-            <span class="close-chat" id="closeChat">&times;</span>
-        </div>
-        <div class="chat-body" id="chatBody">
-            <div class="chat-message ai">
-                <div class="message-sender" data-i18n="aiSender">菲菲</div>
-                <div class="message-bubble" data-i18n="aiWelcome">您好！我是菲菲，有任何戏曲、演出、非遗的问题都可以问我～</div>
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" id="chatInput" data-i18n-placeholder="chatInput" placeholder="例如：京剧有什么特点？">
-            <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
-        </div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" data-i18n-placeholder="chatInput" placeholder="例如：京剧有什么特点？">
+        <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
     </div>
+</div>
 
-    <div id="historyPreview">
-        <div class="preview-title" data-i18n="recentBrowse">最近浏览</div>
-        <div id="previewList"></div>
-    </div>
+<div id="historyPreview">
+    <div class="preview-title" data-i18n="recentBrowse">最近浏览</div>
+    <div id="previewList"></div>
+</div>
 
-   <script>
+<script>
     // ========== 浏览记录核心逻辑（按用户存储） ==========
     const backBtn = document.getElementById('backToTopBtn');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) backBtn.classList.add('show');
         else backBtn.classList.remove('show');
     });
-    backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    backBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
 
     // 获取当前登录用户名
     function getCurrentUsername() {
@@ -228,7 +278,7 @@ body::-webkit-scrollbar {
         const browseTypeLabel = window.i18n ? window.i18n.t('browseType') : '浏览';
         container.innerHTML = browsingHistory.map((item, index) => `
             <div class="card">
-                <img src="${item.img || 'static/img/placeholder.svg'}" alt="${escapeHtml(item.name)}" onerror="this.onerror=null;this.src='static/img/placeholder.svg'">
+                <img src="${item.img || '/static/img/placeholder.svg'}" alt="${escapeHtml(item.name)}" onerror="this.onerror=null;this.src='/static/img/placeholder.svg'">
                 <div class="card-body">
                     <strong>${escapeHtml(item.name)}</strong><br>
                     <span>${escapeHtml(item.type || browseTypeLabel)}</span>
@@ -258,7 +308,7 @@ body::-webkit-scrollbar {
 
     document.getElementById('clearHistoryBtn').addEventListener('click', clearAllHistory);
     renderHistory();
-    
+
     function applyPageLang() {
         if (window.i18n) {
             const titleEl = document.getElementById('historyTitle');
@@ -272,6 +322,7 @@ body::-webkit-scrollbar {
         }
         renderHistory();
     }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', applyPageLang);
     } else {
@@ -281,7 +332,7 @@ body::-webkit-scrollbar {
 
     function escapeHtml(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
+        return str.replace(/[&<>]/g, function (m) {
             if (m === '&') return '&amp;';
             if (m === '<') return '&lt;';
             if (m === '>') return '&gt;';
@@ -289,11 +340,11 @@ body::-webkit-scrollbar {
         });
     }
 </script>
-    <script src="static/js/sidebar.js"></script>
-    <script src="static/js/chat.js"></script>
-<script src="static/js/password-utils.js"></script>
-<script src="static/js/components.js"></script>
-<script src="static/js/auth.js"></script>
-<script src="static/js/navbar.js"></script>
+<script src="/static/js/sidebar.js"></script>
+<script src="/static/js/chat.js"></script>
+<script src="/static/js/password-utils.js"></script>
+<script src="/static/js/components.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/navbar.js"></script>
 </body>
 </html>

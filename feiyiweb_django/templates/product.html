@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-        <link rel="shortcut icon" type="image/x-icon" href="static/img/favicon_io/apple-touch-icon.png">
-
-    <link rel="stylesheet" href="static/css/chat.css">
-
-    <link rel="stylesheet" href="static/css/auth.css">
-    <link rel="stylesheet" href="static/css/navbar.css">
-    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <link rel="stylesheet" href="/static/css/common.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>产品详情 - 华夏非遗</title>
+    <title>华夏非遗 · 产品详情</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="static/js/i18n.js"></script>
-  <style>
+    <script src="/static/js/i18n.js"></script>
+    <style>
         html, body {
-    min-height: 100%;
-    overflow-y: auto;           /* 改为 auto，并隐藏滚动条 */
-    scroll-behavior: smooth;
-    scrollbar-width: none;      /* Firefox 隐藏滚动条 */
-}
+            min-height: 100%;
+            overflow-y: auto; /* 改为 auto，并隐藏滚动条 */
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Firefox 隐藏滚动条 */
+        }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-    width: 0;
-    background: transparent;    /* Chrome/Safari/Edge 隐藏滚动条 */
-}
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            width: 0;
+            background: transparent; /* Chrome/Safari/Edge 隐藏滚动条 */
+        }
+
         /* 顶部导航栏：样式见 static/css/navbar.css */
         * {
             margin: 0;
@@ -42,8 +41,9 @@ body::-webkit-scrollbar {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background-image:url("static/img/beijin/08.jpg");
+            background-image: url("/static/img/beijin/08.jpg");
         }
+
         /* 顶部导航栏：样式见 static/css/navbar.css */
         /* 主容器 */
         .container {
@@ -154,7 +154,7 @@ body::-webkit-scrollbar {
             margin-top: 30px;
             width: 100%;
             transition: 0.2s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .btn-buy:hover {
@@ -170,6 +170,7 @@ body::-webkit-scrollbar {
             font-size: 18px;
             font-weight: 500;
         }
+
         .back-link i {
             margin-right: 8px;
         }
@@ -182,11 +183,12 @@ body::-webkit-scrollbar {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 2000;
             justify-content: center;
             align-items: center;
         }
+
         .payment-modal .modal-content {
             background: white;
             border-radius: 32px;
@@ -195,23 +197,27 @@ body::-webkit-scrollbar {
             max-width: 400px;
             width: 90%;
         }
+
         .payment-modal h3 {
             color: #8b3c1c;
             margin-bottom: 20px;
             font-size: 28px;
         }
+
         .payment-modal img {
             width: 200px;
             height: 200px;
             margin-bottom: 20px;
             border-radius: 12px;
         }
+
         .payment-modal .modal-amount {
             font-size: 28px;
             font-weight: bold;
             color: #b22234;
             margin: 15px 0;
         }
+
         .pay-btn {
             background: #2c5f2d;
             color: white;
@@ -223,10 +229,12 @@ body::-webkit-scrollbar {
             margin-top: 10px;
             width: 100%;
         }
+
         .cancel-btn {
             background: #aaa;
             margin-top: 10px;
         }
+
         .cancel-btn:hover {
             background: #888;
         }
@@ -239,11 +247,12 @@ body::-webkit-scrollbar {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 2100;
             justify-content: center;
             align-items: center;
         }
+
         .success-modal .modal-content {
             background: white;
             border-radius: 32px;
@@ -253,20 +262,24 @@ body::-webkit-scrollbar {
             width: 90%;
             animation: fadeInUp 0.3s ease;
         }
+
         .success-modal i {
             font-size: 64px;
             color: #2c5f2d;
             margin-bottom: 20px;
         }
+
         .success-modal h3 {
             color: #2c5f2d;
             margin-bottom: 12px;
             font-size: 28px;
         }
+
         .success-modal p {
             color: #555;
             margin-bottom: 20px;
         }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -277,6 +290,7 @@ body::-webkit-scrollbar {
                 transform: translateY(0);
             }
         }
+
         /* 返回顶部按钮 */
         .back-to-top {
             position: fixed;
@@ -295,13 +309,15 @@ body::-webkit-scrollbar {
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             font-size: 24px;
         }
+
         .back-to-top.show {
             opacity: 1;
             visibility: visible;
         }
+
         .back-to-top:hover {
             background-color: #1e3a1e;
         }
@@ -315,12 +331,13 @@ body::-webkit-scrollbar {
             height: 600px;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             display: none;
             flex-direction: column;
             z-index: 1000;
             font-size: 16px;
         }
+
         .chat-header {
             background: #2c5f2d;
             color: white;
@@ -331,6 +348,7 @@ body::-webkit-scrollbar {
             justify-content: space-between;
             font-size: 18px;
         }
+
         .chat-body {
             flex: 1;
             overflow-y: auto;
@@ -339,16 +357,19 @@ body::-webkit-scrollbar {
             color: #222;
             font-size: 16px;
         }
+
         .chat-input-area {
             display: flex;
             border-top: 1px solid #ccc;
         }
+
         .chat-input-area input {
             flex: 1;
             padding: 12px;
             border: none;
             font-size: 16px;
         }
+
         .chat-input-area button {
             background: #b22234;
             color: white;
@@ -356,6 +377,7 @@ body::-webkit-scrollbar {
             padding: 0 15px;
             cursor: pointer;
         }
+
         .close-chat {
             cursor: pointer;
         }
@@ -363,311 +385,510 @@ body::-webkit-scrollbar {
         /* 浏览记录悬浮窗 */
         #historyPreview {
             position: fixed;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.85);
             border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             width: 280px;
             padding: 12px;
             display: none;
             z-index: 1000;
             backdrop-filter: blur(8px);
         }
+
         #historyPreview .preview-title {
             font-weight: bold;
             margin-bottom: 8px;
             color: #ffd966;
         }
+
         #previewList {
             font-size: 14px;
             color: #eee;
         }
+
         #previewList div {
             margin-bottom: 8px;
         }
 
         @media (max-width: 768px) {
-            .product-main { padding: 24px; gap: 24px; }
-            .product-title { font-size: 28px; }
-            .price { font-size: 32px; }
-            .price small { font-size: 16px; }
-            .detail-section { padding: 24px; }
-            .detail-section h3 { font-size: 24px; }
-            .detail-section p { font-size: 16px; }
-            .btn-buy { font-size: 18px; padding: 14px 24px; }
-            .info-tag { font-size: 14px; }
+            .product-main {
+                padding: 24px;
+                gap: 24px;
+            }
+
+            .product-title {
+                font-size: 28px;
+            }
+
+            .price {
+                font-size: 32px;
+            }
+
+            .price small {
+                font-size: 16px;
+            }
+
+            .detail-section {
+                padding: 24px;
+            }
+
+            .detail-section h3 {
+                font-size: 24px;
+            }
+
+            .detail-section p {
+                font-size: 16px;
+            }
+
+            .btn-buy {
+                font-size: 18px;
+                padding: 14px 24px;
+            }
+
+            .info-tag {
+                font-size: 14px;
+            }
         }
+
         /* 页脚样式已迁移至 static/css/common.css */
 
     </style>
 </head>
 <script>
-    window.addEventListener('DOMContentLoaded', () => {});
+    window.addEventListener('DOMContentLoaded', () => {
+    });
 </script>
 <body>
-    <div class="back-to-top" id="backToTopBtn">
-        <i class="fas fa-arrow-up"></i>
+<div class="back-to-top" id="backToTopBtn">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<div class="container">
+    <!-- 统一导航栏 -->
+    <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
+    <div id="navbarMount"></div>
+
+    <div id="productContainer" class="product-card">
+        <div style="text-align: center; padding: 80px;" data-i18n="loadingData">加载中...</div>
     </div>
+</div>
+{% include 'components/footer.html' %}
 
-    <div class="container">
-           <!-- 统一导航栏 -->
-       <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
-      <div id="navbarMount"></div>
 
-        <div id="productContainer" class="product-card">
-            <div style="text-align: center; padding: 80px;" data-i18n="loadingData">加载中...</div>
-        </div>
+<!-- 支付弹窗（扫码） -->
+<div id="paymentModal" class="payment-modal">
+    <div class="modal-content">
+        <h3 id="scanToPayTitle"><i class="fas fa-qrcode"></i> <span data-i18n="scanToPay">扫码支付</span></h3>
+        <img id="qrCodeImg" src="/static/img/11111.jpg" alt="支付二维码"
+             onerror="this.src='https://picsum.photos/id/1/200/200'">
+        <p id="scanTip" data-i18n="scanTip">请使用微信/支付宝扫码支付</p>
+
+        <div class="modal-amount">¥<span id="modalAmount">0</span></div>
+        <button id="confirmPayBtn" class="pay-btn" data-i18n="paidConfirm">我已支付</button>
+        <button id="cancelPayBtn" class="pay-btn cancel-btn" data-i18n="cancel">取消</button>
     </div>
-    <div id="footerMount"></div>
+</div>
 
-
-    <!-- 支付弹窗（扫码） -->
-    <div id="paymentModal" class="payment-modal">
-        <div class="modal-content">
-            <h3 id="scanToPayTitle"><i class="fas fa-qrcode"></i> <span data-i18n="scanToPay">扫码支付</span></h3>
-            <img id="qrCodeImg" src="static/img/11111.jpg" alt="支付二维码" onerror="this.src='https://picsum.photos/id/1/200/200'">
-            <p id="scanTip" data-i18n="scanTip">请使用微信/支付宝扫码支付</p>
-
-            <div class="modal-amount">¥<span id="modalAmount">0</span></div>
-            <button id="confirmPayBtn" class="pay-btn" data-i18n="paidConfirm">我已支付</button>
-            <button id="cancelPayBtn" class="pay-btn cancel-btn" data-i18n="cancel">取消</button>
-        </div>
+<!-- 自定义支付成功弹窗（带返回按钮） -->
+<div id="successModal" class="success-modal">
+    <div class="modal-content">
+        <i class="fas fa-check-circle"></i>
+        <h3 id="paySuccessTitle" data-i18n="paySuccess">支付成功！</h3>
+        <p id="orderAddedTip" data-i18n="orderAdded">订单已添加到个人中心</p>
+        <button id="closeSuccessBtn" class="pay-btn" style="background: #2c5f2d;" data-i18n="back">返回</button>
     </div>
+</div>
 
-    <!-- 自定义支付成功弹窗（带返回按钮） -->
-    <div id="successModal" class="success-modal">
-        <div class="modal-content">
-            <i class="fas fa-check-circle"></i>
-            <h3 id="paySuccessTitle" data-i18n="paySuccess">支付成功！</h3>
-            <p id="orderAddedTip" data-i18n="orderAdded">订单已添加到个人中心</p>
-            <button id="closeSuccessBtn" class="pay-btn" style="background: #2c5f2d;" data-i18n="back">返回</button>
-        </div>
+<!-- AI 聊天窗口 -->
+<div id="aiChatWindow" class="ai-chat-window">
+    <div class="chat-header"><span><img class="chat-avatar" src="/static/img/%E5%A4%B4%E5%83%8F01.jpg"
+                                        alt="菲菲头像"> <span id="aiAssistantTitle"
+                                                              data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span><span
+            class="close-chat" id="closeChat">&times;</span></div>
+    <div class="chat-body" id="chatBody">
+        <div id="aiWelcomeMsg" data-i18n="aiWelcome">您好！我是非遗小助手，有任何戏曲、演出、非遗的问题都可以问我～</div>
     </div>
-
-    <!-- AI 聊天窗口 -->
-    <div id="aiChatWindow" class="ai-chat-window">
-        <div class="chat-header"><span><img class="chat-avatar" src="static/img/%E5%A4%B4%E5%83%8F01.jpg" alt="菲菲头像"> <span id="aiAssistantTitle" data-i18n="aiAssistant">菲菲 · 非遗小助手</span></span><span class="close-chat" id="closeChat">&times;</span></div>
-        <div class="chat-body" id="chatBody"><div id="aiWelcomeMsg" data-i18n="aiWelcome">您好！我是非遗小助手，有任何戏曲、演出、非遗的问题都可以问我～</div></div>
-        <div class="chat-input-area"><input type="text" id="chatInput" data-i18n-placeholder="chatInput" placeholder="例如：京剧有什么特点？"><button id="sendChat" data-i18n="send">发送</button></div>
+    <div class="chat-input-area"><input type="text" id="chatInput" data-i18n-placeholder="chatInput"
+                                        placeholder="例如：京剧有什么特点？">
+        <button id="sendChat" data-i18n="send">发送</button>
     </div>
+</div>
 
-    <!-- 浏览记录悬浮窗 -->
-    <div id="historyPreview">
-        <div class="preview-title" id="recentBrowseTitle" data-i18n="recentBrowse">最近浏览</div>
-        <div id="previewList"></div>
-    </div>
+<!-- 浏览记录悬浮窗 -->
+<div id="historyPreview">
+    <div class="preview-title" id="recentBrowseTitle" data-i18n="recentBrowse">最近浏览</div>
+    <div id="previewList"></div>
+</div>
 
-    <script>
-        // 返回顶部按钮
-        const backBtn = document.getElementById('backToTopBtn');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) backBtn.classList.add('show');
-            else backBtn.classList.remove('show');
+<script>
+    // 返回顶部按钮
+    const backBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) backBtn.classList.add('show');
+        else backBtn.classList.remove('show');
+    });
+    backBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+
+    // 浏览记录悬浮窗
+    const historyBtn = document.getElementById('historyNavBtn');
+    const previewDiv = document.getElementById('historyPreview');
+    let previewTimeout;
+
+    function showPreview() {
+        if (!historyBtn || !previewDiv) return;
+        const rect = historyBtn.getBoundingClientRect();
+        previewDiv.style.top = (rect.bottom + 5) + 'px';
+        previewDiv.style.left = rect.left + 'px';
+        const history = JSON.parse(localStorage.getItem('browsing_history')) || [];
+        const previewList = document.getElementById('previewList');
+        if (history.length === 0) {
+            const t = window.i18n ? window.i18n.t('noHistory') : '暂无浏览记录';
+            previewList.innerHTML = `<div style="color:#999;">${t}</div>`;
+        } else {
+            const latest = history.slice(0, 3);
+            previewList.innerHTML = latest.map(item => `<div>📖 ${item.name}</div>`).join('');
+        }
+        previewDiv.style.display = 'block';
+        clearTimeout(previewTimeout);
+    }
+
+    function hidePreview() {
+        previewTimeout = setTimeout(() => {
+            if (previewDiv) previewDiv.style.display = 'none';
+        }, 300);
+    }
+
+    if (historyBtn && previewDiv) {
+        historyBtn.addEventListener('mouseenter', showPreview);
+        historyBtn.addEventListener('mouseleave', hidePreview);
+        previewDiv.addEventListener('mouseenter', () => clearTimeout(previewTimeout));
+        previewDiv.addEventListener('mouseleave', hidePreview);
+    }
+
+    // ==================== 数据源 ====================
+    // 演出数据
+    const performances = [];
+    const titles = ["京剧《贵妃醉酒》", "昆曲《牡丹亭》", "高甲戏《连升三级》", "黄梅戏《天仙配》", "越剧《梁祝》", "秦腔《三滴血》", "川剧《变脸》", "豫剧《花木兰》", "粤剧《帝女花》", "河北梆子《宝莲灯》", "评剧《杨三姐告状》", "晋剧《打金枝》", "婺剧《白蛇传》", "闽剧《荔枝换绛桃》", "梨园戏《董生与李氏》", "莆仙戏《春草闯堂》", "藏戏《文成公主》", "壮剧《百鸟衣》", "侗戏《珠郎娘美》", "皮影戏《西游记》", "木偶戏《火焰山》", "花鼓戏《刘海砍樵》", "沪剧《雷雨》", "淮剧《金龙与蜉蝣》"];
+    const places = ["北京长安大戏院", "上海大剧院", "广州粤剧院", "南京紫金大戏院", "成都锦江剧场", "西安易俗社", "武汉洪山礼堂", "杭州蝴蝶剧场", "福州凤凰剧院", "天津中国大戏院"];
+    for (let i = 0; i < 24; i++) {
+        performances.push({
+            id: i,
+            name: titles[i % titles.length],
+            time: `2025年${6 + Math.floor(i / 4)}月${(i % 28) + 1}日 19:30`,
+            address: places[i % places.length],
+            price: 180 + (i * 10),
+            img: `/static/img/performances-img/${i}.jpg`,
+            desc: `精彩非遗演出，不容错过。${titles[i % titles.length]}经典再现，名家献唱。`
         });
-        backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
 
-        // 浏览记录悬浮窗
-        const historyBtn = document.getElementById('historyNavBtn');
-        const previewDiv = document.getElementById('historyPreview');
-        let previewTimeout;
-        function showPreview() {
-            if (!historyBtn || !previewDiv) return;
-            const rect = historyBtn.getBoundingClientRect();
-            previewDiv.style.top = (rect.bottom + 5) + 'px';
-            previewDiv.style.left = rect.left + 'px';
-            const history = JSON.parse(localStorage.getItem('browsing_history')) || [];
-            const previewList = document.getElementById('previewList');
-            if(history.length === 0) {
-                const t = window.i18n ? window.i18n.t('noHistory') : '暂无浏览记录';
-                previewList.innerHTML = `<div style="color:#999;">${t}</div>`;
-            } else {
-                const latest = history.slice(0, 3);
-                previewList.innerHTML = latest.map(item => `<div>📖 ${item.name}</div>`).join('');
-            }
-            previewDiv.style.display = 'block';
-            clearTimeout(previewTimeout);
+    // 周边商品数据
+    const merchandise = [];
+    const productNames = ["京剧脸谱书签", "昆曲折扇", "高甲戏公仔", "二十四节气手账", "太极拳文化衫", "非遗剪纸摆件", "皮影摆台", "刺绣香囊", "陶瓷戏曲娃娃", "竹编团扇", "蜡染围巾", "木版年画", "古法香牌", "戏曲头饰挂件", "民乐U盘", "非遗明信片套装", "扎染丝巾", "铜胎珐琅书扣", "藤编提篮", "泥塑兔儿爷", "兔年剪纸", "藏戏面具", "傩面具钥匙扣", "云锦小方巾"];
+    const descriptions = [
+        "手工精雕，京剧脸谱造型，金属质感，自带书签绳。",
+        "苏工折扇，扇面绘有牡丹亭图案，竹制扇骨。",
+        "泉州高甲戏经典丑角Q版公仔，树脂材质。",
+        "二十四节气插画，非遗知识日历，全年手账。",
+        "太极图案印花，纯棉舒适，黑白两色可选。",
+        "手工剪纸装裱，传统吉祥图案，家居装饰。",
+        "皮影戏经典人物造型，可摆可玩。",
+        "手工刺绣，内置天然香料，驱蚊安神。",
+        "陶瓷戏曲人物，手工彩绘，精致摆件。",
+        "精选竹篾，手工编织，清凉送风。",
+        "贵州苗族蜡染，纯棉围巾，民族风情。",
+        "朱仙镇木版年画，吉祥寓意，手工拓印。",
+        "古法合香，天然香料，安神静心。",
+        "戏曲头饰缩小版，精美仿点翠。",
+        "民族乐器造型U盘，16G容量。",
+        "一套12张，涵盖十大非遗项目。",
+        "云南大理扎染，植物染色，丝巾轻盈。",
+        "铜胎掐丝珐琅书扣，仿故宫文物。",
+        "非遗竹编，传统手提篮，环保实用。",
+        "北京泥彩塑兔儿爷，吉祥寓意。",
+        "生肖兔剪纸，装裱画框，新年装饰。",
+        "西藏藏戏面具，手工雕刻，色彩绚丽。",
+        "江西傩面具钥匙扣，驱邪纳福。",
+        "南京云锦小方巾，真丝材质，皇家工艺。"
+    ];
+    for (let i = 0; i < 24; i++) {
+        merchandise.push({
+            id: i,
+            name: productNames[i],
+            price: 49 + (i * 7),
+            img: `/static/img/merchandise-img/${i}.jpg`,
+            desc: descriptions[i],
+            specs: "材质: 优质材料，手工制作"
+        });
+    }
+
+    // 旅游产品数据
+    const travels = [
+        {
+            id: 1,
+            name: "【秘境云南】丽江·大理·泸沽湖7日深度非遗之旅",
+            days: 7,
+            price: 3280,
+            groupSize: "2-8人小团",
+            sold: 1280,
+            img: "/static/img/travel-img/1.jpg",
+            desc: "漫步丽江古城，体验东巴造纸，摩梭家访，非遗扎染",
+            highlight: "东巴文化体验 + 摩梭篝火晚会"
+        },
+        {
+            id: 2,
+            name: "【多彩贵州】黄果树·千户苗寨·荔波小七孔5日纯玩",
+            days: 5,
+            price: 2680,
+            groupSize: "4-12人",
+            sold: 2450,
+            img: "/static/img/travel-img/2.jpg",
+            desc: "观黄果树瀑布，住苗寨观夜景，体验苗族蜡染",
+            highlight: "苗族蜡染DIY + 长桌宴"
+        },
+        {
+            id: 3,
+            name: "【佛国禅韵】峨眉山·乐山大佛·非遗武术4日体验",
+            days: 4,
+            price: 1980,
+            groupSize: "2-6人",
+            sold: 862,
+            img: "/static/img/travel-img/3.jpg",
+            desc: "学习峨眉武术，品尝素斋，观金顶云海",
+            highlight: "峨眉武术体验 + 禅修课程"
+        },
+        {
+            id: 4,
+            name: "【风花雪月】大理·洱海·沙溪古镇5日轻奢旅拍",
+            days: 5,
+            price: 3580,
+            groupSize: "2-4人",
+            sold: 734,
+            img: "/static/img/travel-img/4.jpg",
+            desc: "洱海S湾骑行，白族三道茶体验，沙溪茶马古道",
+            highlight: "旅拍服务 + 白族扎染"
+        },
+        {
+            id: 5,
+            name: "【黔东南秘境】肇兴侗寨·堂安梯田·非遗侗族大歌4日",
+            days: 4,
+            price: 2280,
+            groupSize: "4-10人",
+            sold: 591,
+            img: "/static/img/travel-img/5.jpg",
+            desc: "聆听侗族大歌，学唱侗族琵琶歌，体验蜡染",
+            highlight: "侗族大歌教学 + 梯田徒步"
+        },
+        {
+            id: 6,
+            name: "【蜀道三国】成都·武侯祠·阆中古城·非遗皮影6日",
+            days: 6,
+            price: 3180,
+            groupSize: "2-8人",
+            sold: 412,
+            img: "/static/img/travel-img/6.jpg",
+            desc: "观川剧变脸，体验皮影制作，漫步三国古道",
+            highlight: "皮影戏体验 + 三国文化"
+        },
+        {
+            id: 7,
+            name: "【香格里拉】丽江·虎跳峡·普达措·松赞林寺6日",
+            days: 6,
+            price: 3980,
+            groupSize: "2-6人",
+            sold: 1560,
+            img: "/static/img/travel-img/7.jpg",
+            desc: "探秘藏族非遗唐卡，藏民家访，徒步秘境",
+            highlight: "唐卡绘制体验 + 藏式家访"
+        },
+        {
+            id: 8,
+            name: "【贵州全景】梵净山·镇远古城·西江苗寨8日",
+            days: 8,
+            price: 4380,
+            groupSize: "6-15人",
+            sold: 2030,
+            img: "/static/img/travel-img/8.jpg",
+            desc: "登梵净山云顶，体验苗族银饰锻造，夜游镇远",
+            highlight: "银饰锻造 + 古城夜游"
+        },
+        {
+            id: 9,
+            name: "【成都慢生活】熊猫基地·都江堰·青城山4日",
+            days: 4,
+            price: 2480,
+            groupSize: "2-8人",
+            sold: 984,
+            img: "/static/img/travel-img/9.jpg",
+            desc: "熊猫义工体验，学习青城太极，品盖碗茶",
+            highlight: "熊猫义工 + 太极体验"
+        },
+        {
+            id: 10,
+            name: "【云南全景】昆明·大理·丽江·香格里拉9日",
+            days: 9,
+            price: 5280,
+            groupSize: "4-12人",
+            sold: 2120,
+            img: "/static/img/travel-img/10.jpg",
+            desc: "一次玩遍滇西，体验纳西古乐、藏族锅庄",
+            highlight: "纳西古乐 + 藏族锅庄舞"
+        },
+        {
+            id: 11,
+            name: "【黔北风情】赤水丹霞·茅台古镇·非遗晒醋4日",
+            days: 4,
+            price: 1980,
+            groupSize: "2-6人",
+            sold: 367,
+            img: "/static/img/travel-img/11.jpg",
+            desc: "探秘赤水竹编，参观茅台酒厂，体验晒醋工艺",
+            highlight: "晒醋体验 + 茅台文化"
+        },
+        {
+            id: 12,
+            name: "【川西秘境】四姑娘山·丹巴藏寨·甲居5日",
+            days: 5,
+            price: 3680,
+            groupSize: "2-4人",
+            sold: 521,
+            img: "/static/img/travel-img/12.jpg",
+            desc: "嘉绒藏族非遗刺绣体验，藏式家访，雪山徒步",
+            highlight: "藏绣体验 + 雪山徒步"
+        },
+        {
+            id: 13,
+            name: "【版纳风情】西双版纳·傣族园·雨林穿越5日",
+            days: 5,
+            price: 2980,
+            groupSize: "2-6人",
+            sold: 1670,
+            img: "static/img/travel-img/13.jpg",
+            desc: "傣族泼水节体验，学习傣陶制作，夜探雨林",
+            highlight: "傣陶制作 + 泼水狂欢"
+        },
+        {
+            id: 14,
+            name: "【贵州苗年】凯里·雷山·苗族非遗深度7日",
+            days: 7,
+            price: 4280,
+            groupSize: "4-12人",
+            sold: 886,
+            img: "static/img/travel-img/14.jpg",
+            desc: "参与苗年盛典，学习苗绣、苗族银饰锻造",
+            highlight: "苗年盛典 + 苗绣体验"
+        },
+        {
+            id: 15,
+            name: "【天府非遗】绵竹年画·蜀锦·川菜博物馆3日",
+            days: 3,
+            price: 1680,
+            groupSize: "2-8人",
+            sold: 432,
+            img: "static/img/travel-img/15.jpg",
+            desc: "体验绵竹年画绘制，参观蜀锦织造，学做川菜",
+            highlight: "年画绘制 + 川菜教学"
         }
-        function hidePreview() {
-            previewTimeout = setTimeout(() => {
-                if(previewDiv) previewDiv.style.display = 'none';
-            }, 300);
-        }
-        if (historyBtn && previewDiv) {
-            historyBtn.addEventListener('mouseenter', showPreview);
-            historyBtn.addEventListener('mouseleave', hidePreview);
-            previewDiv.addEventListener('mouseenter', () => clearTimeout(previewTimeout));
-            previewDiv.addEventListener('mouseleave', hidePreview);
-        }
+    ];
 
-        // ==================== 数据源 ====================
-        // 演出数据
-        const performances = [];
-        const titles = ["京剧《贵妃醉酒》", "昆曲《牡丹亭》", "高甲戏《连升三级》", "黄梅戏《天仙配》", "越剧《梁祝》", "秦腔《三滴血》", "川剧《变脸》", "豫剧《花木兰》", "粤剧《帝女花》", "河北梆子《宝莲灯》", "评剧《杨三姐告状》", "晋剧《打金枝》", "婺剧《白蛇传》", "闽剧《荔枝换绛桃》", "梨园戏《董生与李氏》", "莆仙戏《春草闯堂》", "藏戏《文成公主》", "壮剧《百鸟衣》", "侗戏《珠郎娘美》", "皮影戏《西游记》", "木偶戏《火焰山》", "花鼓戏《刘海砍樵》", "沪剧《雷雨》", "淮剧《金龙与蜉蝣》"];
-        const places = ["北京长安大戏院", "上海大剧院", "广州粤剧院", "南京紫金大戏院", "成都锦江剧场", "西安易俗社", "武汉洪山礼堂", "杭州蝴蝶剧场", "福州凤凰剧院", "天津中国大戏院"];
-        for(let i=0; i<24; i++) {
-            performances.push({
-                id: i,
-                name: titles[i % titles.length],
-                time: `2025年${6 + Math.floor(i/4)}月${(i%28)+1}日 19:30`,
-                address: places[i % places.length],
-                price: 180 + (i*10),
-                img: `static/img/performances-img/${i}.jpg`,
-                desc: `精彩非遗演出，不容错过。${titles[i % titles.length]}经典再现，名家献唱。`
-            });
-        }
+    // 获取 URL 参数
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
 
-        // 周边商品数据
-        const merchandise = [];
-        const productNames = ["京剧脸谱书签", "昆曲折扇", "高甲戏公仔", "二十四节气手账", "太极拳文化衫", "非遗剪纸摆件", "皮影摆台", "刺绣香囊", "陶瓷戏曲娃娃", "竹编团扇", "蜡染围巾", "木版年画", "古法香牌", "戏曲头饰挂件", "民乐U盘", "非遗明信片套装", "扎染丝巾", "铜胎珐琅书扣", "藤编提篮", "泥塑兔儿爷", "兔年剪纸", "藏戏面具", "傩面具钥匙扣", "云锦小方巾"];
-        const descriptions = [
-            "手工精雕，京剧脸谱造型，金属质感，自带书签绳。",
-            "苏工折扇，扇面绘有牡丹亭图案，竹制扇骨。",
-            "泉州高甲戏经典丑角Q版公仔，树脂材质。",
-            "二十四节气插画，非遗知识日历，全年手账。",
-            "太极图案印花，纯棉舒适，黑白两色可选。",
-            "手工剪纸装裱，传统吉祥图案，家居装饰。",
-            "皮影戏经典人物造型，可摆可玩。",
-            "手工刺绣，内置天然香料，驱蚊安神。",
-            "陶瓷戏曲人物，手工彩绘，精致摆件。",
-            "精选竹篾，手工编织，清凉送风。",
-            "贵州苗族蜡染，纯棉围巾，民族风情。",
-            "朱仙镇木版年画，吉祥寓意，手工拓印。",
-            "古法合香，天然香料，安神静心。",
-            "戏曲头饰缩小版，精美仿点翠。",
-            "民族乐器造型U盘，16G容量。",
-            "一套12张，涵盖十大非遗项目。",
-            "云南大理扎染，植物染色，丝巾轻盈。",
-            "铜胎掐丝珐琅书扣，仿故宫文物。",
-            "非遗竹编，传统手提篮，环保实用。",
-            "北京泥彩塑兔儿爷，吉祥寓意。",
-            "生肖兔剪纸，装裱画框，新年装饰。",
-            "西藏藏戏面具，手工雕刻，色彩绚丽。",
-            "江西傩面具钥匙扣，驱邪纳福。",
-            "南京云锦小方巾，真丝材质，皇家工艺。"
-        ];
-        for(let i=0; i<24; i++) {
-            merchandise.push({
-                id: i,
-                name: productNames[i],
-                price: 49 + (i*7),
-                img: `static/img/merchandise-img/${i}.jpg`,
-                desc: descriptions[i],
-                specs: "材质: 优质材料，手工制作"
-            });
-        }
+    const productId = getQueryParam('id');
+    const productType = getQueryParam('type');
 
-        // 旅游产品数据
-        const travels = [
-            { id: 1, name: "【秘境云南】丽江·大理·泸沽湖7日深度非遗之旅", days: 7, price: 3280, groupSize: "2-8人小团", sold: 1280, img: "static/img/travel-img/1.jpg", desc: "漫步丽江古城，体验东巴造纸，摩梭家访，非遗扎染", highlight: "东巴文化体验 + 摩梭篝火晚会" },
-            { id: 2, name: "【多彩贵州】黄果树·千户苗寨·荔波小七孔5日纯玩", days: 5, price: 2680, groupSize: "4-12人", sold: 2450, img: "static/img/travel-img/2.jpg", desc: "观黄果树瀑布，住苗寨观夜景，体验苗族蜡染", highlight: "苗族蜡染DIY + 长桌宴" },
-            { id: 3, name: "【佛国禅韵】峨眉山·乐山大佛·非遗武术4日体验", days: 4, price: 1980, groupSize: "2-6人", sold: 862, img: "static/img/travel-img/3.jpg", desc: "学习峨眉武术，品尝素斋，观金顶云海", highlight: "峨眉武术体验 + 禅修课程" },
-            { id: 4, name: "【风花雪月】大理·洱海·沙溪古镇5日轻奢旅拍", days: 5, price: 3580, groupSize: "2-4人", sold: 734, img: "static/img/travel-img/4.jpg", desc: "洱海S湾骑行，白族三道茶体验，沙溪茶马古道", highlight: "旅拍服务 + 白族扎染" },
-            { id: 5, name: "【黔东南秘境】肇兴侗寨·堂安梯田·非遗侗族大歌4日", days: 4, price: 2280, groupSize: "4-10人", sold: 591, img: "static/img/travel-img/5.jpg", desc: "聆听侗族大歌，学唱侗族琵琶歌，体验蜡染", highlight: "侗族大歌教学 + 梯田徒步" },
-            { id: 6, name: "【蜀道三国】成都·武侯祠·阆中古城·非遗皮影6日", days: 6, price: 3180, groupSize: "2-8人", sold: 412, img: "static/img/travel-img/6.jpg", desc: "观川剧变脸，体验皮影制作，漫步三国古道", highlight: "皮影戏体验 + 三国文化" },
-            { id: 7, name: "【香格里拉】丽江·虎跳峡·普达措·松赞林寺6日", days: 6, price: 3980, groupSize: "2-6人", sold: 1560, img: "static/img/travel-img/7.jpg", desc: "探秘藏族非遗唐卡，藏民家访，徒步秘境", highlight: "唐卡绘制体验 + 藏式家访" },
-            { id: 8, name: "【贵州全景】梵净山·镇远古城·西江苗寨8日", days: 8, price: 4380, groupSize: "6-15人", sold: 2030, img: "static/img/travel-img/8.jpg", desc: "登梵净山云顶，体验苗族银饰锻造，夜游镇远", highlight: "银饰锻造 + 古城夜游" },
-            { id: 9, name: "【成都慢生活】熊猫基地·都江堰·青城山4日", days: 4, price: 2480, groupSize: "2-8人", sold: 984, img: "static/img/travel-img/9.jpg", desc: "熊猫义工体验，学习青城太极，品盖碗茶", highlight: "熊猫义工 + 太极体验" },
-            { id: 10, name: "【云南全景】昆明·大理·丽江·香格里拉9日", days: 9, price: 5280, groupSize: "4-12人", sold: 2120, img: "static/img/travel-img/10.jpg", desc: "一次玩遍滇西，体验纳西古乐、藏族锅庄", highlight: "纳西古乐 + 藏族锅庄舞" },
-            { id: 11, name: "【黔北风情】赤水丹霞·茅台古镇·非遗晒醋4日", days: 4, price: 1980, groupSize: "2-6人", sold: 367, img: "static/img/travel-img/11.jpg", desc: "探秘赤水竹编，参观茅台酒厂，体验晒醋工艺", highlight: "晒醋体验 + 茅台文化" },
-            { id: 12, name: "【川西秘境】四姑娘山·丹巴藏寨·甲居5日", days: 5, price: 3680, groupSize: "2-4人", sold: 521, img: "static/img/travel-img/12.jpg", desc: "嘉绒藏族非遗刺绣体验，藏式家访，雪山徒步", highlight: "藏绣体验 + 雪山徒步" },
-            { id: 13, name: "【版纳风情】西双版纳·傣族园·雨林穿越5日", days: 5, price: 2980, groupSize: "2-6人", sold: 1670, img: "static/img/travel-img/13.jpg", desc: "傣族泼水节体验，学习傣陶制作，夜探雨林", highlight: "傣陶制作 + 泼水狂欢" },
-            { id: 14, name: "【贵州苗年】凯里·雷山·苗族非遗深度7日", days: 7, price: 4280, groupSize: "4-12人", sold: 886, img: "static/img/travel-img/14.jpg", desc: "参与苗年盛典，学习苗绣、苗族银饰锻造", highlight: "苗年盛典 + 苗绣体验" },
-            { id: 15, name: "【天府非遗】绵竹年画·蜀锦·川菜博物馆3日", days: 3, price: 1680, groupSize: "2-8人", sold: 432, img: "static/img/travel-img/15.jpg", desc: "体验绵竹年画绘制，参观蜀锦织造，学做川菜", highlight: "年画绘制 + 川菜教学" }
-        ];
+    let product = null;
+    if (productType === 'performance' && productId !== null) {
+        const id = parseInt(productId);
+        product = performances.find(p => p.id === id);
+    } else if (productType === 'merchandise' && productId !== null) {
+        const id = parseInt(productId);
+        product = merchandise.find(m => m.id === id);
+    } else if (productType === 'travel' && productId !== null) {
+        const id = parseInt(productId);
+        product = travels.find(t => t.id === id);
+    }
 
-        // 获取 URL 参数
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
+    // 支付弹窗相关
+    const modal = document.getElementById('paymentModal');
+    const successModal = document.getElementById('successModal');
+    let pendingProduct = null;
 
-        const productId = getQueryParam('id');
-        const productType = getQueryParam('type');
+    function openPaymentModal(prod) {
+        pendingProduct = prod;
+        document.getElementById('modalAmount').innerText = prod.price;
+        modal.style.display = 'flex';
+    }
 
-        let product = null;
-        if (productType === 'performance' && productId !== null) {
-            const id = parseInt(productId);
-            product = performances.find(p => p.id === id);
-        } else if (productType === 'merchandise' && productId !== null) {
-            const id = parseInt(productId);
-            product = merchandise.find(m => m.id === id);
-        } else if (productType === 'travel' && productId !== null) {
-            const id = parseInt(productId);
-            product = travels.find(t => t.id === id);
-        }
+    function closePaymentModal() {
+        modal.style.display = 'none';
+        pendingProduct = null;
+    }
 
-        // 支付弹窗相关
-        const modal = document.getElementById('paymentModal');
-        const successModal = document.getElementById('successModal');
-        let pendingProduct = null;
+    // 确认支付后保存订单并显示成功弹窗，点击“返回”按钮回到上一页
+    function confirmPayment() {
+        if (!pendingProduct) return;
+        // 保存订单
+        let orders = JSON.parse(localStorage.getItem('user_orders')) || [];
+        const newOrder = {
+            type: productType,
+            id: pendingProduct.id,
+            name: pendingProduct.name,
+            price: pendingProduct.price,
+            date: new Date().toLocaleString(),
+            place: productType === 'performance' ? pendingProduct.address : (productType === 'travel' ? '非遗主题旅游' : '线上商城'),
+            img: pendingProduct.img
+        };
+        orders.push(newOrder);
+        localStorage.setItem('user_orders', JSON.stringify(orders));
 
-        function openPaymentModal(prod) {
-            pendingProduct = prod;
-            document.getElementById('modalAmount').innerText = prod.price;
-            modal.style.display = 'flex';
-        }
+        // 更新浏览历史
+        let history = JSON.parse(localStorage.getItem('browsing_history')) || [];
+        history.unshift({
+            name: pendingProduct.name,
+            img: pendingProduct.img,
+            type: productType === 'performance' ? '演出' : (productType === 'travel' ? '旅游' : '周边')
+        });
+        localStorage.setItem('browsing_history', JSON.stringify(history.slice(0, 20)));
 
-        function closePaymentModal() {
-            modal.style.display = 'none';
-            pendingProduct = null;
-        }
+        // 关闭支付弹窗
+        closePaymentModal();
 
-        // 确认支付后保存订单并显示成功弹窗，点击“返回”按钮回到上一页
-        function confirmPayment() {
-            if (!pendingProduct) return;
-            // 保存订单
-            let orders = JSON.parse(localStorage.getItem('user_orders')) || [];
-            const newOrder = {
-                type: productType,
-                id: pendingProduct.id,
-                name: pendingProduct.name,
-                price: pendingProduct.price,
-                date: new Date().toLocaleString(),
-                place: productType === 'performance' ? pendingProduct.address : (productType === 'travel' ? '非遗主题旅游' : '线上商城'),
-                img: pendingProduct.img
-            };
-            orders.push(newOrder);
-            localStorage.setItem('user_orders', JSON.stringify(orders));
+        // 显示自定义成功弹窗
+        successModal.style.display = 'flex';
 
-            // 更新浏览历史
-            let history = JSON.parse(localStorage.getItem('browsing_history')) || [];
-            history.unshift({ name: pendingProduct.name, img: pendingProduct.img, type: productType === 'performance' ? '演出' : (productType === 'travel' ? '旅游' : '周边') });
-            localStorage.setItem('browsing_history', JSON.stringify(history.slice(0,20)));
+        // 绑定“返回”按钮：关闭弹窗并返回上一页
+        const closeBtn = document.getElementById('closeSuccessBtn');
+        // 移除原有事件，避免重复绑定
+        closeBtn.replaceWith(closeBtn.cloneNode(true));
+        const newCloseBtn = document.getElementById('closeSuccessBtn');
+        newCloseBtn.addEventListener('click', () => {
+            successModal.style.display = 'none';
+            // 返回上一页（商品列表或详情页来源）
+            window.history.back();
+        });
+    }
 
-            // 关闭支付弹窗
-            closePaymentModal();
-
-            // 显示自定义成功弹窗
-            successModal.style.display = 'flex';
-
-            // 绑定“返回”按钮：关闭弹窗并返回上一页
-            const closeBtn = document.getElementById('closeSuccessBtn');
-            // 移除原有事件，避免重复绑定
-            closeBtn.replaceWith(closeBtn.cloneNode(true));
-            const newCloseBtn = document.getElementById('closeSuccessBtn');
-            newCloseBtn.addEventListener('click', () => {
-                successModal.style.display = 'none';
-                // 返回上一页（商品列表或详情页来源）
-                window.history.back();
-            });
-        }
-
-        // 渲染产品详情
-function renderProduct() {
-    const container = document.getElementById('productContainer');
-    if (!product) {
-        container.innerHTML = `
+    // 渲染产品详情
+    function renderProduct() {
+        const container = document.getElementById('productContainer');
+        if (!product) {
+            container.innerHTML = `
             <div style="text-align:center; padding:80px;">
                 <h2>${window.i18n?.t('productNotExist') || '产品不存在或已下架'}</h2>
                 <p>${window.i18n?.t('productId') || '产品ID'}: ${productId}, ${window.i18n?.t('productType') || '类型'}: ${productType}</p>
                 <a href="javascript:history.back()" style="color:#b22234; font-size:18px;">${window.i18n?.t('backPrevPage') || '返回上一页'}</a>
             </div>
         `;
-        return;
-    }
+            return;
+        }
 
-    let infoHtml = '';
-    if (productType === 'performance') {
-        infoHtml = `
+        let infoHtml = '';
+        if (productType === 'performance') {
+            infoHtml = `
             <div class="info-row">
                 <span class="info-tag"><i class="fas fa-calendar-alt"></i> ${product.time}</span>
                 <span class="info-tag"><i class="fas fa-map-marker-alt"></i> ${product.address}</span>
@@ -677,8 +898,8 @@ function renderProduct() {
                 <span class="info-tag"><i class="fas fa-mask"></i> ${window.i18n?.t('operaType') || '戏曲类'}</span>
             </div>
         `;
-    } else if (productType === 'merchandise') {
-        infoHtml = `
+        } else if (productType === 'merchandise') {
+            infoHtml = `
             <div class="info-row">
                 <span class="info-tag"><i class="fas fa-box"></i> ${window.i18n?.t('inStock') || '库存充足'}</span>
                 <span class="info-tag"><i class="fas fa-shipping-fast"></i> ${window.i18n?.t('freeShipping') || '全国包邮'}</span>
@@ -687,10 +908,10 @@ function renderProduct() {
                 <span class="info-tag">${product.specs || (window.i18n?.t('specs') || '规格') + ': ' + (window.i18n?.t('standardEdition') || '标准版')}</span>
             </div>
         `;
-    } else if (productType === 'travel') {
-        infoHtml = `
+        } else if (productType === 'travel') {
+            infoHtml = `
             <div class="info-row">
-                <span class="info-tag"><i class="fas fa-clock"></i> ${product.days}${window.i18n?.t('day') || '天'}${product.days-1}${window.i18n?.t('nights') || '晚'}</span>
+                <span class="info-tag"><i class="fas fa-clock"></i> ${product.days}${window.i18n?.t('day') || '天'}${product.days - 1}${window.i18n?.t('nights') || '晚'}</span>
                 <span class="info-tag"><i class="fas fa-users"></i> ${product.groupSize}</span>
                 <span class="info-tag"><i class="fas fa-fire"></i> ${window.i18n?.t('sold') || '已售'} ${product.sold}+</span>
             </div>
@@ -699,9 +920,9 @@ function renderProduct() {
                 <span class="info-tag"><i class="fas fa-hotel"></i> ${window.i18n?.t('starHotel') || '星级住宿'}</span>
             </div>
         `;
-    }
+        }
 
-    container.innerHTML = `
+        container.innerHTML = `
         <a href="javascript:history.back()" class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> <span id="backText">返回</span></a>
         <div class="product-main">
             <div class="product-gallery">
@@ -721,141 +942,147 @@ function renderProduct() {
         </div>
     `;
 
-    document.getElementById('buyNowBtn').addEventListener('click', () => {
-        openPaymentModal(product);
+        document.getElementById('buyNowBtn').addEventListener('click', () => {
+            openPaymentModal(product);
+        });
+
+        // --- 新增：记录浏览历史（仅当用户已登录）---
+        if (product && typeof HistoryTracker !== 'undefined') {
+            let typeName = '';
+            if (productType === 'performance') typeName = '演出';
+            else if (productType === 'merchandise') typeName = '文创';
+            else if (productType === 'travel') typeName = '旅游';
+
+            HistoryTracker.record({
+                name: product.name,
+                img: product.img,
+                type: typeName,
+                id: product.id
+            });
+        }
+    }
+
+    renderProduct();
+
+    // 支付弹窗按钮事件
+    document.getElementById('confirmPayBtn').addEventListener('click', confirmPayment);
+    document.getElementById('cancelPayBtn').addEventListener('click', closePaymentModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closePaymentModal();
+    });
+    // 成功弹窗点击背景不关闭
+    successModal.addEventListener('click', (e) => {
+        if (e.target === successModal) {
+            // 点击背景不关闭
+        }
     });
 
-    // --- 新增：记录浏览历史（仅当用户已登录）---
-    if (product && typeof HistoryTracker !== 'undefined') {
-        let typeName = '';
-        if (productType === 'performance') typeName = '演出';
-        else if (productType === 'merchandise') typeName = '文创';
-        else if (productType === 'travel') typeName = '旅游';
-
-        HistoryTracker.record({
-            name: product.name,
-            img: product.img,
-            type: typeName,
-            id: product.id
-        });
+    // DeepSeek 助手
+    const chatDiv = document.getElementById('aiChatWindow');
+    const deepseekBtn = document.getElementById('deepseekBtn');
+    if (deepseekBtn) {
+        deepseekBtn.onclick = () => chatDiv.style.display = 'flex';
     }
-}
-        renderProduct();
-
-        // 支付弹窗按钮事件
-        document.getElementById('confirmPayBtn').addEventListener('click', confirmPayment);
-        document.getElementById('cancelPayBtn').addEventListener('click', closePaymentModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closePaymentModal();
-        });
-        // 成功弹窗点击背景不关闭
-        successModal.addEventListener('click', (e) => {
-            if (e.target === successModal) {
-                // 点击背景不关闭
+    const closeChat = document.getElementById('closeChat');
+    if (closeChat) {
+        closeChat.onclick = () => chatDiv.style.display = 'none';
+    }
+    const sendChat = document.getElementById('sendChat');
+    if (sendChat) {
+        sendChat.onclick = async () => {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+            const body = document.getElementById('chatBody');
+            body.innerHTML += `<div><strong>${window.i18n ? window.i18n.t('you') : '您'}:</strong> ${escapeHtml(msg)}</div>`;
+            const aiDiv = document.createElement('div');
+            aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${window.i18n ? window.i18n.t('thinking') : '思考中...'}`;
+            body.appendChild(aiDiv);
+            body.scrollTop = body.scrollHeight;
+            try {
+                const res = await fetch('http://localhost:8001/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg})
+                });
+                const data = await res.json();
+                const fallback = window.i18n ? window.i18n.t('serviceUnavailable') : '服务暂时不可用';
+                aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${escapeHtml(data.success ? data.reply : fallback)}`;
+            } catch (e) {
+                const errMsg = window.i18n ? window.i18n.t('chatError') : '网络错误，请确保代理服务器已启动（node proxy-server.js）';
+                aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${errMsg}`;
             }
-        });
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+        };
+    }
 
-        // DeepSeek 助手
-        const chatDiv = document.getElementById('aiChatWindow');
-        const deepseekBtn = document.getElementById('deepseekBtn');
-        if (deepseekBtn) {
-            deepseekBtn.onclick = () => chatDiv.style.display = 'flex';
-        }
-        const closeChat = document.getElementById('closeChat');
-        if (closeChat) {
-            closeChat.onclick = () => chatDiv.style.display = 'none';
-        }
-        const sendChat = document.getElementById('sendChat');
-        if (sendChat) {
-            sendChat.onclick = async () => {
-                const input = document.getElementById('chatInput');
-                const msg = input.value.trim();
-                if (!msg) return;
-                const body = document.getElementById('chatBody');
-                body.innerHTML += `<div><strong>${window.i18n ? window.i18n.t('you') : '您'}:</strong> ${escapeHtml(msg)}</div>`;
-                const aiDiv = document.createElement('div');
-                aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${window.i18n ? window.i18n.t('thinking') : '思考中...'}`;
-                body.appendChild(aiDiv);
-                body.scrollTop = body.scrollHeight;
-                try {
-                    const res = await fetch('http://localhost:3000/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg }) });
-                    const data = await res.json();
-                    const fallback = window.i18n ? window.i18n.t('serviceUnavailable') : '服务暂时不可用';
-                    aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${escapeHtml(data.success ? data.reply : fallback)}`;
-                } catch(e) {
-                    const errMsg = window.i18n ? window.i18n.t('chatError') : '网络错误，请确保代理服务器已启动（node proxy-server.js）';
-                    aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${errMsg}`;
-                }
-                input.value = '';
-                body.scrollTop = body.scrollHeight;
-            };
-        }
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-        
-        // 语言切换翻译更新
-        function applyPageLang() {
-            if (!window.i18n) return;
-            const t = window.i18n.t;
-            
-            // 支付弹窗
-            const scanTitle = document.getElementById('scanToPayTitle');
-            if (scanTitle) scanTitle.innerHTML = `<i class="fas fa-qrcode"></i> ${t('scanToPay')}`;
-            const scanTip = document.getElementById('scanTip');
-            if (scanTip) scanTip.textContent = t('scanTip');
-            const paidBtn = document.getElementById('paidConfirmBtn');
-            if (paidBtn) paidBtn.textContent = t('paidConfirm');
-            const cancelBtn = document.getElementById('cancelBtn');
-            if (cancelBtn) cancelBtn.textContent = t('cancel');
-            
-            // 成功弹窗
-            const successTitle = document.getElementById('paySuccessTitle');
-            if (successTitle) successTitle.textContent = t('paySuccess');
-            const orderAddedTip = document.getElementById('orderAddedTip');
-            if (orderAddedTip) orderAddedTip.textContent = t('orderAdded');
-            const backBtn2 = document.getElementById('backBtn');
-            if (backBtn2) backBtn2.textContent = t('back');
-            
-            // AI 助手
-            const aiTitle = document.getElementById('aiAssistantTitle');
-            if (aiTitle) aiTitle.textContent = t('aiAssistant');
-            const aiWelcome = document.getElementById('aiWelcomeMsg');
-            if (aiWelcome) aiWelcome.textContent = t('aiWelcome');
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) chatInput.placeholder = t('chatInput');
-            const sendBtn = document.getElementById('sendBtn');
-            if (sendBtn) sendBtn.textContent = t('send');
-            
-            // 浏览记录
-            const recentBrowse = document.getElementById('recentBrowseTitle');
-            if (recentBrowse) recentBrowse.textContent = t('recentBrowse');
-            
-            // 产品详情页
-            const backText = document.getElementById('backText');
-            if (backText) backText.textContent = t('back');
-            const buyNow = document.getElementById('buyNowBtn');
-            if (buyNow) buyNow.textContent = t('buyNow');
-            const detailTitle = document.getElementById('productDetailTitle');
-            if (detailTitle) detailTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${t('productDetail')}`;
-        }
-        
-        // 页面加载时和语言切换时应用翻译
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', applyPageLang);
-        } else {
-            applyPageLang();
-        }
-        document.addEventListener('lang:changed', applyPageLang);
-    </script>
-<script src="static/js/sidebar.js"></script>
-<script src="static/js/chat.js"></script>
-    <script src="static/js/password-utils.js"></script>
-    <script src="static/js/components.js"></script>
-<script src="static/js/auth.js"></script>
-    <script src="static/js/navbar.js"></script>
-<script src="static/js/historyTracker.js"></script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // 语言切换翻译更新
+    function applyPageLang() {
+        if (!window.i18n) return;
+        const t = window.i18n.t;
+
+        // 支付弹窗
+        const scanTitle = document.getElementById('scanToPayTitle');
+        if (scanTitle) scanTitle.innerHTML = `<i class="fas fa-qrcode"></i> ${t('scanToPay')}`;
+        const scanTip = document.getElementById('scanTip');
+        if (scanTip) scanTip.textContent = t('scanTip');
+        const paidBtn = document.getElementById('paidConfirmBtn');
+        if (paidBtn) paidBtn.textContent = t('paidConfirm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        if (cancelBtn) cancelBtn.textContent = t('cancel');
+
+        // 成功弹窗
+        const successTitle = document.getElementById('paySuccessTitle');
+        if (successTitle) successTitle.textContent = t('paySuccess');
+        const orderAddedTip = document.getElementById('orderAddedTip');
+        if (orderAddedTip) orderAddedTip.textContent = t('orderAdded');
+        const backBtn2 = document.getElementById('backBtn');
+        if (backBtn2) backBtn2.textContent = t('back');
+
+        // AI 助手
+        const aiTitle = document.getElementById('aiAssistantTitle');
+        if (aiTitle) aiTitle.textContent = t('aiAssistant');
+        const aiWelcome = document.getElementById('aiWelcomeMsg');
+        if (aiWelcome) aiWelcome.textContent = t('aiWelcome');
+        const chatInput = document.getElementById('chatInput');
+        if (chatInput) chatInput.placeholder = t('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        if (sendBtn) sendBtn.textContent = t('send');
+
+        // 浏览记录
+        const recentBrowse = document.getElementById('recentBrowseTitle');
+        if (recentBrowse) recentBrowse.textContent = t('recentBrowse');
+
+        // 产品详情页
+        const backText = document.getElementById('backText');
+        if (backText) backText.textContent = t('back');
+        const buyNow = document.getElementById('buyNowBtn');
+        if (buyNow) buyNow.textContent = t('buyNow');
+        const detailTitle = document.getElementById('productDetailTitle');
+        if (detailTitle) detailTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${t('productDetail')}`;
+    }
+
+    // 页面加载时和语言切换时应用翻译
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyPageLang);
+    } else {
+        applyPageLang();
+    }
+    document.addEventListener('lang:changed', applyPageLang);
+</script>
+<script src="/static/js/sidebar.js"></script>
+<script src="/static/js/chat.js"></script>
+<script src="/static/js/password-utils.js"></script>
+<script src="/static/js/components.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/navbar.js"></script>
+<script src="/static/js/historyTracker.js"></script>
 </body>
 </html>
