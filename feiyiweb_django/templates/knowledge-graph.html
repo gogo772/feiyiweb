@@ -10,7 +10,7 @@
     <!-- 引入 D3.js 核心库（本地文件） -->
     <script src="/static/lib/d3.v7.min.js"></script>
     <!-- 引入 Font Awesome 图标库 -->
-    <link rel="stylesheet" href="/static/lib/font-awesome/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="/static/js/i18n.js"></script>
     <!-- 引入聊天组件样式（菲菲助手） -->
     <link rel="stylesheet" href="/static/css/chat.css">
@@ -259,7 +259,7 @@
     <div class="graph-tooltip" id="graphTooltip"></div>
     <div class="graph-legend" id="graphLegend"></div>
     <div class="graph-reset-btn" id="graphResetBtn">
-        <i class="fas fa-sync-alt"></i> <span data-i18n="resetView">重置视角</span>
+        <i class="fas fa-rotate"></i> <span data-i18n="resetView">重置视角</span>
     </div>
     <div class="loading-message" id="loadingMsg">
         <i class="fas fa-spinner fa-pulse"></i> <span data-i18n="loadingKnowledge">正在加载非遗数据...</span>
@@ -314,6 +314,19 @@
             'Traditional Medicine': '#00CEC9',
             'Folk Customs': '#6C5CE7'
         };
+        const CATEGORY_EN_MAP = {
+            '民间文学': 'Folk Literature',
+            '传统音乐': 'Traditional Music',
+            '传统舞蹈': 'Traditional Dance',
+            '传统戏剧': 'Traditional Drama',
+            '曲艺': 'Quyi',
+            '传统体育、游艺与杂技': 'Traditional Sports, Recreational Activities and Acrobatics',
+            '传统美术': 'Traditional Fine Arts',
+            '传统技艺': 'Traditional Crafts',
+            '传统医药': 'Traditional Medicine',
+            '民俗': 'Folk Customs'
+        };
+        const ROOT_EN_NAME = 'Intangible Cultural Heritage';
         const ROOT_COLOR = '#f0c060';
         const ROOT_R = 26;
         const CAT_R = 16;
@@ -358,7 +371,7 @@
             const lang = getCurrentLang();
             nodes.push({
                 id: rootId,
-                name: data.name,
+                name: lang === 'en' ? ROOT_EN_NAME : data.name,
                 depth: 0,
                 isRoot: true,
                 isCategory: false,
@@ -372,8 +385,9 @@
             let catCounts = {}, cats = [];
             for (const cat of data.children) {
                 const catName = cat.name;
-                const displayCatName = catName;
-                if (!COLORS[catName]) continue;
+                const displayCatName = lang === 'en' ? (CATEGORY_EN_MAP[catName] || catName) : catName;
+                const colorKey = lang === 'en' ? (CATEGORY_EN_MAP[catName] || catName) : catName;
+                if (!COLORS[colorKey]) continue;
                 cats.push(displayCatName);
                 const limited = cat.children.slice(0, MAX_ITEMS_PER_CAT);
                 const catId = 'cat::' + catName;
@@ -384,7 +398,7 @@
                     isRoot: false,
                     isCategory: true,
                     isItem: false,
-                    color: COLORS[catName] || '#999',
+                    color: COLORS[colorKey] || '#999',
                     radius: CAT_R,
                     itemCount: limited.length,
                     origName: catName
@@ -397,7 +411,7 @@
                     const itemId = 'item::' + catName + '::' + item.name;
                     const itemNode = {
                         id: itemId,
-                        name: item.name,
+                        name: lang === 'en' ? (item.name_en || item.name) : item.name,
                         depth: 2,
                         isRoot: false,
                         isCategory: false,
@@ -436,8 +450,6 @@
                 return {visNodes, visLinks};
             }
 
-            let tickCount = 0;
-
             function startSimulation() {
                 const {visNodes, visLinks} = getVisibleNodesAndLinks();
                 const simNodes = visNodes.map(n => ({
@@ -450,27 +462,23 @@
                 const simLinks = visLinks.map(l => ({...l}));
 
                 if (simulation) simulation.stop();
-                const nodeCount = simNodes.length;
-                const linkCount = simLinks.length;
-                const hasManyItems = nodeCount > 100;
-
                 simulation = d3.forceSimulation(simNodes)
                     .force('link', d3.forceLink(simLinks)
                         .id(d => d.id)
                         .distance(l => l.depth === 0 ? 130 : 85)
-                        .strength(l => l.depth === 0 ? 0.35 : 0.2))
+                        .strength(l => l.depth === 0 ? 0.28 : 0.15))
                     .force('charge', d3.forceManyBody()
-                        .strength(d => d.isRoot ? -2000 : (d.isCategory ? -1000 : (hasManyItems ? -80 : -200))))
+                        .strength(d => d.isRoot ? -1800 : (d.isCategory ? -800 : -200)))
                     .force('center', d3.forceCenter(0, rootY).strength(0.1))
-                    .force('collision', d3.forceCollide().radius(d => d.radius + (hasManyItems ? 3 : 6)))
+                    .force('collision', d3.forceCollide().radius(d => d.radius + 6))
                     .force('radial', d3.forceRadial(d => d.isCategory ? CAT_DIST : 0, 0, rootY)
-                        .strength(d => d.isCategory ? 0.7 : 0))
-                    .alpha(0.9).alphaDecay(hasManyItems ? 0.03 : 0.022);
+                        .strength(d => d.isCategory ? 0.65 : 0))
+                    .alpha(0.8).alphaDecay(0.022);
 
                 const link = linkG.selectAll('line').data(simLinks, d => d.source.id + '--' + d.target.id);
                 link.join('line')
                     .attr('stroke', 'rgba(210, 190, 140, 0.5)')
-                    .attr('stroke-width', l => l.depth === 0 ? 2.5 : (hasManyItems ? 0.8 : 1.2))
+                    .attr('stroke-width', l => l.depth === 0 ? 2.5 : 1.2)
                     .attr('stroke-opacity', 0.6)
                     .attr('stroke-dasharray', l => l.depth === 0 ? 'none' : '2 2');
 
@@ -497,10 +505,7 @@
                         .attr('stroke-opacity', 0.4);
                 }
 
-                const labelData = simNodes.filter(d => d.isRoot || d.isCategory);
-                if (!hasManyItems) {
-                    labelData.push(...simNodes.filter(d => d.isItem));
-                }
+                const labelData = simNodes.filter(d => d.isRoot || d.isCategory || d.isItem);
                 const textSel = labelG.selectAll('text').data(labelData, d => d.id);
                 textSel.join('text')
                     .attr('text-anchor', 'middle')
@@ -534,11 +539,7 @@
                         }
                     });
 
-                tickCount = 0;
                 simulation.on('tick', () => {
-                    tickCount++;
-                    if (tickCount % (hasManyItems ? 3 : 1) !== 0) return;
-
                     linkG.selectAll('line')
                         .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
                         .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
@@ -546,12 +547,6 @@
                     labelG.selectAll('text').attr('x', d => d.x).attr('y', d => d.y);
                 });
                 simulation._simNodes = simNodes;
-
-                if (hasManyItems) {
-                    setTimeout(() => {
-                        if (simulation) simulation.stop();
-                    }, 5000);
-                }
             }
 
             function toggleCategory(catNode) {
@@ -580,8 +575,11 @@
                 d.records.forEach(r => {
                     html += `<table>`;
                     if (lang === 'en') {
-                        for (const [key, value] of Object.entries(r)) {
-                            html += `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value)}</td></tr>`;
+                        const enRecords = r.records_en || r;
+                        for (const [key, value] of Object.entries(enRecords)) {
+                            if (typeof value !== 'object') {
+                                html += `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value)}</td></tr>`;
+                            }
                         }
                     } else {
                         if (r['公布时间']) html += `<tr><th>${t('publishTime')}</th><td>${escapeHtml(r['公布时间'])}</td></tr>`;

@@ -120,6 +120,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://localhost:8001",
+    "http://127.0.0.1:8001",
+    "http://8.160.190.214:8001",
 ]
 CORS_ALLOW_METHODS = ['GET', 'POST', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['Content-Type']

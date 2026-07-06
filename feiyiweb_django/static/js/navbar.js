@@ -45,7 +45,7 @@
 
         return `
             <div class="logo">
-                <img src="static/img/favicon_io/android-chrome-192x192.png" alt="China ICH" class="logo-img">
+                <img src="/static/img/favicon_io/android-chrome-192x192.png" alt="China ICH" class="logo-img">
                 <span data-i18n="siteTitle">${window.i18n?.t('siteTitle') || ''}</span>
             </div>
             <div class="nav-links">${itemsHTML}</div>

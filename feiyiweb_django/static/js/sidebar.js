@@ -38,9 +38,9 @@
         showGoTop: true,
         autoInit: true,
         siteName: '华夏非遗 · 薪火相传',
-        wechatQrUrl: 'static/img/11111.jpg',
-        wechatIcon: 'static/img/02.jpg',
-        deepseekIcon: 'static/img/头像01.jpg',
+        wechatQrUrl: '/static/img/11111.jpg',
+        wechatIcon: '/static/img/02.jpg',
+        deepseekIcon: '/static/img/头像01.jpg',
         pulseAnimation: true,
         bodyPadding: true,
         notices: [

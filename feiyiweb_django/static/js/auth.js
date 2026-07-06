@@ -438,7 +438,7 @@
             if (data.success) {
                 localStorage.setItem('current_username', username);
                 localStorage.setItem('current_nickname', username);
-                localStorage.setItem('current_avatar', 'static/img/placeholder.svg');
+                localStorage.setItem('current_avatar', '/static/img/placeholder.svg');
                 updateAuthArea();
                 closeAuthModal();
                 showToast(tt('registerSuccess'));
