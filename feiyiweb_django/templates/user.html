@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon_io/apple-touch-icon.png">
@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>华夏非遗 · 个人中心</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/lib/font-awesome/all.min.css">
     <script src="/static/js/i18n.js"></script>
     <style>
         /* 顶部导航栏：样式见 static/css/navbar.css */
@@ -49,36 +49,43 @@
         }
 
         .user-welcome {
-            color: #ffecb3;
+            color: #ffffff;
             font-size: 0.9rem;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.2);
             padding: 6px 16px;
-            border-radius: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
         }
 
         .login-btn, .register-btn {
-            background: #b22234;
-            padding: 10px 28px;
-            border-radius: 30px;
-            color: white;
+            background: rgba(255, 255, 255, 0.95);
+            color: #b22234;
+            padding: 12px 32px;
+            border-radius: 16px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.9rem;
-            transition: 0.2s;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
             border: none;
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .register-btn {
-            background: #2c5f2d;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.6);
         }
 
         .login-btn:hover {
-            background: #8b1a1a;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .register-btn:hover {
-            background: #1e3a1e;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: white;
         }
 
         .profile-layout {
@@ -89,136 +96,182 @@
         }
 
         .profile-sidebar {
-            flex: 1.2;
-            min-width: 240px;
-            background: rgba(255, 250, 240, 0.92);
-            backdrop-filter: blur(8px);
-            border-radius: 40px;
-            padding: 28px 16px;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-            height: fit-content;
+            flex: 1;
+            min-width: 338px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 31.2px;
+            padding: 0;
+            box-shadow: 0 8px 32px rgba(90, 46, 26, 0.08);
+            height: 669.06px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .profile-sidebar::-webkit-scrollbar {
+            display: none;
         }
 
         .user-avatar-large {
             text-align: center;
-            margin-bottom: 24px;
+            padding: 42px 26px;
+            background: linear-gradient(135deg, #b22234 0%, #8b1a1a 100%);
         }
 
         .avatar-img {
-            width: 100px;
-            height: 100px;
+            width: 117px;
+            height: 117px;
             object-fit: cover;
             border-radius: 50%;
-            border: 3px solid #c9a96e;
+            border: 5.2px solid rgba(255, 255, 255, 0.8);
             background: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
         }
 
         .user-nickname {
-            font-size: 1.4rem;
+            font-size: 1.69rem;
             font-weight: bold;
-            color: #5a2e1a;
-            margin-top: 12px;
+            color: #ffffff;
+            margin-top: 18.2px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .sidebar-menu {
             list-style: none;
-            margin-top: 20px;
+            padding: 20.8px;
+            margin: 0;
         }
 
         .sidebar-menu li {
-            margin: 12px 0;
-            padding: 12px 20px;
-            border-radius: 60px;
+            margin: 7.8px 0;
+            padding: 18.2px 26px;
+            border-radius: 20.8px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             font-weight: 500;
-            color: #3e2a21;
+            color: #5a2e1a;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 20.8px;
+            font-size: 1.3rem;
         }
 
         .sidebar-menu li i {
-            width: 28px;
-            font-size: 1.2rem;
+            width: 31.2px;
+            font-size: 1.43rem;
+            color: #8b7355;
+            flex-shrink: 0;
         }
 
-        .sidebar-menu li:hover, .sidebar-menu li.active {
-            background: #2c5f2d;
+        .sidebar-menu li:hover {
+            background: rgba(178, 34, 52, 0.08);
+            color: #b22234;
+        }
+
+        .sidebar-menu li:hover i {
+            color: #b22234;
+        }
+
+        .sidebar-menu li.active {
+            background: linear-gradient(135deg, #b22234 0%, #8b1a1a 100%);
             color: white;
-            box-shadow: 0 6px 14px rgba(44, 95, 45, 0.2);
+            box-shadow: 0 4px 12px rgba(178, 34, 52, 0.3);
+        }
+
+        .sidebar-menu li.active i {
+            color: white;
         }
 
         .profile-content {
-            flex: 3;
-            min-width: 280px;
-            background: rgba(255, 250, 240, 0.92);
-            backdrop-filter: blur(8px);
-            border-radius: 40px;
-            padding: 32px 36px;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            width: 805.13px;
+            height: 669.07px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 31.2px;
+            padding: 46.8px 52px;
+            box-shadow: 0 8px 32px rgba(90, 46, 26, 0.08);
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .profile-content::-webkit-scrollbar {
+            display: none;
         }
 
         .content-header {
-            font-size: 1.8rem;
+            font-size: 2.08rem;
             font-weight: bold;
-            color: #8b3c1c;
-            border-left: 6px solid #c9a96e;
-            padding-left: 20px;
-            margin-bottom: 28px;
+            color: #5a2e1a;
+            border-top: 3.9px solid #b22234;
+            padding-top: 20.8px;
+            margin-bottom: 41.6px;
+            letter-spacing: 1.3px;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 36.4px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 8px;
-            color: #4a2a1a;
+            margin-bottom: 13px;
+            color: #5a2e1a;
+            font-size: 1.235rem;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 12px 18px;
-            border-radius: 60px;
-            border: 1px solid #e2d5c0;
-            background: #fffef7;
-            font-size: 1rem;
+            padding: 13px 0;
+            border: none;
+            border-bottom: 2.6px solid #e2d5c0;
+            background: transparent;
+            font-size: 1.3rem;
+            color: #3e2a21;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-bottom-color: #b22234;
         }
 
         .btn-save {
-            background: #b22234;
+            background: linear-gradient(135deg, #b22234 0%, #8b1a1a 100%);
             color: white;
             border: none;
-            padding: 12px 28px;
-            border-radius: 60px;
+            padding: 18.2px 52px;
+            border-radius: 20.8px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(178, 34, 52, 0.3);
         }
 
         .btn-save:hover {
-            background: #8b1a1a;
+            transform: translateY(-2.6px);
+            box-shadow: 0 6px 16px rgba(178, 34, 52, 0.4);
         }
 
         .order-list-simple, .notice-list-simple, .history-list-simple {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 0;
         }
 
         .order-item, .notice-item, .history-item {
-            background: rgba(0, 0, 0, 0.04);
-            padding: 14px 20px;
-            border-radius: 28px;
+            padding: 26px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             position: relative;
+            border-bottom: 1.3px solid #f0ebe2;
+        }
+
+        .order-item:last-child, .notice-item:last-child, .history-item:last-child {
+            border-bottom: none;
         }
 
         .history-item .history-info {
@@ -227,49 +280,78 @@
 
         .history-item .history-info strong {
             display: block;
-            font-size: 1rem;
+            font-size: 1.3rem;
             color: #5a2e1a;
+            margin-bottom: 5.2px;
         }
 
         .history-item .history-info span {
-            font-size: 0.8rem;
-            color: #888;
+            font-size: 1.105rem;
+            color: #8b7355;
         }
 
         .delete-history-btn {
-            background: #b22234;
-            color: white;
+            background: rgba(178, 34, 52, 0.1);
+            color: #b22234;
             border: none;
-            width: 32px;
-            height: 32px;
+            width: 46.8px;
+            height: 46.8px;
             border-radius: 50%;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .delete-history-btn:hover {
-            background: #8b1a1a;
+            background: #b22234;
+            color: white;
         }
 
         .privacy-option {
-            margin: 20px 0;
+            margin: 31.2px 0;
+            padding: 20.8px;
+            background: #faf8f5;
+            border-radius: 15.6px;
         }
 
         hr {
-            margin: 20px 0;
-            border-color: #e2cfb0;
+            margin: 31.2px 0;
+            border: none;
+            border-top: 1.3px solid #f0ebe2;
         }
 
         @media (max-width: 768px) {
+            .profile-layout {
+                gap: 26px;
+            }
+
             .profile-sidebar {
                 flex: auto;
+                min-width: 100%;
             }
 
             .profile-content {
-                padding: 24px;
+                padding: 31.2px;
+            }
+
+            .content-header {
+                font-size: 1.82rem;
+            }
+
+            .sidebar-menu li {
+                padding: 15.6px 20.8px;
+                font-size: 1.235rem;
+            }
+
+            .avatar-img {
+                width: 97.5px;
+                height: 97.5px;
+            }
+
+            .user-nickname {
+                font-size: 1.43rem;
             }
         }
 
@@ -291,7 +373,6 @@
             <ul class="sidebar-menu">
                 <li data-tab="profile"><i class="fas fa-user-circle"></i> <span data-i18n="profileTab">个人资料</span>
                 </li>
-                <li data-tab="security"><i class="fas fa-lock"></i> <span data-i18n="securityTab">账户安全</span></li>
                 <li data-tab="orders"><i class="fas fa-ticket-alt"></i> <span data-i18n="ordersTab">我的订单</span></li>
                 <li data-tab="history"><i class="fas fa-history"></i> <span data-i18n="historyTab">浏览记录</span></li>
                 <li data-tab="messages"><i class="fas fa-bell"></i> <span data-i18n="messagesTab">消息通知</span></li>
@@ -303,7 +384,7 @@
     </div>
 </div>
 
-{% include 'components/footer.html' %}
+
 
 <script src="/static/js/password-utils.js"></script>
 <script src="/static/js/components.js"></script>
@@ -351,12 +432,18 @@
         });
     }
 
-    // 获取当前登录用户信息（直接读取 localStorage）
     function getCurrentUser() {
         const username = localStorage.getItem('current_username');
         if (!username) return null;
-        const users = JSON.parse(localStorage.getItem('nonprofit_users') || '{}');
-        return users[username] || null;
+        const nickname = localStorage.getItem('current_nickname') || username;
+        const avatar = localStorage.getItem('current_avatar') || '/static/img/placeholder.svg';
+        return {
+            username: username,
+            nickname: nickname,
+            avatar: avatar,
+            phone: '',
+            email: ''
+        };
     }
 
     // 保存用户信息
@@ -372,6 +459,10 @@
         if (users[username]) {
             Object.assign(users[username], updates);
             localStorage.setItem('nonprofit_users', JSON.stringify(users));
+        }
+        if (username === localStorage.getItem('current_username')) {
+            if (updates.nickname) localStorage.setItem('current_nickname', updates.nickname);
+            if (updates.avatar) localStorage.setItem('current_avatar', updates.avatar);
         }
     }
 
@@ -498,58 +589,6 @@
                 showToast(window.i18n?.t('saveSuccess') || '保存成功！');
                 // 刷新当前面板
                 renderRightPanel(getCurrentUser());
-            });
-        } else if (currentTab === 'security') {
-            container.innerHTML = `
-                <div class="content-header"><i class="fas fa-shield-alt"></i> ${window.i18n?.t('securityTab') || '账户安全'}</div>
-                <div class="form-group">
-                    <label>${window.i18n?.t('changePassword') || '修改密码'}</label>
-                    <input type="password" id="oldPwd" placeholder="${window.i18n?.t('oldPassword') || '原密码'}">
-                    <input type="password" id="newPwd" placeholder="${window.i18n?.t('newPassword') || '新密码'}" style="margin-top:12px;">
-                    <input type="password" id="confirmPwd" placeholder="${window.i18n?.t('confirmPassword') || '确认新密码'}" style="margin-top:12px;">
-                </div>
-                <button class="btn-save" id="changePwdBtn">${window.i18n?.t('updatePassword') || '更新密码'}</button>
-                <hr>
-                <div class="form-group">
-                    <label>${window.i18n?.t('bindPhone') || '绑定手机号'} (${window.i18n?.t('alreadyBound') || '已绑定'}: ${user.phone || '-'}）</label>
-                    <input type="tel" id="bindPhone" placeholder="${window.i18n?.t('phone') || '新手机号'}">
-                    <button class="btn-save" id="bindPhoneBtn" style="margin-top:10px;">${window.i18n?.t('bindPhone') || '绑定手机'}</button>
-                </div>
-                <div class="form-group">
-                    <label>${window.i18n?.t('bindEmail') || '绑定邮箱'} (${window.i18n?.t('alreadyBound') || '已绑定'}: ${user.email || '-'}）</label>
-                    <input type="email" id="bindEmail" placeholder="${window.i18n?.t('email') || '新邮箱'}">
-                    <button class="btn-save" id="bindEmailBtn" style="margin-top:10px;">${window.i18n?.t('bindEmail') || '绑定邮箱'}</button>
-                </div>
-            `;
-            document.getElementById('changePwdBtn')?.addEventListener('click', () => {
-                const oldPwd = document.getElementById('oldPwd').value;
-                const newPwd = document.getElementById('newPwd').value;
-                const confirm = document.getElementById('confirmPwd').value;
-                if (!oldPwd || !newPwd) return showToast(window.i18n?.t('pleaseFillOldNewPassword') || '请填写原密码和新密码');
-                if (newPwd !== confirm) return showToast(window.i18n?.t('passwordNotMatch') || '两次新密码不一致');
-                if (changePassword(user.username, oldPwd, newPwd)) {
-                    showToast(window.i18n?.t('passwordChanged') || '密码修改成功，请重新登录');
-                    window.authLogout();      // 清除登录状态
-                    window.location.href = '/';
-                } else {
-                    showToast(window.i18n?.t('oldPasswordError') || '原密码错误');
-                }
-            });
-            document.getElementById('bindPhoneBtn')?.addEventListener('click', () => {
-                const phone = document.getElementById('bindPhone').value.trim();
-                if (phone) {
-                    updateUserProfile(user.username, {phone});
-                    showToast(window.i18n?.t('phoneBound') || '手机号绑定成功');
-                    renderRightPanel(getCurrentUser());
-                }
-            });
-            document.getElementById('bindEmailBtn')?.addEventListener('click', () => {
-                const email = document.getElementById('bindEmail').value.trim();
-                if (email) {
-                    updateUserProfile(user.username, {email});
-                    showToast(window.i18n?.t('emailBound') || '邮箱绑定成功');
-                    renderRightPanel(getCurrentUser());
-                }
             });
         } else if (currentTab === 'orders') {
             const orders = getUserOrders(user.username);

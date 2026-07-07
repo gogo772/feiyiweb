@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>华夏非遗 · 产品详情</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/lib/font-awesome/all.min.css">
     <script src="/static/js/i18n.js"></script>
     <style>
         html, body {
@@ -122,6 +122,15 @@
             border-radius: 40px;
             font-size: 16px;
             color: #4a3a2a;
+        }
+
+        .highlight-info {
+            margin-top: 15px;
+            padding: 12px 18px;
+            background: #fff8e1;
+            border-radius: 12px;
+            color: #8b3c1c;
+            font-weight: 500;
         }
 
         .detail-section {
@@ -539,7 +548,9 @@
         const rect = historyBtn.getBoundingClientRect();
         previewDiv.style.top = (rect.bottom + 5) + 'px';
         previewDiv.style.left = rect.left + 'px';
-        const history = JSON.parse(localStorage.getItem('browsing_history')) || [];
+        const username = localStorage.getItem('current_username');
+        const historyKey = username ? `browsing_history_${username}` : 'browsing_history';
+        const history = JSON.parse(localStorage.getItem(historyKey)) || [];
         const previewList = document.getElementById('previewList');
         if (history.length === 0) {
             const t = window.i18n ? window.i18n.t('noHistory') : '暂无浏览记录';
@@ -831,8 +842,10 @@
     // 确认支付后保存订单并显示成功弹窗，点击“返回”按钮回到上一页
     function confirmPayment() {
         if (!pendingProduct) return;
+        const username = localStorage.getItem('current_username');
         // 保存订单
-        let orders = JSON.parse(localStorage.getItem('user_orders')) || [];
+        const ordersKey = username ? `orders_${username}` : 'user_orders';
+        let orders = JSON.parse(localStorage.getItem(ordersKey)) || [];
         const newOrder = {
             type: productType,
             id: pendingProduct.id,
@@ -843,16 +856,17 @@
             img: pendingProduct.img
         };
         orders.push(newOrder);
-        localStorage.setItem('user_orders', JSON.stringify(orders));
+        localStorage.setItem(ordersKey, JSON.stringify(orders));
 
         // 更新浏览历史
-        let history = JSON.parse(localStorage.getItem('browsing_history')) || [];
+        const historyKey = username ? `browsing_history_${username}` : 'browsing_history';
+        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
         history.unshift({
             name: pendingProduct.name,
             img: pendingProduct.img,
             type: productType === 'performance' ? '演出' : (productType === 'travel' ? '旅游' : '周边')
         });
-        localStorage.setItem('browsing_history', JSON.stringify(history.slice(0, 20)));
+        localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 20)));
 
         // 关闭支付弹窗
         closePaymentModal();
@@ -872,9 +886,13 @@
         });
     }
 
-    // 渲染产品详情
     function renderProduct() {
         const container = document.getElementById('productContainer');
+        if (!container) {
+            setTimeout(renderProduct, 100);
+            return;
+        }
+        
         if (!product) {
             container.innerHTML = `
             <div style="text-align:center; padding:80px;">
@@ -926,7 +944,7 @@
         <a href="javascript:history.back()" class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> <span id="backText">返回</span></a>
         <div class="product-main">
             <div class="product-gallery">
-                <img src="${product.img}" alt="${product.name}" onerror="this.onerror=null;this.src='static/img/placeholder.svg'">
+                <img src="${product.img}" alt="${product.name}" onerror="this.onerror=null;this.src='/static/img/placeholder.svg'">
             </div>
             <div class="product-info">
                 <div class="product-title">${product.name}</div>
@@ -935,10 +953,10 @@
                 <button class="btn-buy" id="buyNowBtn">${window.i18n?.t('buyNow') || '立即购买'}</button>
             </div>
         </div>
-        <div class="product-desc" id="productDescSection">
+        <div class="detail-section" id="productDescSection">
             <h3 id="productDetailTitle"><i class="fas fa-info-circle"></i> ${window.i18n?.t('productDetail') || '产品详情'}</h3>
             <p>${product.desc}</p>
-            ${product.highlight ? `<div class="product-highlight"><i class="fas fa-star"></i> ${product.highlight}</div>` : ''}
+            ${product.highlight ? `<p class="highlight-info"><i class="fas fa-star"></i> ${product.highlight}</p>` : ''}
         </div>
     `;
 
@@ -946,19 +964,30 @@
             openPaymentModal(product);
         });
 
-        // --- 新增：记录浏览历史（仅当用户已登录）---
-        if (product && typeof HistoryTracker !== 'undefined') {
+        if (product) {
             let typeName = '';
             if (productType === 'performance') typeName = '演出';
             else if (productType === 'merchandise') typeName = '文创';
             else if (productType === 'travel') typeName = '旅游';
 
-            HistoryTracker.record({
+            const username = localStorage.getItem('current_username');
+            const historyKey = username ? `browsing_history_${username}` : 'browsing_history';
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+            
+            const existingIndex = history.findIndex(h => h.id === product.id);
+            if (existingIndex !== -1) {
+                history.splice(existingIndex, 1);
+            }
+            
+            history.unshift({
                 name: product.name,
                 img: product.img,
                 type: typeName,
-                id: product.id
+                id: product.id,
+                date: new Date().toLocaleString()
             });
+            
+            localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 20)));
         }
     }
 

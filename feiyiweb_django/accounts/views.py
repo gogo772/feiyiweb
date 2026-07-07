@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -70,9 +69,11 @@ def logout_view(request):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
-@login_required
+@csrf_exempt
 def get_user(request):
     try:
+        if not request.user.is_authenticated:
+            return JsonResponse({'success': False, 'error': '未登录'}, status=401)
         user = request.user
         return JsonResponse({
             'success': True,

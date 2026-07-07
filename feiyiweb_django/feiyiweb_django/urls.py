@@ -46,4 +46,5 @@ for page in html_pages:
     ]
 urlpatterns += [
     path('', TemplateView.as_view(template_name='index.html')),
+    path('product', TemplateView.as_view(template_name='product.html')),
 ]
