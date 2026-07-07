@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>华夏非遗 · 产品详情</title>
-    <link rel="stylesheet" href="/static/lib/font-awesome/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="/static/js/i18n.js"></script>
     <style>
         html, body {
@@ -1038,7 +1038,7 @@
                 const fallback = window.i18n ? window.i18n.t('serviceUnavailable') : '服务暂时不可用';
                 aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${escapeHtml(data.success ? data.reply : fallback)}`;
             } catch (e) {
-                const errMsg = window.i18n ? window.i18n.t('chatError') : '网络错误，请确保代理服务器已启动（node proxy-server.js）';
+                const errMsg = window.i18n ? window.i18n.t('chatError') : '网络错误，请确保服务器已启动';
                 aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${errMsg}`;
             }
             input.value = '';

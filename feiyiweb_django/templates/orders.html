@@ -427,7 +427,7 @@
             const fallback = window.i18n ? window.i18n.t('serviceUnavailable') : '服务暂时不可用';
             aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${escapeHtml(data.success ? data.reply : fallback)}`;
         } catch (e) {
-            const errMsg = window.i18n ? window.i18n.t('chatError') : '网络错误，请确保代理服务器已启动（node proxy-server.js）';
+            const errMsg = window.i18n ? window.i18n.t('chatError') : '网络错误，请确保服务器已启动';
             aiDiv.innerHTML = `<strong>${window.i18n ? window.i18n.t('aiAssistant') : '非遗小助手'}:</strong> ${errMsg}`;
         }
         input.value = '';

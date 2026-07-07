@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>华夏非遗 · 个人中心</title>
-    <link rel="stylesheet" href="/static/lib/font-awesome/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="/static/js/i18n.js"></script>
     <style>
         /* 顶部导航栏：样式见 static/css/navbar.css */
@@ -118,6 +118,12 @@
             background: linear-gradient(135deg, #b22234 0%, #8b1a1a 100%);
         }
 
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
         .avatar-img {
             width: 117px;
             height: 117px;
@@ -126,6 +132,68 @@
             border: 5.2px solid rgba(255, 255, 255, 0.8);
             background: #fff;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .avatar-placeholder {
+            width: 117px;
+            height: 117px;
+            border-radius: 50%;
+            border: 5.2px solid rgba(255, 255, 255, 0.8);
+            background: linear-gradient(135deg, #d4a574 0%, #c9a06b 100%);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 117px;
+            height: 117px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .avatar-container:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .avatar-container:hover .avatar-img {
+            transform: scale(1.05);
+        }
+
+        .avatar-container:hover .avatar-placeholder {
+            transform: scale(1.05);
+        }
+
+        .avatar-overlay i {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .avatar-overlay span {
+            font-size: 0.85rem;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .avatar-upload-input {
+            display: none;
         }
 
         .user-nickname {
@@ -210,30 +278,73 @@
 
         .form-group {
             margin-bottom: 36.4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-group .label-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .form-group label {
-            display: block;
             font-weight: 600;
-            margin-bottom: 13px;
             color: #5a2e1a;
             font-size: 1.235rem;
+            min-width: 100px;
+        }
+
+        .form-group .value-display {
+            font-size: 1.3rem;
+            color: #3e2a21;
+            flex: 2;
+            padding: 13px 0;
         }
 
         .form-group input, .form-group select {
-            width: 100%;
-            padding: 13px 0;
+            flex: 2;
+            padding: 13px 15px;
             border: none;
             border-bottom: 2.6px solid #e2d5c0;
             background: transparent;
             font-size: 1.3rem;
             color: #3e2a21;
             transition: border-color 0.2s;
+            display: none;
+        }
+
+        .form-group.editing input, .form-group.editing select {
+            display: block;
+        }
+
+        .form-group.editing .value-display {
+            display: none;
         }
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-bottom-color: #b22234;
+        }
+
+        .edit-btn {
+            background: rgba(178, 34, 52, 0.1);
+            color: #b22234;
+            border: 1.5px solid #b22234;
+            padding: 10px 24px;
+            border-radius: 20.8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .edit-btn:hover {
+            background: #b22234;
+            color: white;
         }
 
         .btn-save {
@@ -366,8 +477,17 @@
     <div class="profile-layout" id="profileLayout">
         <div class="profile-sidebar" id="profileSidebar">
             <div class="user-avatar-large">
-                <img id="avatarImg" class="avatar-img" src="/static/img/placeholder.svg" alt="头像"
-                     onerror="this.onerror=null;this.src='/static/img/placeholder.svg'">
+                <div class="avatar-container" id="avatarContainer">
+                    <img id="avatarImg" class="avatar-img" src="/static/img/placeholder.svg" alt="头像"
+                         style="display:none;"
+                         onerror="this.style.display='none'; document.getElementById('avatarPlaceholder').style.display='flex'; this.onerror=null;">
+                    <div class="avatar-placeholder" id="avatarPlaceholder">非</div>
+                    <div class="avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                        <span>更换头像</span>
+                    </div>
+                    <input type="file" id="avatarUploadInput" class="avatar-upload-input" accept="image/*">
+                </div>
                 <div class="user-nickname" id="sidebarNickname">非遗守护人</div>
             </div>
             <ul class="sidebar-menu">
@@ -437,12 +557,15 @@
         if (!username) return null;
         const nickname = localStorage.getItem('current_nickname') || username;
         const avatar = localStorage.getItem('current_avatar') || '/static/img/placeholder.svg';
+        const users = JSON.parse(localStorage.getItem('nonprofit_users') || '{}');
+        const storedUser = users[username] || {};
         return {
             username: username,
             nickname: nickname,
             avatar: avatar,
-            phone: '',
-            email: ''
+            phone: storedUser.phone || '',
+            email: storedUser.email || '',
+            address: storedUser.address || ''
         };
     }
 
@@ -456,10 +579,11 @@
 
     function updateUserProfile(username, updates) {
         const users = JSON.parse(localStorage.getItem('nonprofit_users') || '{}');
-        if (users[username]) {
-            Object.assign(users[username], updates);
-            localStorage.setItem('nonprofit_users', JSON.stringify(users));
+        if (!users[username]) {
+            users[username] = { username: username, password: '' };
         }
+        Object.assign(users[username], updates);
+        localStorage.setItem('nonprofit_users', JSON.stringify(users));
         if (username === localStorage.getItem('current_username')) {
             if (updates.nickname) localStorage.setItem('current_nickname', updates.nickname);
             if (updates.avatar) localStorage.setItem('current_avatar', updates.avatar);
@@ -558,38 +682,70 @@
         if (currentTab === 'profile') {
             container.innerHTML = `
                 <div class="content-header"><i class="fas fa-id-card"></i> ${window.i18n?.t('profileTab') || '个人资料'}</div>
-                <div class="form-group">
-                    <label>${window.i18n?.t('nickname') || '昵称'}</label>
-                    <input type="text" id="nicknameInput" value="${escapeHtml(user.nickname || '')}" placeholder="${window.i18n?.t('nickname') || '你的昵称'}">
+                <div class="form-group" id="nicknameGroup">
+                    <div class="label-area">
+                        <label>${window.i18n?.t('nickname') || '昵称'}</label>
+                        <span class="value-display">${escapeHtml(user.nickname || '') || '非遗友人'}</span>
+                        <input type="text" id="nicknameInput" value="${escapeHtml(user.nickname || '')}" placeholder="${window.i18n?.t('nickname') || '你的昵称'}">
+                    </div>
+                    <button class="edit-btn" id="editNicknameBtn"><i class="fas fa-edit"></i> ${window.i18n?.t('edit') || '编辑'}</button>
                 </div>
-                <div class="form-group">
-                    <label>${window.i18n?.t('phone') || '手机号'}</label>
-                    <input type="tel" id="phoneInput" value="${escapeHtml(user.phone || '')}" placeholder="${window.i18n?.t('bindPhone') || '绑定手机号'}">
+                <div class="form-group" id="phoneGroup">
+                    <div class="label-area">
+                        <label>${window.i18n?.t('phone') || '手机号'}</label>
+                        <span class="value-display">${escapeHtml(user.phone || '') || '-'}</span>
+                        <input type="tel" id="phoneInput" value="${escapeHtml(user.phone || '')}" placeholder="${window.i18n?.t('bindPhone') || '绑定手机号'}">
+                    </div>
+                    <button class="edit-btn" id="editPhoneBtn"><i class="fas fa-edit"></i> ${window.i18n?.t('edit') || '编辑'}</button>
                 </div>
-                <div class="form-group">
-                    <label>${window.i18n?.t('email') || '电子邮箱'}</label>
-                    <input type="email" id="emailInput" value="${escapeHtml(user.email || '')}" placeholder="example@mail.com">
+                <div class="form-group" id="emailGroup">
+                    <div class="label-area">
+                        <label>${window.i18n?.t('email') || '电子邮箱'}</label>
+                        <span class="value-display">${escapeHtml(user.email || '') || '-'}</span>
+                        <input type="email" id="emailInput" value="${escapeHtml(user.email || '')}" placeholder="example@mail.com">
+                    </div>
+                    <button class="edit-btn" id="editEmailBtn"><i class="fas fa-edit"></i> ${window.i18n?.t('edit') || '编辑'}</button>
                 </div>
-                <div class="form-group">
-                    <label>${window.i18n?.t('avatar') || '头像链接(可选)'}</label>
-                    <input type="text" id="avatarInput" value="${escapeHtml(user.avatar || '/static/img/default-avatar.jpg')}" placeholder="Image URL">
-
+                <div class="form-group" id="addressGroup">
+                    <div class="label-area">
+                        <label>${window.i18n?.t('shippingAddress') || '收货地址'}</label>
+                        <span class="value-display">${escapeHtml(user.address || '') || '-'}</span>
+                        <input type="text" id="addressInput" value="${escapeHtml(user.address || '')}" placeholder="${window.i18n?.t('shippingAddress') || '请输入收货地址'}">
+                    </div>
+                    <button class="edit-btn" id="editAddressBtn"><i class="fas fa-edit"></i> ${window.i18n?.t('edit') || '编辑'}</button>
                 </div>
-                <button class="btn-save" id="saveProfileBtn">${window.i18n?.t('saveChanges') || '保存修改'}</button>
+                <button class="btn-save" id="saveProfileBtn" style="display:none;">${window.i18n?.t('saveChanges') || '保存修改'}</button>
             `;
-            document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
-                const nickname = document.getElementById('nicknameInput').value.trim() || '非遗友人';
-                const phone = document.getElementById('phoneInput').value;
-                const email = document.getElementById('emailInput').value;
-                let avatar = document.getElementById('avatarInput').value.trim();
-                if (!avatar) avatar = '/static/img/placeholder.svg';
-                updateUserProfile(user.username, {nickname, phone, email, avatar});
-                document.getElementById('sidebarNickname').innerText = nickname;
-                document.getElementById('avatarImg').src = avatar;
-                showToast(window.i18n?.t('saveSuccess') || '保存成功！');
-                // 刷新当前面板
-                renderRightPanel(getCurrentUser());
-            });
+            
+            function bindEditButton(btnId, groupId) {
+                const btn = document.getElementById(btnId);
+                const group = document.getElementById(groupId);
+                if (btn && group) {
+                    btn.addEventListener('click', () => {
+                        group.classList.add('editing');
+                        btn.innerHTML = `<i class="fas fa-check"></i> ${window.i18n?.t('save') || '保存'}`;
+                        btn.onclick = () => {
+                            group.classList.remove('editing');
+                            btn.innerHTML = `<i class="fas fa-edit"></i> ${window.i18n?.t('edit') || '编辑'}`;
+                            bindEditButton(btnId, groupId);
+                            
+                            const nickname = document.getElementById('nicknameInput').value.trim() || '非遗友人';
+                            const phone = document.getElementById('phoneInput').value;
+                            const email = document.getElementById('emailInput').value;
+                            const address = document.getElementById('addressInput').value;
+                            updateUserProfile(user.username, {nickname, phone, email, address});
+                            document.getElementById('sidebarNickname').innerText = nickname;
+                            showToast(window.i18n?.t('saveSuccess') || '保存成功！');
+                            renderRightPanel(getCurrentUser());
+                        };
+                    });
+                }
+            }
+            
+            bindEditButton('editNicknameBtn', 'nicknameGroup');
+            bindEditButton('editPhoneBtn', 'phoneGroup');
+            bindEditButton('editEmailBtn', 'emailGroup');
+            bindEditButton('editAddressBtn', 'addressGroup');
         } else if (currentTab === 'orders') {
             const orders = getUserOrders(user.username);
             if (orders.length === 0) {
@@ -638,11 +794,27 @@
         const user = getCurrentUser();
         if (user) {
             document.getElementById('sidebarNickname').innerText = user.nickname || user.username;
-            document.getElementById('avatarImg').src = user.avatar || '/static/img/placeholder.svg';
-            // 顶部导航栏已由 auth.js 自动更新，无需再操作 authArea
+            const avatarImg = document.getElementById('avatarImg');
+            const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+            const normalizedAvatar = user.avatar || '';
+            const isPlaceholder = normalizedAvatar === '' || 
+                                 normalizedAvatar === '/static/img/placeholder.svg' || 
+                                 normalizedAvatar === 'static/img/placeholder.svg' ||
+                                 normalizedAvatar === '/static/img/default-avatar.jpg' ||
+                                 normalizedAvatar === 'static/img/default-avatar.jpg';
+            
+            if (!isPlaceholder && normalizedAvatar.startsWith('data:')) {
+                avatarImg.src = normalizedAvatar;
+                avatarImg.style.display = 'block';
+                avatarPlaceholder.style.display = 'none';
+            } else {
+                avatarImg.style.display = 'none';
+                avatarPlaceholder.style.display = 'flex';
+                const nickname = user.nickname || user.username || '非';
+                avatarPlaceholder.innerText = nickname.charAt(0);
+            }
             renderRightPanel(user);
         } else {
-            // 未登录时显示提示
             document.getElementById('profileContent').innerHTML = `<div style="text-align:center; padding:60px;"><i class="fas fa-user-lock" style="font-size:48px; opacity:0.6;"></i><p style="margin-top:20px;">${window.i18n?.t('pleaseLogin') || '请先登录，解锁个人中心'}<br><a href="/" style="color:#b22234;">${window.i18n?.t('backToLogin') || '返回首页登录'}</a></p></div>`;
         }
     }
@@ -662,10 +834,45 @@
         if (firstTab) firstTab.classList.add('active');
     }
 
+    function bindAvatarUpload() {
+        const avatarContainer = document.getElementById('avatarContainer');
+        const avatarOverlay = document.querySelector('.avatar-overlay');
+        const uploadInput = document.getElementById('avatarUploadInput');
+        
+        avatarContainer.addEventListener('click', () => {
+            uploadInput.click();
+        });
+        
+        uploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const base64Data = event.target.result;
+                    const user = getCurrentUser();
+                    if (user) {
+                        updateUserProfile(user.username, { avatar: base64Data });
+                        localStorage.setItem('current_avatar', base64Data);
+                        updateSidebarAndUI();
+                        showToast('头像上传成功！');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
     // 页面初始化
     document.addEventListener('DOMContentLoaded', () => {
         bindMenuEvents();
         updateSidebarAndUI();
+        bindAvatarUpload();
+        document.addEventListener('lang:changed', () => {
+            const user = getCurrentUser();
+            if (user) {
+                renderRightPanel(user);
+            }
+        });
     });
 </script>
 </body>
