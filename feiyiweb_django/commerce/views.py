@@ -23,7 +23,7 @@ def performances_list(request):
                 'address_en': p.address_en,
                 'addressKey': p.address_key,
                 'price': float(p.price),
-                'img': p.image,
+                'img': '/' + p.image if p.image and not p.image.startswith('/') else p.image,
             })
         return JsonResponse({'success': True, 'data': data})
     except Exception as e:
@@ -47,7 +47,7 @@ def merchandise_list(request):
                 'descKey': m.desc_key,
                 'categoryKey': m.category_key,
                 'price': float(m.price),
-                'img': m.image,
+                'img': '/' + m.image if m.image and not m.image.startswith('/') else m.image,
             })
         return JsonResponse({'success': True, 'data': data})
     except Exception as e:

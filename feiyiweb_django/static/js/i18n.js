@@ -630,9 +630,9 @@
             partner3: '国家图书馆',
             contactEmail: '📧 ich@culture.cn',
             contactPhone: '📞 400-668-0808',
+            contactAddress: '📍 安徽新华学院',
             edit: '编辑',
             save: '保存',
-            contactAddress: '📍 安徽新华学院',
             shippingAddress: '收货地址',
             mct: '文化和旅游部',
             ncha: '国家文物局',
@@ -678,7 +678,10 @@
             checkOrder: '查看订单',
             productDetail: '产品详情',
             place: '地点',
-            sold: '已售'
+            sold: '已售',
+            performanceDesc: '精彩非遗演出，不容错过。',
+            merchandiseDesc: '精美的非遗文创产品。',
+            travelDesc: '精彩的非遗主题旅游线路。'
         },
         en: {
             // ===== Site =====
@@ -1341,7 +1344,10 @@
             checkOrder: 'Check Order',
             productDetail: 'Product Details',
             place: 'Location',
-            sold: 'Sold'
+            sold: 'Sold',
+            performanceDesc: 'Wonderful ICH performance, not to be missed.',
+            merchandiseDesc: 'Exquisite ICH cultural and creative products.',
+            travelDesc: 'Wonderful ICH-themed travel routes.'
         }
     };
 
