@@ -32,6 +32,9 @@ class Performance(models.Model):
     address_key = models.CharField(max_length=100, verbose_name='i18n地址key', blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='票价')
     image = models.CharField(max_length=500, verbose_name='图片路径')
+    description = models.TextField(blank=True, verbose_name='演出描述')
+    description_en = models.TextField(blank=True, verbose_name='英文描述')
+    desc_key = models.CharField(max_length=100, verbose_name='i18n描述key', blank=True)
 
     def __str__(self):
         return self.name

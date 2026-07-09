@@ -654,6 +654,7 @@
             orderAdded: '订单已添加到个人中心',
 
             // ===== 商品详情 =====
+            productDetailPageTitle: '华夏非遗 · 产品详情',
             productTitle: '商品详情',
             productSubtitle: '匠心工艺 · 品质之选',
             relatedProducts: '相关商品',
@@ -1320,6 +1321,7 @@
             orderAdded: 'Order added to your account',
 
             // ===== Product Detail =====
+            productDetailPageTitle: 'China ICH · Product Details',
             productTitle: 'Product Details',
             productSubtitle: 'Craftsmanship · Quality Choice',
             relatedProducts: 'Related Products',

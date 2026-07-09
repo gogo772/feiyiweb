@@ -80,3 +80,20 @@ class ComponentLoader {
 
 // 全局单例
 const componentLoader = new ComponentLoader();
+
+(function() {
+    function initComponents() {
+        const footerMount = document.getElementById('footerMount');
+        if (footerMount) {
+            componentLoader.load('/templates/components/footer.html', '#footerMount', {
+                year: new Date().getFullYear()
+            });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initComponents);
+    } else {
+        initComponents();
+    }
+})();

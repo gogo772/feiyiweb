@@ -14,15 +14,8 @@
     <style>
         html, body {
             min-height: 100%;
-            overflow-y: auto; /* 改为 auto，并隐藏滚动条 */
+            overflow-y: auto;
             scroll-behavior: smooth;
-            scrollbar-width: none; /* Firefox 隐藏滚动条 */
-        }
-
-        html::-webkit-scrollbar,
-        body::-webkit-scrollbar {
-            width: 0;
-            background: transparent; /* Chrome/Safari/Edge 隐藏滚动条 */
         }
 
         /* 顶部导航栏：样式见 static/css/navbar.css */
@@ -61,7 +54,7 @@
             border-radius: 32px;
             overflow: hidden;
             box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
-            margin-top: 100px;
+            margin-top: 40px;
         }
 
         .product-main {
@@ -176,10 +169,27 @@
         .back-link {
             display: inline-block;
             margin: 12px 20px;
-            color: #b22234;
+            color: white;
+            background: #b22234;
             text-decoration: none;
             font-size: 16px;
             font-weight: 500;
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-link:hover {
+            background: #8a1a29;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-link:active {
+            transform: translateY(0);
         }
 
         .back-link i {
@@ -474,11 +484,10 @@
     <i class="fas fa-arrow-up"></i>
 </div>
 
-<div class="container">
-    <!-- 统一导航栏 -->
-    <!-- 公共导航栏（由 static/js/navbar.js 渲染） -->
-    <div id="navbarMount"></div>
+<!-- 统一导航栏（由 static/js/navbar.js 渲染） -->
+<div id="navbarMount"></div>
 
+<div class="container">
     <div id="productContainer" class="product-card">
         <div style="text-align: center; padding: 80px;" data-i18n="loadingData">加载中...</div>
     </div>
@@ -595,6 +604,23 @@
     let performances = [];
     let merchandise = [];
     let travels = [];
+    const toursData = [
+        { id: 0, nameKey: 'tour_name_0', regionKey: 'regionYunnan', days: 7, price: 3280, sold: 1280, img: '/static/img/travel-img/1.jpg', descKey: 'tour_desc_0', highlightKey: 'tour_highlight_0' },
+        { id: 1, nameKey: 'tour_name_1', regionKey: 'regionGuizhou', days: 5, price: 2680, sold: 2450, img: '/static/img/travel-img/2.jpg', descKey: 'tour_desc_1', highlightKey: 'tour_highlight_1' },
+        { id: 2, nameKey: 'tour_name_2', regionKey: 'regionSichuan', days: 4, price: 1980, sold: 862, img: '/static/img/travel-img/3.jpg', descKey: 'tour_desc_2', highlightKey: 'tour_highlight_2' },
+        { id: 3, nameKey: 'tour_name_3', regionKey: 'regionYunnan', days: 5, price: 3580, sold: 734, img: '/static/img/travel-img/4.jpg', descKey: 'tour_desc_3', highlightKey: 'tour_highlight_3' },
+        { id: 4, nameKey: 'tour_name_4', regionKey: 'regionGuizhou', days: 4, price: 2280, sold: 591, img: '/static/img/travel-img/5.jpg', descKey: 'tour_desc_4', highlightKey: 'tour_highlight_4' },
+        { id: 5, nameKey: 'tour_name_5', regionKey: 'regionSichuan', days: 6, price: 3180, sold: 412, img: '/static/img/travel-img/6.jpg', descKey: 'tour_desc_5', highlightKey: 'tour_highlight_5' },
+        { id: 6, nameKey: 'tour_name_6', regionKey: 'regionYunnan', days: 6, price: 3980, sold: 1560, img: '/static/img/travel-img/7.jpg', descKey: 'tour_desc_6', highlightKey: 'tour_highlight_6' },
+        { id: 7, nameKey: 'tour_name_7', regionKey: 'regionGuizhou', days: 8, price: 4380, sold: 2030, img: '/static/img/travel-img/8.jpg', descKey: 'tour_desc_7', highlightKey: 'tour_highlight_7' },
+        { id: 8, nameKey: 'tour_name_8', regionKey: 'regionSichuan', days: 4, price: 2480, sold: 984, img: '/static/img/travel-img/9.jpg', descKey: 'tour_desc_8', highlightKey: 'tour_highlight_8' },
+        { id: 9, nameKey: 'tour_name_9', regionKey: 'regionYunnan', days: 9, price: 5280, sold: 2120, img: '/static/img/travel-img/10.jpg', descKey: 'tour_desc_9', highlightKey: 'tour_highlight_9' },
+        { id: 10, nameKey: 'tour_name_10', regionKey: 'regionGuizhou', days: 4, price: 1980, sold: 367, img: '/static/img/travel-img/11.jpg', descKey: 'tour_desc_10', highlightKey: 'tour_highlight_10' },
+        { id: 11, nameKey: 'tour_name_11', regionKey: 'regionSichuan', days: 5, price: 3680, sold: 521, img: '/static/img/travel-img/12.jpg', descKey: 'tour_desc_11', highlightKey: 'tour_highlight_11' },
+        { id: 12, nameKey: 'tour_name_12', regionKey: 'regionYunnan', days: 5, price: 2980, sold: 1670, img: '/static/img/travel-img/13.jpg', descKey: 'tour_desc_12', highlightKey: 'tour_highlight_12' },
+        { id: 13, nameKey: 'tour_name_13', regionKey: 'regionGuizhou', days: 7, price: 4280, sold: 886, img: '/static/img/travel-img/14.jpg', descKey: 'tour_desc_13', highlightKey: 'tour_highlight_13' },
+        { id: 14, nameKey: 'tour_name_14', regionKey: 'regionSichuan', days: 3, price: 1680, sold: 432, img: '/static/img/travel-img/15.jpg', descKey: 'tour_desc_14', highlightKey: 'tour_highlight_14' }
+    ];
 
     function formatDateTime(datetimeStr, lang) {
         const date = new Date(datetimeStr);
@@ -629,13 +655,8 @@
                     product = merchandise.find(m => m.id === id);
                 }
             } else if (productType === 'travel') {
-                const response = await fetch('/api/travel');
-                const result = await response.json();
-                if (result.success) {
-                    travels = result.data;
-                    const id = parseInt(productId);
-                    product = travels.find(t => t.id === id);
-                }
+                const id = parseInt(productId);
+                product = toursData.find(t => t.id === id);
             }
             renderProduct();
         } catch (error) {
@@ -738,11 +759,15 @@
         if (productType === 'performance') {
             productAddress = product.addressKey ? t(product.addressKey) : (product.address || '');
             productTime = product.datetime ? formatDateTime(product.datetime, lang) : '';
-            productDesc = product.description || (t('performanceDesc') || '精彩非遗演出，不容错过。');
+            const descKeyTrans = product.descKey ? t(product.descKey) : '';
+            const descFallback = lang === 'en' ? (product.description_en || '') : (product.description || '');
+            productDesc = (product.descKey && descKeyTrans !== product.descKey) ? descKeyTrans : (descFallback || (t('performanceDesc') || '精彩非遗演出，不容错过。'));
         } else if (productType === 'merchandise') {
-            productDesc = product.descKey ? t(product.descKey) : (product.description || (t('merchandiseDesc') || '精美的非遗文创产品。'));
+            const descKeyTrans = product.descKey ? t(product.descKey) : '';
+            const descFallback = lang === 'en' ? (product.description_en || '') : (product.description || '');
+            productDesc = (product.descKey && descKeyTrans !== product.descKey) ? descKeyTrans : (descFallback || (t('merchandiseDesc') || '精美的非遗文创产品。'));
         } else if (productType === 'travel') {
-            productDesc = product.desc || (t('travelDesc') || '精彩的非遗主题旅游线路。');
+            productDesc = product.descKey ? t(product.descKey) : (t('travelDesc') || '精彩的非遗主题旅游线路。');
         }
 
         let infoHtml = '';
@@ -770,7 +795,7 @@
         } else if (productType === 'travel') {
             infoHtml = `
             <div class="info-row">
-                <span class="info-tag"><i class="fas fa-clock"></i> ${product.days}${t('day') || '天'}${product.days - 1}${t('nights') || '晚'}</span>
+                <span class="info-tag"><i class="fas fa-clock"></i> ${product.days}${t('perDay') || '天'}${product.days - 1}${t('nights') || '晚'}</span>
                 <span class="info-tag"><i class="fas fa-users"></i> ${product.groupSize}</span>
                 <span class="info-tag"><i class="fas fa-fire"></i> ${t('sold') || '已售'} ${product.sold}+</span>
             </div>
@@ -782,7 +807,7 @@
         }
 
         container.innerHTML = `
-        <a href="javascript:history.back()" class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> <span id="backText">返回</span></a>
+        <button class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> <span id="backText">${t('back') || '返回'}</span></button>
         <div class="product-main">
             <div class="product-gallery">
                 <img src="${product.img}" alt="${productName}" onerror="this.onerror=null;this.src='/static/img/placeholder.svg'">
@@ -797,12 +822,16 @@
         <div class="detail-section" id="productDescSection">
             <h3 id="productDetailTitle"><i class="fas fa-info-circle"></i> ${t('productDetail') || '产品详情'}</h3>
             <p>${productDesc}</p>
-            ${product.highlight ? `<p class="highlight-info"><i class="fas fa-star"></i> ${product.highlight}</p>` : ''}
+            ${product.highlightKey ? `<p class="highlight-info"><i class="fas fa-star"></i> ${t(product.highlightKey)}</p>` : ''}
         </div>
     `;
 
         document.getElementById('buyNowBtn').addEventListener('click', () => {
             openPaymentModal(product);
+        });
+
+        document.getElementById('backLink').addEventListener('click', () => {
+            window.history.back();
         });
 
         if (product) {
@@ -898,6 +927,9 @@
         if (!window.i18n) return;
         const t = window.i18n.t;
 
+        // 更新页面标题
+        document.title = t('productDetailPageTitle');
+
         // 支付弹窗
         const scanTitle = document.getElementById('scanToPayTitle');
         if (scanTitle) scanTitle.innerHTML = `<i class="fas fa-qrcode"></i> ${t('scanToPay')}`;
@@ -913,7 +945,7 @@
         if (successTitle) successTitle.textContent = t('paySuccess');
         const orderAddedTip = document.getElementById('orderAddedTip');
         if (orderAddedTip) orderAddedTip.textContent = t('orderAdded');
-        const backBtn2 = document.getElementById('backBtn');
+        const backBtn2 = document.getElementById('closeSuccessBtn');
         if (backBtn2) backBtn2.textContent = t('back');
 
         // AI 助手
@@ -923,7 +955,7 @@
         if (aiWelcome) aiWelcome.textContent = t('aiWelcome');
         const chatInput = document.getElementById('chatInput');
         if (chatInput) chatInput.placeholder = t('chatInput');
-        const sendBtn = document.getElementById('sendBtn');
+        const sendBtn = document.getElementById('sendChat');
         if (sendBtn) sendBtn.textContent = t('send');
 
         // 浏览记录
@@ -949,7 +981,10 @@
         applyPageLang();
         loadProductData();
     }
-    document.addEventListener('lang:changed', applyPageLang);
+    document.addEventListener('lang:changed', () => {
+        applyPageLang();
+        renderProduct();
+    });
 </script>
 <script src="/static/js/sidebar.js"></script>
 <script src="/static/js/chat.js"></script>
@@ -958,5 +993,8 @@
 <script src="/static/js/auth.js"></script>
 <script src="/static/js/navbar.js"></script>
 <script src="/static/js/historyTracker.js"></script>
+
+<!-- 页脚（由 components.js 渲染） -->
+<div id="footerMount"></div>
 </body>
 </html>

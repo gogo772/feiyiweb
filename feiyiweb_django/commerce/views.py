@@ -24,6 +24,9 @@ def performances_list(request):
                 'addressKey': p.address_key,
                 'price': float(p.price),
                 'img': '/' + p.image if p.image and not p.image.startswith('/') else p.image,
+                'description': p.description,
+                'description_en': p.description_en,
+                'descKey': p.desc_key,
             })
         return JsonResponse({'success': True, 'data': data})
     except Exception as e:
