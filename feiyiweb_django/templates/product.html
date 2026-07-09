@@ -658,10 +658,23 @@
                 const id = parseInt(productId);
                 product = toursData.find(t => t.id === id);
             }
-            renderProduct();
+            
+            if (product) {
+                renderProduct();
+            } else {
+                const container = document.getElementById('productContainer');
+                if (container) {
+                    container.innerHTML = `
+                    <div style="text-align:center; padding:80px;">
+                        <h2>${window.i18n?.t('productNotExist') || '产品不存在或已下架'}</h2>
+                        <p>${window.i18n?.t('productId') || '产品ID'}: ${productId}, ${window.i18n?.t('productType') || '类型'}: ${productType}</p>
+                        <a href="javascript:history.back()" style="color:#b22234; font-size:18px;">${window.i18n?.t('backPrevPage') || '返回上一页'}</a>
+                    </div>
+                `;
+                }
+            }
         } catch (error) {
             console.error('加载产品数据失败:', error);
-            renderProduct();
         }
     }
 
@@ -737,13 +750,6 @@
         }
         
         if (!product) {
-            container.innerHTML = `
-            <div style="text-align:center; padding:80px;">
-                <h2>${window.i18n?.t('productNotExist') || '产品不存在或已下架'}</h2>
-                <p>${window.i18n?.t('productId') || '产品ID'}: ${productId}, ${window.i18n?.t('productType') || '类型'}: ${productType}</p>
-                <a href="javascript:history.back()" style="color:#b22234; font-size:18px;">${window.i18n?.t('backPrevPage') || '返回上一页'}</a>
-            </div>
-        `;
             return;
         }
 
@@ -994,7 +1000,6 @@
 <script src="/static/js/navbar.js"></script>
 <script src="/static/js/historyTracker.js"></script>
 
-<!-- 页脚（由 components.js 渲染） -->
-<div id="footerMount"></div>
+{% include 'components/footer.html' %}
 </body>
 </html>
