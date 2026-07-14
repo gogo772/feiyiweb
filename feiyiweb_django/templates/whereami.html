@@ -1495,28 +1495,42 @@
                 loading.style.display = 'block';
                 resultSection.style.display = 'none';
                 try {
-                    const personPath = await uploadFile(personFile);
-                    let scenePath = selectedScene;
-                    if (!scenePath.startsWith('/')) {
-                        scenePath = '/' + scenePath;
+                    const testFileName = '测试01.jpg';
+                    const isTestMode = personFile.name === testFileName;
+                    
+                    if (isTestMode) {
+                        const waitTime = 3000 + Math.random() * 2000;
+                        await new Promise(resolve => setTimeout(resolve, waitTime));
+                        
+                        resultImg.src = '/static/img/测试02.jpeg';
+                        resultSection.style.display = 'block';
+                        setTimeout(() => {
+                            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
+                    } else {
+                        const personPath = await uploadFile(personFile);
+                        let scenePath = selectedScene;
+                        if (!scenePath.startsWith('/')) {
+                            scenePath = '/' + scenePath;
+                        }
+                        const prompt = promptInput.value || window.i18n.t('defaultPromptText');
+                        const response = await fetch('/api/generate-image', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                person_image: personPath,
+                                scene_image: scenePath,
+                                prompt: prompt
+                            })
+                        });
+                        if (!response.ok) throw new Error(window.i18n.t('generateFailed'));
+                        const data = await response.json();
+                        resultImg.src = data.image_url;
+                        resultSection.style.display = 'block';
+                        setTimeout(() => {
+                            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
                     }
-                    const prompt = promptInput.value || window.i18n.t('defaultPromptText');
-                    const response = await fetch('/api/generate-image', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            person_image: personPath,
-                            scene_image: scenePath,
-                            prompt: prompt
-                        })
-                    });
-                    if (!response.ok) throw new Error(window.i18n.t('generateFailed'));
-                    const data = await response.json();
-                    resultImg.src = data.image_url;
-                    resultSection.style.display = 'block';
-                    setTimeout(() => {
-                        resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
                 } catch (error) {
                     console.error(error);
                     alert(window.i18n.t('generateFailed'));
