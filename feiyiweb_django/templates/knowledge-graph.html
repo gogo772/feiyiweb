@@ -50,31 +50,23 @@
 
         /* 顶部导航栏：样式见 static/css/navbar.css */
 
-        /* 图谱主容器 – 扩大展示区域，无标题直接顶上去 */
-        .graph-container {
-            max-width: none;
-            margin: 0 40px;
-            background: rgba(10, 15, 26, 0.75);
-            backdrop-filter: blur(2px);
+        .graph-svg {
+            width: 100%;
+            height: 86vh;
+            display: block;
+            background: radial-gradient(ellipse at 30% 35%, rgba(60, 80, 120, 0.2) 0%, rgba(0, 0, 0, 0.4) 80%);
+            margin: 0 40px 47px;
             border-radius: 40px;
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(201, 169, 110, 0.35);
-            overflow: hidden;
-            position: relative;
+            backdrop-filter: blur(2px);
             cursor: grab;
             transition: box-shadow 0.3s;
+            position: relative;
         }
 
-        .graph-container:hover {
+        .graph-svg:hover {
             box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        }
-
-        .graph-svg {
-            width: 100%;
-            height: 86vh; /* 略微再增高一点，充分利用空间 */
-            display: block;
-            background: radial-gradient(ellipse at 30% 35%, rgba(60, 80, 120, 0.2) 0%, rgba(0, 0, 0, 0.4) 80%);
-            margin-bottom: 47px;
         }
 
         @media (max-width: 768px) {
@@ -85,7 +77,7 @@
 
         /* 工具提示 – 精致磨砂玻璃风格 */
         .graph-tooltip {
-            position: absolute;
+            position: fixed;
             pointer-events: none;
             z-index: 200;
             background: rgba(20, 25, 40, 0.92);
@@ -144,9 +136,9 @@
 
         /* 图例 – 悬浮玻璃效果 */
         .graph-legend {
-            position: absolute;
-            bottom: 18px;
-            left: 20px;
+            position: fixed;
+            bottom: 65px;
+            left: 60px;
             background: rgba(20, 25, 40, 0.8);
             backdrop-filter: blur(12px);
             border-radius: 36px;
@@ -189,9 +181,9 @@
 
         /* 重置按钮 */
         .graph-reset-btn {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
+            position: fixed;
+            bottom: 65px;
+            right: 60px;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(201, 169, 110, 0.6);
@@ -216,7 +208,7 @@
 
         /* 加载提示 */
         .loading-message {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -233,14 +225,14 @@
         /* 响应式微调 */
         @media (max-width: 768px) {
             .graph-legend {
-                bottom: 12px;
+                bottom: 65px;
                 left: 12px;
                 padding: 6px 12px;
                 gap: 8px;
             }
 
             .graph-reset-btn {
-                bottom: 14px;
+                bottom: 65px;
                 right: 14px;
                 padding: 6px 14px;
                 font-size: 0.7rem;
@@ -254,16 +246,14 @@
 <div id="navbarMount"></div>
 
 <!-- 知识图谱主体内容（标题已删除，图谱直接显示） -->
-<div class="graph-container" id="graphContainer">
-    <svg class="graph-svg" id="knowledgeGraphSvg"></svg>
-    <div class="graph-tooltip" id="graphTooltip"></div>
-    <div class="graph-legend" id="graphLegend"></div>
-    <div class="graph-reset-btn" id="graphResetBtn">
-        <i class="fas fa-rotate"></i> <span data-i18n="resetView">重置视角</span>
-    </div>
-    <div class="loading-message" id="loadingMsg">
-        <i class="fas fa-spinner fa-pulse"></i> <span data-i18n="loadingKnowledge">正在加载非遗数据...</span>
-    </div>
+<svg class="graph-svg" id="knowledgeGraphSvg"></svg>
+<div class="graph-tooltip" id="graphTooltip"></div>
+<div class="graph-legend" id="graphLegend"></div>
+<div class="graph-reset-btn" id="graphResetBtn">
+    <i class="fas fa-rotate"></i> <span data-i18n="resetView">重置视角</span>
+</div>
+<div class="loading-message" id="loadingMsg">
+    <i class="fas fa-spinner fa-pulse"></i> <span data-i18n="loadingKnowledge">正在加载非遗数据...</span>
 </div>
 
 <!-- AI 聊天窗口（菲菲无头像版） -->
@@ -334,10 +324,9 @@
         const CAT_DIST = 270;
         const MAX_ITEMS_PER_CAT = 160;
 
-        const container = document.getElementById('graphContainer');
+        const container = document.getElementById('knowledgeGraphSvg');
         const svg = d3.select('#knowledgeGraphSvg');
-        let width = container.clientWidth, height = container.clientHeight || 600;
-        svg.attr('width', width).attr('height', height);
+        let width, height;
 
         const gRoot = svg.append('g');
         const linkG = gRoot.append('g');
@@ -347,17 +336,21 @@
         const zoom = d3.zoom()
             .scaleExtent([0.2, 4])
             .on('zoom', (e) => gRoot.attr('transform', e.transform));
-        svg.call(zoom);
-        svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85));
+
+        function updateSize() {
+            width = container.clientWidth;
+            height = container.clientHeight || 600;
+            svg.attr('width', width).attr('height', height);
+        }
+
+        function resetView() {
+            svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.9));
+        }
 
         svg.on('dblclick.zoom', function (e) {
             if (e.target === svg.node()) resetView();
         });
         document.getElementById('graphResetBtn').addEventListener('click', resetView);
-
-        function resetView() {
-            svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85));
-        }
 
         let simulation, allNodes, allLinks, visibleIds, rootY;
 
@@ -451,6 +444,13 @@
             }
 
             function startSimulation() {
+                updateSize();
+                if (!svg.property('__zoomInitialized')) {
+                    svg.call(zoom);
+                    svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.9));
+                    svg.property('__zoomInitialized', true);
+                }
+
                 const {visNodes, visLinks} = getVisibleNodesAndLinks();
                 const simNodes = visNodes.map(n => ({
                     ...n,
@@ -592,11 +592,11 @@
                 tooltipDiv.classList.add('visible');
 
                 const rect = container.getBoundingClientRect();
-                let left = ev.clientX - rect.left + 18;
-                let top = ev.clientY - rect.top - 20;
+                let left = ev.clientX + 18;
+                let top = ev.clientY - 20;
                 const ttRect = tooltipDiv.getBoundingClientRect();
-                if (left + ttRect.width > rect.width - 10) left = ev.clientX - rect.left - ttRect.width - 18;
-                if (top + ttRect.height > rect.height - 10) top = ev.clientY - rect.top - ttRect.height - 18;
+                if (left + ttRect.width > window.innerWidth - 10) left = ev.clientX - ttRect.width - 18;
+                if (top + ttRect.height > window.innerHeight - 10) top = ev.clientY - ttRect.height - 18;
                 tooltipDiv.style.left = Math.max(8, left) + 'px';
                 tooltipDiv.style.top = Math.max(8, top) + 'px';
             }
@@ -670,7 +670,24 @@
         }
 
         document.addEventListener('lang:changed', loadGraphData);
-        loadGraphData();
+        
+        function handleInit() {
+            requestAnimationFrame(() => {
+                updateSize();
+                loadGraphData();
+                window.addEventListener('resize', () => {
+                    updateSize();
+                    if (simulation) resetView();
+                });
+            });
+        }
+
+        const navbarMounted = document.querySelector('.top-bar');
+        if (navbarMounted) {
+            handleInit();
+        } else {
+            document.addEventListener('navbar:mounted', handleInit);
+        }
     })();
 </script>
 
@@ -682,6 +699,5 @@
 <script src="/static/js/components.js"></script>
 <script src="/static/js/auth.js"></script>
 <script src="/static/js/navbar.js"></script>
-{% include 'components/footer.html' %}
 </body>
 </html>
