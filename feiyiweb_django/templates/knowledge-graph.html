@@ -134,12 +134,24 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* 底部栏容器 */
+        .graph-bottom-bar {
+            position: fixed;
+            bottom: 52px;
+            left: 48px;
+            right: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            z-index: 15;
+        }
+
         /* 图例 – 悬浮玻璃效果 */
         .graph-legend {
-            position: fixed;
-            bottom: 65px;
-            left: 60px;
-            max-width: calc(100vw - 120px);
+            flex: 1;
+            min-width: 0;
+            max-width: calc(100% - 140px);
             background: rgba(20, 25, 40, 0.8);
             backdrop-filter: blur(12px);
             border-radius: 36px;
@@ -149,7 +161,6 @@
             gap: 14px;
             font-size: 0.7rem;
             border: 1px solid rgba(201, 169, 110, 0.3);
-            z-index: 15;
         }
 
         .graph-legend-item {
@@ -191,9 +202,7 @@
 
         /* 重置按钮 */
         .graph-reset-btn {
-            position: fixed;
-            bottom: 65px;
-            right: 60px;
+            flex-shrink: 0;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(201, 169, 110, 0.6);
@@ -202,7 +211,6 @@
             border-radius: 40px;
             font-size: 0.8rem;
             cursor: pointer;
-            z-index: 15;
             transition: all 0.25s;
             display: flex;
             align-items: center;
@@ -234,10 +242,15 @@
 
         /* 响应式样式 */
         @media (max-width: 1200px) {
+            .graph-bottom-bar {
+                bottom: 50px;
+                left: 30px;
+                right: 30px;
+                gap: 12px;
+            }
+
             .graph-legend {
-                bottom: 55px;
-                left: 40px;
-                max-width: calc(100vw - 140px);
+                max-width: calc(100% - 120px);
                 padding: 8px 16px;
                 gap: 12px;
                 font-size: 0.65rem;
@@ -263,10 +276,15 @@
         }
 
         @media (max-width: 992px) {
+            .graph-bottom-bar {
+                bottom: 45px;
+                left: 20px;
+                right: 20px;
+                gap: 10px;
+            }
+
             .graph-legend {
-                bottom: 50px;
-                left: 25px;
-                max-width: calc(100vw - 90px);
+                max-width: calc(100% - 110px);
                 padding: 7px 14px;
                 gap: 10px;
                 font-size: 0.6rem;
@@ -292,13 +310,19 @@
         }
 
         @media (max-width: 768px) {
-            .graph-legend {
-                bottom: 65px;
+            .graph-bottom-bar {
+                bottom: 50px;
                 left: 12px;
-                max-width: calc(100vw - 24px);
+                right: 12px;
+                gap: 8px;
+            }
+
+            .graph-legend {
+                max-width: calc(100% - 100px);
                 padding: 6px 12px;
                 gap: 8px;
                 font-size: 0.55rem;
+                border-radius: 20px;
             }
 
             .graph-legend-item {
@@ -320,22 +344,25 @@
             }
 
             .graph-reset-btn {
-                bottom: 65px;
-                right: 14px;
                 padding: 6px 14px;
                 font-size: 0.7rem;
             }
         }
 
         @media (max-width: 480px) {
-            .graph-legend {
-                bottom: 55px;
+            .graph-bottom-bar {
+                bottom: 40px;
                 left: 8px;
-                max-width: calc(100vw - 16px);
+                right: 8px;
+                gap: 6px;
+            }
+
+            .graph-legend {
+                max-width: calc(100% - 90px);
                 padding: 5px 10px;
                 gap: 6px;
                 font-size: 0.5rem;
-                border-radius: 20px;
+                border-radius: 16px;
             }
 
             .graph-legend-item {
@@ -359,8 +386,6 @@
             }
 
             .graph-reset-btn {
-                bottom: 55px;
-                right: 8px;
                 padding: 5px 10px;
                 font-size: 0.6rem;
             }
@@ -375,9 +400,11 @@
 <!-- 知识图谱主体内容（标题已删除，图谱直接显示） -->
 <svg class="graph-svg" id="knowledgeGraphSvg"></svg>
 <div class="graph-tooltip" id="graphTooltip"></div>
-<div class="graph-legend" id="graphLegend"></div>
-<div class="graph-reset-btn" id="graphResetBtn">
-    <i class="fas fa-rotate"></i> <span data-i18n="resetView">重置视角</span>
+<div class="graph-bottom-bar">
+    <div class="graph-legend" id="graphLegend"></div>
+    <div class="graph-reset-btn" id="graphResetBtn">
+        <i class="fas fa-rotate"></i> <span data-i18n="resetView">重置视角</span>
+    </div>
 </div>
 <div class="loading-message" id="loadingMsg">
     <i class="fas fa-spinner fa-pulse"></i> <span data-i18n="loadingKnowledge">正在加载非遗数据...</span>
