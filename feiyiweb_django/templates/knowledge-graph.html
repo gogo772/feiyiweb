@@ -139,6 +139,7 @@
             position: fixed;
             bottom: 65px;
             left: 60px;
+            max-width: calc(100vw - 120px);
             background: rgba(20, 25, 40, 0.8);
             backdrop-filter: blur(12px);
             border-radius: 36px;
@@ -160,6 +161,15 @@
             border-radius: 40px;
             transition: 0.2s;
             background: rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+
+        .graph-legend-item span:nth-child(2) {
+            display: inline-block;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .graph-legend-item:hover {
@@ -227,8 +237,13 @@
             .graph-legend {
                 bottom: 65px;
                 left: 12px;
+                max-width: calc(100vw - 24px);
                 padding: 6px 12px;
                 gap: 8px;
+            }
+
+            .graph-legend-item span:nth-child(2) {
+                max-width: 100px;
             }
 
             .graph-reset-btn {
@@ -298,7 +313,7 @@
             'Traditional Dance': '#FECA57',
             'Traditional Drama': '#48DBFB',
             'Quyi': '#FF6FB7',
-            'Traditional Sports, Recreational Activities and Acrobatics': '#A29BFE',
+            'Traditional Sports, Games & Acrobatics': '#A29BFE',
             'Traditional Fine Arts': '#55E6C1',
             'Traditional Crafts': '#FD79A8',
             'Traditional Medicine': '#00CEC9',
@@ -310,7 +325,7 @@
             '传统舞蹈': 'Traditional Dance',
             '传统戏剧': 'Traditional Drama',
             '曲艺': 'Quyi',
-            '传统体育、游艺与杂技': 'Traditional Sports, Recreational Activities and Acrobatics',
+            '传统体育、游艺与杂技': 'Traditional Sports, Games & Acrobatics',
             '传统美术': 'Traditional Fine Arts',
             '传统技艺': 'Traditional Crafts',
             '传统医药': 'Traditional Medicine',

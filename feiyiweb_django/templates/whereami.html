@@ -683,6 +683,7 @@
             display: flex;
             flex-direction: column;
             scroll-margin-top: 90px;
+            overflow-y: auto;
         }
         .result-header {
             display: flex;
@@ -1495,15 +1496,15 @@
                 loading.style.display = 'block';
                 resultSection.style.display = 'none';
                 try {
-                    const testFileName = '测试01.jpg';
-                    const isTestMode = personFile.name === testFileName;
+                    const fileName = personFile.name;
+                    const isTestMode = fileName === '测试01.jpg' || fileName === '测试01.jpeg';
                     
                     if (isTestMode) {
                         const waitTime = 3000 + Math.random() * 2000;
                         await new Promise(resolve => setTimeout(resolve, waitTime));
                         
                         resultImg.src = '/static/img/测试02.jpeg';
-                        resultSection.style.display = 'block';
+                        resultSection.style.display = 'flex';
                         setTimeout(() => {
                             resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 100);
@@ -1526,7 +1527,7 @@
                         if (!response.ok) throw new Error(window.i18n.t('generateFailed'));
                         const data = await response.json();
                         resultImg.src = data.image_url;
-                        resultSection.style.display = 'block';
+                        resultSection.style.display = 'flex';
                         setTimeout(() => {
                             resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 100);

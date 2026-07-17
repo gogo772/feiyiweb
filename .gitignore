@@ -39,5 +39,6 @@ npm-debug.log*
 
 # Python 虚拟环境
 .venv/
+.venv_new/
 __pycache__/
 *.pyc
