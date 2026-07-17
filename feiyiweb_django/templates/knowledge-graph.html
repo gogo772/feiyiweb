@@ -232,7 +232,65 @@
             z-index: 20;
         }
 
-        /* 响应式微调 */
+        /* 响应式样式 */
+        @media (max-width: 1200px) {
+            .graph-legend {
+                bottom: 55px;
+                left: 40px;
+                max-width: calc(100vw - 140px);
+                padding: 8px 16px;
+                gap: 12px;
+                font-size: 0.65rem;
+            }
+
+            .graph-legend-item {
+                padding: 5px 10px;
+                gap: 6px;
+            }
+
+            .graph-legend-item span:nth-child(2) {
+                max-width: 120px;
+            }
+
+            .graph-legend-dot {
+                width: 9px;
+                height: 9px;
+            }
+
+            .graph-legend-count {
+                font-size: 0.6rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .graph-legend {
+                bottom: 50px;
+                left: 25px;
+                max-width: calc(100vw - 90px);
+                padding: 7px 14px;
+                gap: 10px;
+                font-size: 0.6rem;
+            }
+
+            .graph-legend-item {
+                padding: 4px 8px;
+                gap: 5px;
+            }
+
+            .graph-legend-item span:nth-child(2) {
+                max-width: 90px;
+            }
+
+            .graph-legend-dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .graph-legend-count {
+                font-size: 0.55rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .graph-legend {
                 bottom: 65px;
@@ -240,10 +298,25 @@
                 max-width: calc(100vw - 24px);
                 padding: 6px 12px;
                 gap: 8px;
+                font-size: 0.55rem;
+            }
+
+            .graph-legend-item {
+                padding: 4px 8px;
+                gap: 5px;
             }
 
             .graph-legend-item span:nth-child(2) {
-                max-width: 100px;
+                max-width: 80px;
+            }
+
+            .graph-legend-dot {
+                width: 7px;
+                height: 7px;
+            }
+
+            .graph-legend-count {
+                font-size: 0.5rem;
             }
 
             .graph-reset-btn {
@@ -251,6 +324,45 @@
                 right: 14px;
                 padding: 6px 14px;
                 font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .graph-legend {
+                bottom: 55px;
+                left: 8px;
+                max-width: calc(100vw - 16px);
+                padding: 5px 10px;
+                gap: 6px;
+                font-size: 0.5rem;
+                border-radius: 20px;
+            }
+
+            .graph-legend-item {
+                padding: 3px 6px;
+                gap: 4px;
+                border-radius: 20px;
+            }
+
+            .graph-legend-item span:nth-child(2) {
+                max-width: 60px;
+            }
+
+            .graph-legend-dot {
+                width: 6px;
+                height: 6px;
+            }
+
+            .graph-legend-count {
+                font-size: 0.45rem;
+                margin-left: 2px;
+            }
+
+            .graph-reset-btn {
+                bottom: 55px;
+                right: 8px;
+                padding: 5px 10px;
+                font-size: 0.6rem;
             }
         }
     </style>
